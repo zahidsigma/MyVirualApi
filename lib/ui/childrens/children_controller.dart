@@ -3,7 +3,7 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:get/get.dart';
 import 'package:virualapi/core/routing/router_str.dart';
 import 'package:virualapi/repos/user_repo.dart';
-import 'package:virualapi/ui/appointment/appointment_controller.dart';
+// import 'package:virualapi/ui/appointment/appointment_controller.dart';
 import 'package:virualapi/utils/snackbar_util.dart';
 import '../../../core/error/failure.dart';
 
@@ -46,8 +46,8 @@ class ChildrenController extends GetxController {
         message: (failure).errorMessage.toString(),
       );
     }, (r) {
-      var apptCtrl = Get.find<AppointmentController>();
-      apptCtrl.fetchUserExt();
+      // var apptCtrl = Get.find<AppointmentController>();
+      // apptCtrl.fetchUserExt();
       Get.back();
     });
   }

@@ -6,7 +6,7 @@ import 'package:virualapi/utils/util.dart';
 class Button extends StatelessWidget {
   final String title;
   final Function() onPressed;
-  Color? backgroundColor = COLOR_ACCENT;
+  Color? backgroundColor = COLOR_PRIMARY;
   Color? foregroundColor = Colors.white;
   double? width;
   double height;
@@ -65,7 +65,7 @@ class Button extends StatelessWidget {
                       style: TextStyle(
                           fontFamily: 'Poppinsb',
                           color:
-                              isLight == true ? backgroundColor : Colors.white),
+                              isLight == true ? backgroundColor : COLOR_ACCENT),
                     )),
         ],
       ),

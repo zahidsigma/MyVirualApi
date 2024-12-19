@@ -50,45 +50,51 @@ class _MyPageViewState extends State<MyPageView> {
   @override
   Widget build(BuildContext context) {
     final isLast = currentPage == onBoardingList.length - 1;
-    return Column(
-      children: [
-        Expanded(
-          child: PageView.builder(
-            itemBuilder: (context, index) => PageViewItem(
-              item: onBoardingList[index],
-              isLast: index == onBoardingList.length - 1,
-              controller: _pageController,
-              currentPage: currentPage,
+    return SafeArea(
+      child: Column(
+        children: [
+          Align(
+            alignment: Alignment.centerRight,
+            child: TextButton(
+              onPressed: () {
+                pushAndRemoveUntil(context, LoginScreen());
+              },
+              child: Text(
+                isLast ? "" : "Skip",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    fontFamily: 'Poppinsb', fontSize: 15, color: COLOR_GRAY),
+              ),
             ),
-            controller: _pageController,
-            itemCount: onBoardingList.length,
-            onPageChanged: (int index) {
-              setState(() {
-                currentPage = index.toDouble();
-              });
-            },
           ),
-        ),
-        AppSpacerH(18.h),
-        Button(
-          title: isLast ? "GET STARTED" : "NEXT",
-          onPressed: () => _onPressed(),
-          height: 55,
-          width: !isLast ? getScreenWidth(context) * 0.4 : null,
-          backgroundColor: isLast ? COLOR_ACCENT : COLOR_PRIMARY,
-        ),
-        TextButton(
-          onPressed: () {
-            pushAndRemoveUntil(context, LoginScreen());
-          },
-          child: Text(
-            isLast ? "" : "Skip",
-            textAlign: TextAlign.center,
-            style: TextStyle(
-                fontFamily: 'Poppinsb', fontSize: 15, color: Color(0xFF414141)),
+          Expanded(
+            child: PageView.builder(
+              itemBuilder: (context, index) => PageViewItem(
+                item: onBoardingList[index],
+                isLast: index == onBoardingList.length - 1,
+                controller: _pageController,
+                currentPage: currentPage,
+              ),
+              controller: _pageController,
+              itemCount: onBoardingList.length,
+              onPageChanged: (int index) {
+                setState(() {
+                  currentPage = index.toDouble();
+                });
+              },
+            ),
           ),
-        )
-      ],
+          AppSpacerH(18.h),
+          Button(
+            title: isLast ? "GET STARTED" : "NEXT",
+            onPressed: () => _onPressed(),
+            height: 55,
+            width: !isLast ? getScreenWidth(context) * 0.4 : null,
+            // backgroundColor: isLast ? COLOR_PRIMARY : COLOR_ACCENT,
+            backgroundColor: COLOR_PRIMARY,
+          ),
+        ],
+      ),
     );
   }
 }

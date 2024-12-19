@@ -11,8 +11,16 @@ class Body extends StatefulWidget {
 class _BodyState extends State<Body> {
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: SafeArea(child: MyPageView()),
+    return Scaffold(
+      body: Container(
+        decoration: BoxDecoration(
+            image: DecorationImage(
+                image: AssetImage(
+                  "assets/images/bg.png",
+                ),
+                fit: BoxFit.cover)),
+        child: MyPageView(),
+      ),
     );
   }
 }

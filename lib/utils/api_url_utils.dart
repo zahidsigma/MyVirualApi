@@ -11,10 +11,11 @@ class ApiUrlUtils {
     switch (env) {
       case EnvironmentEnum.dev:
         {
-          return 'https://go-girl-api.ventive.app/api/v1/';
+          return 'https://api.galaxysearchapi.com/';
         }
       default:
-        return 'https://api.thegogirlapp.com/api/v1/';
+        // return 'https://api.thegogirlapp.com/api/v1/';
+        return '';
     }
   }
 
@@ -85,6 +86,8 @@ class ApiUrlUtils {
         return 'payment/list';
       case UrlEndPointEnum.getAppointments:
         return 'telemed/apt/patient/$id';
+      case UrlEndPointEnum.personSearch:
+        return 'PersonSearch';
       case UrlEndPointEnum.cancelAppointment:
         return 'telemed/apt/$id/?status=CANCELLED';
       default:

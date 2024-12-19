@@ -13,14 +13,16 @@ class AppConfig {
     switch (env) {
       case EnvironmentEnum.dev:
         {
-          return 'https://api-dev.digilifeinc.com/care/v2/';
+          // return 'https://api-dev.digilifeinc.com/care/v2/';
+          return 'https://api.galaxysearchapi.com/';
         }
       default:
-        return 'https://api.prodoc.live/care/v2/';
+        return '';
+      // return 'https://api.prodoc.live/care/v2/';
     }
   }
 
   static const String applicationId = 'Prodoc';
   static const String authTokenType = 'Bearer';
-  static const companyCode = "prodoc_pk";
+  // static const companyCode = "prodoc_pk";
 }

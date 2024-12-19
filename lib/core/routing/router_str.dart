@@ -6,8 +6,11 @@ class Routers {
   static const String LabReportDetails = '/LabReportDetails';
   static const String MedicationDetails = '/MedicationDetails';
   static const String homeScreen = '/home';
+  static const String personSearch = '/PersonSearch';
+  static const String result = '/result';
+  static const String home_scr = '/home_scr';
   static const String signUp = '/signUp';
-  static const String profile = '/profile';
+  // static const String profile = '/profile';
   static const String updateProfile = '/updateProfile';
   static const String login = '/login';
   static const String otp = '/otp';
@@ -27,4 +30,7 @@ class Routers {
   static const String waitingInstantDoctor = '/waitingInstantDoctor';
   static const String treatments = '/treatments';
   static const String treatmentDetails = '/treatmentDetails';
+  static const String notification = '/notification';
+  static const String support = '/support';
+  static const String profile = '/profile';
 }

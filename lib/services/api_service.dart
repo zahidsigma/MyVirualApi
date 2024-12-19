@@ -14,6 +14,13 @@ Dio getDio() {
   // _dio.options.headers = {'Content-Type': 'application/json'};
   dio.options.headers = {'Accept': 'application/json'};
   dio.options.headers = {'accept': 'application/json'};
+  dio.options.headers = {
+    'Galaxy-Ap-Password': '2397b0ba0f8a4ea0aaea17e781e11305'
+  };
+  dio.options.headers = {
+    'Galaxy-Search-Type': 'Person',
+  };
+  dio.options.headers = {'Content-Type': 'application/json'};
   dio.options.followRedirects = false;
 
   //for Logging the Request And response

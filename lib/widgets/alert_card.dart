@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:virualapi/constants/constant.dart';
 import 'package:virualapi/services/singleton.dart';
-import 'package:virualapi/ui/home/home_controller.dart';
-import 'package:virualapi/ui/video_calling/video_calling.dart';
+// import 'package:virualapi/ui/home/home_controller.dart';
+// import 'package:virualapi/ui/video_calling/video_calling.dart';
 import 'package:virualapi/utils/metrics.dart';
 import 'package:virualapi/utils/util.dart';
 import 'package:virualapi/widgets/misc_widget.dart';
@@ -15,7 +15,8 @@ class CardWidget extends StatelessWidget {
   CardWidget({Key? key, required this.item});
 
   cancelAppt() async {
-    var ctrl = Get.find<HomeController>();
+    // var ctrl = Get.find<HomeController>();
+    var ctrl = Get.find();
     ctrl.cancelAppt(item['id']);
   }
 
@@ -217,7 +218,7 @@ class CardWidget extends StatelessWidget {
                           "patientName": item["patient_name"],
                           "doctorId": item["doctor_id"],
                         };
-                        Get.to(() => VideoCallingScreen());
+                        // Get.to(() => VideoCallingScreen());
                       } else
                         showEarlyAlert();
                     },

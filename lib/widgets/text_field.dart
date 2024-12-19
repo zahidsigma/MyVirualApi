@@ -14,12 +14,13 @@ class AppTextField extends StatefulWidget {
   final bool showTitle;
   final TextInputType inputType;
   final int maxLength;
+  final int maxline;
   final FocusNode? focusNode;
   final double fontSize;
   final List<TextInputFormatter> formatters;
   final VoidCallback? onCompleted;
   final bool? enabled;
-
+  final bool? rectangleborder;
   const AppTextField(
       {super.key,
       required this.placeholder,
@@ -28,6 +29,7 @@ class AppTextField extends StatefulWidget {
       this.showTitle = true,
       this.name = "",
       this.title,
+      this.maxline = 1,
       this.controller,
       this.image,
       this.icon,
@@ -37,6 +39,7 @@ class AppTextField extends StatefulWidget {
       this.formatters = const [],
       this.onCompleted,
       this.obsecureText = false,
+      this.rectangleborder = false,
       this.enabled = true});
 
   @override
@@ -60,6 +63,7 @@ class _AppTextFieldState extends State<AppTextField> {
           name: widget.name,
           controller: widget.controller,
           expands: false,
+          maxLines: widget.maxline,
           validator: widget.validator,
           obscureText: widget.obsecureText,
           keyboardType: widget.inputType,
@@ -76,6 +80,9 @@ class _AppTextFieldState extends State<AppTextField> {
           decoration: InputDecoration(
               counterText: "",
               hintText: widget.placeholder,
+              border: widget.rectangleborder == true
+                  ? OutlineInputBorder(borderRadius: BorderRadius.circular(10))
+                  : null,
               suffixIcon: widget.icon),
         ),
       ],

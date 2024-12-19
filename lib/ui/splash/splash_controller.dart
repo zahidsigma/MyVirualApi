@@ -2,8 +2,9 @@ import 'package:virualapi/core/routing/router_str.dart';
 import 'package:get/get.dart';
 import 'package:virualapi/repos/user_repo.dart';
 import 'package:virualapi/services/app_preferences.dart';
-import '../../../core/error/failure.dart';
-import '../../utils/snackbar_util.dart';
+import 'package:virualapi/repos/user_repo.dart';
+import '../../../../core/error/failure.dart';
+import '../../../utils/snackbar_util.dart';
 
 class SplashController extends GetxController {
   SplashController({required UserRepository userRepository})
@@ -40,7 +41,7 @@ class SplashController extends GetxController {
         },
       );
     } else {
-      await Future.delayed(const Duration(seconds: 50));
+      await Future.delayed(const Duration(seconds: 3));
       Get.offNamed(Routers.onBoarding);
     }
   }

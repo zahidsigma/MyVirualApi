@@ -38,7 +38,8 @@ enum UrlEndPointEnum {
   labReports,
   payments,
   getSessionNote,
-  getAppointments
+  getAppointments,
+  personSearch,
 }
 
 enum FileType { profilepic, labreport }

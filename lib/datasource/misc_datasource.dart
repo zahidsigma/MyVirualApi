@@ -9,6 +9,10 @@ abstract class MiscDataSource {
   Future<List<Map<String, dynamic>>> getMedications();
   Future<List<Map<String, dynamic>>> getLabReports();
   Future<List<Map<String, dynamic>>> getPayments();
+  Future<List<Map<String, dynamic>>> getPersonSearch({
+    required int page,
+    required int size,
+  });
 }
 
 class MiscDataSourceImpl extends MiscDataSource {
@@ -50,6 +54,47 @@ class MiscDataSourceImpl extends MiscDataSource {
       return (response.data as List)
           .map((dynamic item) => item as Map<String, dynamic>)
           .toList();
+    } catch (e) {
+      throw Error.getError(e);
+    }
+  }
+
+//   Future<List<Map<String, dynamic>>> getPersonSearch() async {
+//     try {
+//       var response = await dio.get(
+//         ApiUrlUtils.getApiUrl(UrlEndPointEnum.personSearch),
+//       );
+//       return (response.data as List)
+//           .map((dynamic item) => item as Map<String, dynamic>)
+//           .toList();
+//     } catch (e) {
+//       throw Error.getError(e);
+//     }
+//   }
+// }
+  @override
+  Future<List<Map<String, dynamic>>> getPersonSearch({
+    required int page,
+    required int size,
+  }) async {
+    try {
+      final queryParameters = {
+        'page': page,
+        'size': size,
+      };
+
+      final response = await dio.get(
+        ApiUrlUtils.getApiUrl(UrlEndPointEnum.personSearch),
+        queryParameters: queryParameters,
+      );
+
+      if (response.statusCode == 200) {
+        return (response.data as List)
+            .map((dynamic item) => item as Map<String, dynamic>)
+            .toList();
+      } else {
+        throw Error.getError('Unexpected status code: ${response.statusCode}');
+      }
     } catch (e) {
       throw Error.getError(e);
     }

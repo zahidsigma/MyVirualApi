@@ -1,6 +1,8 @@
 import 'package:dio/dio.dart';
 
-abstract class Failure {}
+abstract class Failure {
+  get errorMessage => null;
+}
 
 class Error extends Failure {
   final String errorMessage;
