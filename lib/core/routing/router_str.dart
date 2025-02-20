@@ -10,6 +10,7 @@ class Routers {
   static const String result = '/result';
   static const String home_scr = '/home_scr';
   static const String signUp = '/signUp';
+  static const String subscription = '/subscription';
   // static const String profile = '/profile';
   static const String updateProfile = '/updateProfile';
   static const String login = '/login';

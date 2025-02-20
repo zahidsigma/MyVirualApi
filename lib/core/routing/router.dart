@@ -13,6 +13,7 @@ import 'package:virualapi/ui/notification/notification.dart';
 import 'package:virualapi/ui/profile/profile.dart';
 import 'package:virualapi/ui/result/result.dart';
 import 'package:virualapi/ui/splash/splash.dart';
+import 'package:virualapi/ui/subscriptionscreen/subscription_plan.dart';
 import 'package:virualapi/ui/support/support.dart';
 
 import 'router_str.dart';
@@ -46,6 +47,11 @@ class PageRouter {
     GetPage(
       name: Routers.onBoarding,
       page: () => OnBoardingScreen(),
+    ),
+
+    GetPage(
+      name: Routers.subscription,
+      page: () => SubscriptionScreen(),
     ),
     GetPage(
       name: Routers.login,

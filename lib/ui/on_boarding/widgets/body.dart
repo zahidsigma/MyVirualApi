@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:virualapi/utils/metrics.dart';
 import 'page_view.dart';
 
 class Body extends StatefulWidget {
@@ -13,6 +14,8 @@ class _BodyState extends State<Body> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
+        width: getScreenWidth(context),
+        height: getScreenHeight(context),
         decoration: BoxDecoration(
             image: DecorationImage(
                 image: AssetImage(

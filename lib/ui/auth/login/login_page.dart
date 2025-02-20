@@ -58,16 +58,31 @@ class LoginScreen extends GetView<LoginController> {
                           SizedBox(
                             height: 40,
                           ),
+                          // AppTextField(
+                          //   name: 'username',
+                          //   showTitle: false,
+                          //   title: "Username",
+                          //   rectangleborder: true,
+                          //   placeholder: "UserName",
+                          //   validator: FormBuilderValidators.compose(([
+                          //     FormBuilderValidators.required(),
+                          //   ])),
+                          // ),
                           AppTextField(
                             name: 'username',
                             showTitle: false,
-                            title: "Username",
+                            maxline: 1,
+                            title: "UserName",
                             rectangleborder: true,
+                            validator: FormBuilderValidators.compose(
+                              [
+                                FormBuilderValidators.required(),
+                                FormBuilderValidators.minLength(6)
+                              ],
+                            ),
                             placeholder: "UserName",
-                            validator: FormBuilderValidators.compose(([
-                              FormBuilderValidators.required(),
-                            ])),
                           ),
+
                           SizedBox(
                             height: 20,
                           ),
@@ -94,6 +109,7 @@ class LoginScreen extends GetView<LoginController> {
                             placeholder: "Enter Password",
                             onCompleted: controller.onLogin,
                           ),
+
                           ConstrainedBox(
                             constraints: BoxConstraints(
                               maxWidth: MediaQuery.of(context).size.width,

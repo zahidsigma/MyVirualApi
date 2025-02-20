@@ -179,6 +179,158 @@
 //   }
 // }
 
+// import 'package:flutter/material.dart';
+// import 'package:get/get.dart';
+// import 'package:virualapi/repos/misc_repo.dart';
+// import 'package:virualapi/core/routing/router_str.dart';
+// import 'package:virualapi/utils/snackbar_util.dart';
+// import 'package:dartz/dartz.dart';
+
+// class PersonSearchController extends GetxController {
+//   final RxBool isBusy = false.obs;
+//   final _miscRepo = Get.find<MiscRepository>();
+//   RxList<Map<String, dynamic>> dataList = RxList();
+//   RxBool hasMore = true.obs;
+//   int currentPage = 1;
+
+//   // Optional search term for first name or last name
+//   String searchTerm = "";
+
+//   @override
+//   void onInit() {
+//     super.onInit();
+//     getPersonSearch(); // Load the initial data
+//   }
+
+//   // Function to fetch person search results with pagination
+//   Future<void> getPersonSearch(
+//       {int page = 1, int size = 30, String search = ""}) async {
+//     isBusy.value = true;
+
+//     // Pass the search term to the repository
+//     final result = await _miscRepo.getPersonSearch(
+//         page: page, size: size, searchTerm: search);
+
+//     isBusy.value = false;
+
+//     result.fold(
+//       (failure) {
+//         SnackbarUtil.error(
+//           logMessage: failure.errorMessage,
+//           logScreenName: Routers.personSearch,
+//           logMethodName: 'getPersonSearch',
+//           message: failure.errorMessage,
+//         );
+//       },
+//       (data) {
+//         if (data.isEmpty) {
+//           hasMore.value = false;
+//         } else {
+//           if (page == 1) {
+//             dataList.value = data;
+//           } else {
+//             dataList.addAll(data);
+//           }
+//         }
+//       },
+//     );
+//   }
+
+//   // Function to set search term and refresh the data
+//   void setSearchTerm({required String firstName, required String lastName}) {
+//     // Ensure that either first name or last name is provided
+//     if (firstName.isEmpty && lastName.isEmpty) {
+//       SnackbarUtil.error(
+//         logMessage: 'First name or last name is required',
+//         logScreenName: Routers.personSearch,
+//         logMethodName: 'setSearchTerm',
+//         message: 'Please enter at least one: first name or last name.',
+//       );
+//       return; // Do not proceed if no name is provided
+//     }
+
+//     // Combine first name and last name to form search term
+//     searchTerm = "$firstName $lastName";
+
+//     currentPage = 1; // Reset to the first page
+//     hasMore.value = true; // Reset to ensure pagination works properly
+//     getPersonSearch(
+//         page: currentPage,
+//         search: searchTerm); // Fetch data with the new search term
+//   }
+
+//   // Function to open the bottom modal sheet to get first and last name
+//   void showSearchModal() {
+//     showModalBottomSheet(
+//       context: Get.context!,
+//       isScrollControlled: true,
+//       builder: (BuildContext context) {
+//         return Padding(
+//           padding: const EdgeInsets.all(16.0),
+//           child: Column(
+//             mainAxisSize: MainAxisSize.min,
+//             children: [
+//               Text(
+//                 "Search by Name",
+//                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+//               ),
+//               SizedBox(height: 10),
+//               TextField(
+//                 onChanged: (value) {
+//                   // Store first name input
+//                   searchTerm = value;
+//                 },
+//                 decoration: InputDecoration(
+//                   labelText: "First Name",
+//                   border: OutlineInputBorder(),
+//                 ),
+//               ),
+//               SizedBox(height: 10),
+//               TextField(
+//                 onChanged: (value) {
+//                   // Store last name input
+//                   searchTerm = value;
+//                 },
+//                 decoration: InputDecoration(
+//                   labelText: "Last Name",
+//                   border: OutlineInputBorder(),
+//                 ),
+//               ),
+//               SizedBox(height: 20),
+//               ElevatedButton(
+//                 onPressed: () {
+//                   // Call setSearchTerm when user submits
+//                   setSearchTerm(
+//                     firstName: searchTerm
+//                         .split(' ')[0], // Get first part as first name
+//                     lastName: searchTerm.split(' ').length > 1
+//                         ? searchTerm
+//                             .split(' ')[1] // Get second part as last name
+//                         : "",
+//                   );
+//                   Get.back(); // Close the modal
+//                 },
+//                 child: Text("Search"),
+//               ),
+//             ],
+//           ),
+//         );
+//       },
+//     );
+//   }
+
+//   Future<void> loadMoreData() async {
+//     if (isBusy.value || !hasMore.value) {
+//       return;
+//     }
+
+//     currentPage++;
+//     await getPersonSearch(
+//         page: currentPage,
+//         search: searchTerm); // Fetch the next page with search term
+//   }
+// }
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:virualapi/repos/misc_repo.dart';
@@ -193,7 +345,6 @@ class PersonSearchController extends GetxController {
   RxBool hasMore = true.obs;
   int currentPage = 1;
 
-  // Optional search term for first name or last name
   String searchTerm = "";
 
   @override
@@ -202,14 +353,19 @@ class PersonSearchController extends GetxController {
     getPersonSearch(); // Load the initial data
   }
 
-  // Function to fetch person search results with pagination
-  Future<void> getPersonSearch(
-      {int page = 1, int size = 10, String search = ""}) async {
+  /// Fetch person search results with pagination
+  Future<void> getPersonSearch({
+    int page = 1,
+    int size = 30,
+    String search = "",
+  }) async {
     isBusy.value = true;
 
-    // Pass the search term to the repository
     final result = await _miscRepo.getPersonSearch(
-        page: page, size: size, searchTerm: search);
+      page: page,
+      size: size,
+      searchTerm: search,
+    );
 
     isBusy.value = false;
 
@@ -223,22 +379,31 @@ class PersonSearchController extends GetxController {
         );
       },
       (data) {
-        if (data.isEmpty) {
+        if (data == null || data.isEmpty) {
           hasMore.value = false;
-        } else {
+        } else if (data is Map<String, dynamic>) {
+          // Wrap single map in a list if necessary
+          dataList.value = [data];
+        } else if (data is List<Map<String, dynamic>>) {
           if (page == 1) {
-            dataList.value = data;
+            dataList.value = [data]; // Replace data for the first page
           } else {
-            dataList.addAll(data);
+            dataList.addAll([data]); // Append data for subsequent pages
           }
+        } else {
+          SnackbarUtil.error(
+            logMessage: 'Invalid data format returned',
+            logScreenName: Routers.personSearch,
+            logMethodName: 'getPersonSearch',
+            message: 'Expected a list or map but got something else.',
+          );
         }
       },
     );
   }
 
-  // Function to set search term and refresh the data
+  /// Set search term and refresh data
   void setSearchTerm({required String firstName, required String lastName}) {
-    // Ensure that either first name or last name is provided
     if (firstName.isEmpty && lastName.isEmpty) {
       SnackbarUtil.error(
         logMessage: 'First name or last name is required',
@@ -246,27 +411,32 @@ class PersonSearchController extends GetxController {
         logMethodName: 'setSearchTerm',
         message: 'Please enter at least one: first name or last name.',
       );
-      return; // Do not proceed if no name is provided
+      return;
     }
 
-    // Combine first name and last name to form search term
-    searchTerm = "$firstName $lastName";
+    searchTerm = firstName.trim() + " " + lastName.trim();
 
-    currentPage = 1; // Reset to the first page
-    hasMore.value = true; // Reset to ensure pagination works properly
-    getPersonSearch(
-        page: currentPage,
-        search: searchTerm); // Fetch data with the new search term
+    currentPage = 1;
+    hasMore.value = true;
+    getPersonSearch(page: currentPage, search: searchTerm);
   }
 
-  // Function to open the bottom modal sheet to get first and last name
+  /// Show a bottom modal to collect first and last name
   void showSearchModal() {
+    String firstName = "";
+    String lastName = "";
+
     showModalBottomSheet(
       context: Get.context!,
       isScrollControlled: true,
       builder: (BuildContext context) {
         return Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: EdgeInsets.only(
+            left: 16,
+            right: 16,
+            top: 16,
+            bottom: MediaQuery.of(context).viewInsets.bottom + 16,
+          ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -277,8 +447,7 @@ class PersonSearchController extends GetxController {
               SizedBox(height: 10),
               TextField(
                 onChanged: (value) {
-                  // Store first name input
-                  searchTerm = value;
+                  firstName = value;
                 },
                 decoration: InputDecoration(
                   labelText: "First Name",
@@ -288,8 +457,7 @@ class PersonSearchController extends GetxController {
               SizedBox(height: 10),
               TextField(
                 onChanged: (value) {
-                  // Store last name input
-                  searchTerm = value;
+                  lastName = value;
                 },
                 decoration: InputDecoration(
                   labelText: "Last Name",
@@ -299,16 +467,11 @@ class PersonSearchController extends GetxController {
               SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {
-                  // Call setSearchTerm when user submits
                   setSearchTerm(
-                    firstName: searchTerm
-                        .split(' ')[0], // Get first part as first name
-                    lastName: searchTerm.split(' ').length > 1
-                        ? searchTerm
-                            .split(' ')[1] // Get second part as last name
-                        : "",
+                    firstName: firstName,
+                    lastName: lastName,
                   );
-                  Get.back(); // Close the modal
+                  Get.back();
                 },
                 child: Text("Search"),
               ),
@@ -319,14 +482,13 @@ class PersonSearchController extends GetxController {
     );
   }
 
+  /// Load more data for pagination
   Future<void> loadMoreData() async {
     if (isBusy.value || !hasMore.value) {
       return;
     }
 
     currentPage++;
-    await getPersonSearch(
-        page: currentPage,
-        search: searchTerm); // Fetch the next page with search term
+    await getPersonSearch(page: currentPage, search: searchTerm);
   }
 }

@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:virualapi/constants/constant.dart';
+import 'package:virualapi/ui/home/custom_drawer.dart';
 import 'package:virualapi/ui/home/home.dart';
 import 'package:virualapi/ui/home/home_controller.dart';
 import 'package:virualapi/ui/notification/notification.dart';
 import 'package:virualapi/ui/profile/profile.dart';
 import 'package:virualapi/ui/support/support.dart';
+import 'package:virualapi/utils/metrics.dart';
 import 'package:virualapi/widgets/bottom_nav_bar.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -40,7 +42,13 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         key: controller.homeKey,
-        // drawer: CustomDrawer(),
+        endDrawer: Padding(
+          padding: EdgeInsets.only(top: getScreenHeight(context) * 0.1),
+          child: SizedBox(
+            height: getScreenHeight(context) * 0.8,
+            child: CustomDrawer(),
+          ),
+        ),
         bottomNavigationBar: BottomNavBar(indexChanged: _indexChanged),
         backgroundColor: COLOR_BACKGROUND,
         body: pages[selectedIndex]);

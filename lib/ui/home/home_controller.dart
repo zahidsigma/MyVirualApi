@@ -40,6 +40,7 @@ class HomeController extends GetxController {
   // List<String> keywords = [];
   final GlobalKey<ScaffoldState> homeKey = GlobalKey(); // Create a key
   var bottomWidgetKey = GlobalKey<State<BottomNavigationBar>>();
+  var userName = RxString('Haris');
   // final Rx<File?> userImageSource = Rx<File?>(null);
   // RxDouble bmi = 0.0.obs;
 

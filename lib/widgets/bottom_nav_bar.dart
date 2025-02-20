@@ -1,141 +1,3 @@
-// import 'package:flutter/material.dart';
-// import 'package:get/get.dart';
-// import 'package:virualapi/constants/constant.dart';
-// import 'package:virualapi/ui/home/home_controller.dart';
-// import 'package:virualapi/utils/metrics.dart';
-// import 'package:collection/collection.dart';
-
-// class BottomNavBar extends StatefulWidget {
-//   final void Function(int index) indexChanged;
-//   BottomNavBar({super.key, required this.indexChanged});
-
-//   @override
-//   State<BottomNavBar> createState() => _BottomNavBarState();
-// }
-
-// class _BottomNavBarState extends State<BottomNavBar> {
-//   int selectedScreenIndex = 0;
-//   final selectedItemColor = COLOR_PRIMARY;
-//   final unselectedItemColor = Colors.grey;
-
-//   isSelected(index) => selectedScreenIndex == index;
-//   getColor(index) =>
-//       isSelected(index) ? selectedItemColor : unselectedItemColor;
-
-//   BottomNavigationBarItem getNavItem(item, index) => BottomNavigationBarItem(
-//         label: item["title"],
-//         icon: Image.asset(
-//           "assets/images/${item['icon']}",
-//           width: getScreenWidth(context) * (index != 1 ? 0.075 : 0.1),
-//           height: getScreenHeight(context) * 0.05,
-//           color: getColor(index),
-//           fit: BoxFit.scaleDown,
-//         ),
-//       );
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return BottomNavigationBar(
-//         key: Get.find<HomeController>().bottomWidgetKey,
-//         type: BottomNavigationBarType.fixed,
-//         selectedItemColor: selectedItemColor,
-//         unselectedItemColor: unselectedItemColor,
-//         backgroundColor: Colors.white,
-//         currentIndex: selectedScreenIndex,
-//         onTap: (index) {
-//           widget.indexChanged(index);
-//           setState(() {
-//             selectedScreenIndex = index;
-//           });
-//         },
-//         items: bottomNavList.mapIndexed((i, e) => getNavItem(e, i)).toList());
-//   }
-// }
-
-// import 'package:flutter/material.dart';
-// import 'package:get/get.dart';
-// import 'package:virualapi/constants/constant.dart';
-// import 'package:virualapi/ui/home/home_controller.dart';
-
-// import 'package:virualapi/utils/metrics.dart';
-// import 'package:collection/collection.dart';
-
-// class BottomNavBar extends StatefulWidget {
-//   final void Function(int index) indexChanged;
-//   BottomNavBar({super.key, required this.indexChanged});
-
-//   @override
-//   State<BottomNavBar> createState() => _BottomNavBarState();
-// }
-
-// class _BottomNavBarState extends State<BottomNavBar> {
-//   int selectedScreenIndex = 0;
-
-//   final selectedItemColor = COLOR_PRIMARY;
-//   final unselectedItemColor = Colors.grey;
-
-//   isSelected(index) => selectedScreenIndex == index;
-
-//   getColor(index) =>
-//       isSelected(index) ? selectedItemColor : unselectedItemColor;
-
-//   BottomNavigationBarItem getNavItem(item, index) => BottomNavigationBarItem(
-//         label: item["title"],
-//         icon: Image.asset(
-//           "assets/images/${item['icon']}",
-//           width: getScreenWidth(context) * (index != 1 ? 0.074 : 0.1),
-//           height: getScreenHeight(context) * 0.05,
-//           color: getColor(index),
-//           fit: BoxFit.scaleDown,
-//         ),
-//       );
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       floatingActionButton: FloatingActionButton(
-//         onPressed: () {
-//           // Handle search action
-//           // widget.indexChanged(1);
-//           print("helllo");
-//         },
-//         backgroundColor: COLOR_PRIMARY,
-//         child: Icon(Icons.search, color: Colors.white),
-//       ),
-//       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-//       backgroundColor: Colors.white,
-//       bottomNavigationBar: ClipRRect(
-//         borderRadius: BorderRadius.only(
-//             topLeft: Radius.circular(20), topRight: Radius.circular(20)),
-//         child: BottomAppBar(
-//           shape: CircularNotchedRectangle(),
-//           color: Colors.blueGrey,
-//           notchMargin: 8.0,
-//           clipBehavior: Clip.antiAlias,
-//           child: BottomNavigationBar(
-//             key: Get.find<HomeController>().bottomWidgetKey,
-//             type: BottomNavigationBarType.fixed,
-//             selectedItemColor: selectedItemColor,
-//             unselectedItemColor: unselectedItemColor,
-//             backgroundColor: Colors.white,
-//             currentIndex: selectedScreenIndex,
-//             onTap: (index) {
-//               if (index != 1) {
-//                 widget.indexChanged(index);
-//                 setState(() {
-//                   selectedScreenIndex = index;
-//                 });
-//               }
-//             },
-//             items:
-//                 bottomNavList.mapIndexed((i, e) => getNavItem(e, i)).toList(),
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-// }
-
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
@@ -157,8 +19,9 @@ import 'package:virualapi/widgets/text_field.dart';
 
 class BottomNavBar extends StatefulWidget {
   final void Function(int index) indexChanged;
-
-  const BottomNavBar({super.key, required this.indexChanged});
+  final bool showBottomBar;
+  const BottomNavBar(
+      {super.key, required this.indexChanged, this.showBottomBar = true});
 
   @override
   State<BottomNavBar> createState() => _BottomNavBarState();
@@ -190,100 +53,37 @@ class _BottomNavBarState extends State<BottomNavBar> {
     );
   }
 
-  /// coreect code
-  ///
-  // void _openSearchBottomSheet() {
-  //   TextEditingController firstNameController = TextEditingController();
-  //   TextEditingController lastNameController = TextEditingController();
-
-  //   showModalBottomSheet(
-  //     context: context,
-  //     isScrollControlled: true, // This is necessary for controlling the height
-  //     shape: const RoundedRectangleBorder(
-  //       borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-  //     ),
-  //     builder: (BuildContext context) {
-  //       return Container(
-  //         height:
-  //             MediaQuery.of(context).size.height / 1.2, // Half screen height
-  //         padding: const EdgeInsets.all(16.0),
-  //         child: Column(
-  //           mainAxisSize: MainAxisSize.min,
-  //           children: [
-  //             const Text(
-  //               "Search",
-  //               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-  //             ),
-  //             const SizedBox(height: 16),
-  //             AppTextField(
-  //               name: 'username',
-  //               controller: firstNameController,
-  //               showTitle: false,
-  //               title: "Username",
-  //               rectangleborder: true,
-  //               placeholder: "Enter First Name",
-  //               validator: FormBuilderValidators.compose([
-  //                 FormBuilderValidators.required(),
-  //               ]),
-  //             ),
-  //             const SizedBox(height: 16),
-  //             AppTextField(
-  //               name: 'username',
-  //               controller: lastNameController,
-  //               showTitle: false,
-  //               title: "Username",
-  //               rectangleborder: true,
-  //               placeholder: "Enter Last Name",
-  //               validator: FormBuilderValidators.compose([
-  //                 FormBuilderValidators.required(),
-  //               ]),
-  //             ),
-  //             const SizedBox(height: 20),
-  //             ElevatedButton(
-  //               style: ElevatedButton.styleFrom(
-  //                 backgroundColor: COLOR_PRIMARY,
-  //                 minimumSize: Size.fromHeight(50),
-  //                 shape: RoundedRectangleBorder(
-  //                     borderRadius: BorderRadius.circular(10)),
-  //               ),
-  //               onPressed: () async {
-  //                 // Assuming you have controllers for the text fields
-  //                 String firstName = firstNameController.text;
-  //                 String lastName = lastNameController.text;
-
-  //                 print(firstName);
-
-  //                 // Call the API
-  //                 await _searchPerson(firstName, lastName);
-  //               },
-  //               child: const Text("Search"),
-  //             ),
-  //           ],
-  //         ),
-  //       );
-  //     },
-  //   );
-  // }
   void _openSearchBottomSheet() {
-    TextEditingController firstNameController = TextEditingController();
-    TextEditingController lastNameController = TextEditingController();
-    bool _isLoading = false; // To control the loading state
+    // Declare the controllers
+    final TextEditingController firstNameController = TextEditingController();
+    final TextEditingController lastNameController = TextEditingController();
+    final TextEditingController emailController = TextEditingController();
+    final TextEditingController phoneController = TextEditingController();
+    final TextEditingController addressController = TextEditingController();
+
+    bool _isLoading = false;
+    int _selectedTab = 0; // 0 = Name, 1 = Email, 2 = Phone, 3 = Address
+
+    void clearFields() {
+      firstNameController.clear();
+      lastNameController.clear();
+      emailController.clear();
+      phoneController.clear();
+      addressController.clear();
+    }
 
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-
-      // This is necessary for controlling the height
+      isDismissible: true,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder: (BuildContext context) {
         return StatefulBuilder(
-          // Use StatefulBuilder to manage the loading state in the modal
           builder: (context, setState) {
             return Container(
-              height: MediaQuery.of(context).size.height /
-                  1.2, // Half screen height
+              height: MediaQuery.of(context).size.height / 1.2,
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -293,68 +93,148 @@ class _BottomNavBarState extends State<BottomNavBar> {
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 16),
-                  AppTextField(
-                    name: 'username',
-                    controller: firstNameController,
-                    showTitle: false,
-                    title: "Username",
-                    rectangleborder: true,
-                    placeholder: "Enter First Name",
-                    validator: FormBuilderValidators.compose([
-                      FormBuilderValidators.required(),
-                    ]),
-                  ),
-                  const SizedBox(height: 16),
-                  AppTextField(
-                    name: 'username',
-                    controller: lastNameController,
-                    showTitle: false,
-                    title: "Username",
-                    rectangleborder: true,
-                    placeholder: "Enter Last Name",
-                    validator: FormBuilderValidators.compose([
-                      FormBuilderValidators.required(),
-                    ]),
+
+                  // Tabs for different search types
+                  DefaultTabController(
+                    length: 4,
+                    initialIndex: _selectedTab,
+                    child: Column(
+                      children: [
+                        TabBar(
+                          onTap: (index) =>
+                              setState(() => _selectedTab = index),
+                          tabs: const [
+                            Tab(text: "By Name"),
+                            Tab(text: "By Email"),
+                            Tab(text: "By Phone"),
+                            Tab(text: "By Address"),
+                          ],
+                          labelStyle: const TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold,
+                            color: COLOR_PRIMARY,
+                          ),
+                          unselectedLabelStyle: const TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.normal,
+                            color: Colors.black,
+                          ),
+                          indicator: UnderlineTabIndicator(
+                            borderSide: BorderSide(
+                              color:
+                                  COLOR_PRIMARY, // Set the indicator color here
+                              width: 10, // Adjust the thickness of the line
+                            ),
+                            borderRadius: BorderRadius.circular(
+                                20), // Rounded corners for the indicator
+                          ),
+                          indicatorSize: TabBarIndicatorSize
+                              .label, // Matches the indicator to the label's width
+                        ),
+
+                        const SizedBox(height: 15),
+
+                        // Input fields based on selected tab
+                        if (_selectedTab == 0)
+                          Column(
+                            children: [
+                              AppTextField(
+                                name: 'FirstName',
+                                controller: firstNameController,
+                                showTitle: false,
+                                title: "First Name",
+                                rectangleborder: true,
+                                placeholder: "Enter First Name",
+                                validator: FormBuilderValidators.required(),
+                              ),
+                              const SizedBox(height: 16),
+                              AppTextField(
+                                name: 'LastName',
+                                controller: lastNameController,
+                                showTitle: false,
+                                title: "Last Name",
+                                rectangleborder: true,
+                                placeholder: "Enter Last Name",
+                                validator: FormBuilderValidators.required(),
+                              ),
+                            ],
+                          ),
+                        if (_selectedTab == 1)
+                          AppTextField(
+                            name: 'email',
+                            controller: emailController,
+                            showTitle: false,
+                            title: "Email",
+                            rectangleborder: true,
+                            placeholder: "Enter Email",
+                            validator: FormBuilderValidators.compose([
+                              FormBuilderValidators.required(),
+                              FormBuilderValidators.email(),
+                            ]),
+                          ),
+                        if (_selectedTab == 2)
+                          AppTextField(
+                            name: 'phone',
+                            controller: phoneController,
+                            showTitle: false,
+                            title: "Phone",
+                            rectangleborder: true,
+                            placeholder: "Enter Phone Number",
+                            validator: FormBuilderValidators.required(),
+                          ),
+                        if (_selectedTab == 3)
+                          AppTextField(
+                            name: 'address',
+                            controller: addressController,
+                            showTitle: false,
+                            title: "Address",
+                            rectangleborder: true,
+                            placeholder: "Enter Address",
+                            validator: FormBuilderValidators.required(),
+                          ),
+                      ],
+                    ),
                   ),
                   const SizedBox(height: 20),
-                  // Show a CircularProgressIndicator if _isLoading is true
                   _isLoading
                       ? const Center(child: CircularProgressIndicator())
                       : ElevatedButton(
                           style: ElevatedButton.styleFrom(
                             backgroundColor: COLOR_PRIMARY,
-                            minimumSize: Size.fromHeight(50),
+                            minimumSize: const Size.fromHeight(50),
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10)),
                           ),
                           onPressed: () async {
-                            String firstName = firstNameController.text;
-                            String lastName = lastNameController.text;
+                            setState(() => _isLoading = true);
 
-                            // Set loading to true when the search starts
+                            if (_selectedTab == 0) {
+                              await searchByName(firstNameController.text,
+                                  lastNameController.text);
+                            } else if (_selectedTab == 1) {
+                              await searchByEmail(emailController.text);
+                            } else if (_selectedTab == 2) {
+                              await searchByPhone(phoneController.text);
+                            } else if (_selectedTab == 3) {
+                              await searchByAddress(addressController.text);
+                            }
+
+                            clearFields();
+
+                            // Avoid using the context immediately after an async operation
                             setState(() {
-                              _isLoading = true;
+                              _isLoading = false;
                             });
 
-                            try {
-                              // Call the API
-                              await _searchPerson(firstName, lastName);
-                            } catch (e) {
-                              // Handle any errors here
-                              print("Error during search: $e");
-                            } finally {
-                              // After the API call, set loading to false
-                              if (context.mounted) {
-                                setState(() {
-                                  _isLoading = false;
-                                });
+                            // Ensure that the context is valid after the async operation
+                            Future.delayed(Duration.zero, () {
+                              if (!_isLoading) {
+                                Navigator.of(context)
+                                    .pop(); // This closes the bottom sheet
+                                print(
+                                    "closeddddddddddd"); // This confirms the bottom sheet closure
                               }
-
-                              // Close the bottom sheet safely
-                              if (context.mounted) {
-                                Navigator.pop(context);
-                              }
-                            }
+                            });
                           },
                           child: const Text("Search"),
                         ),
@@ -367,176 +247,83 @@ class _BottomNavBarState extends State<BottomNavBar> {
     ).whenComplete(_onBottomSheetClosed);
   }
 
-  void _onBottomSheetClosed() {
-    print("Closed bottomsheet");
+  int currentPage = 1;
+  final int resultsPerPage = 10;
+  bool hasNextPage = true;
+
+  Future<void> searchByName(String firstName, String lastName,
+      {bool isNextPage = false}) async {
+    final String apiUrl = 'https://api.galaxysearchapi.com/PersonSearch';
+
+    final Map<String, String> headers = {
+      'Galaxy-Ap-Password': '2397b0ba0f8a4ea0aaea17e781e11305',
+      'Galaxy-Search-Type': 'Person',
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Galaxy-Ap-Name': 'ethosinv',
+    };
+
+    // Adjust the page number
+    if (isNextPage) {
+      currentPage++;
+    } else if (currentPage > 1) {
+      currentPage--;
+    }
+
+    final Map<String, dynamic> requestBody = {
+      'FirstName': firstName,
+      'LastName': lastName,
+      'Page': currentPage,
+      'ResultsPerPage': resultsPerPage,
+    };
+
+    try {
+      Dio dio = Dio();
+      dio.options.headers = headers;
+
+      final response = await dio.post(apiUrl, data: requestBody);
+
+      if (response.statusCode == 200) {
+        final data = response.data;
+        var persons = data['persons'] as List<dynamic>? ?? [];
+
+        // Check if there are more pages
+        hasNextPage = persons.length == resultsPerPage;
+
+        if (persons.isEmpty) {
+          print('No more results.');
+        } else {
+          var result = await Get.to(() => ResultScreen(), arguments: {
+            'persons': persons,
+            'currentPage': currentPage,
+            'hasNextPage': hasNextPage,
+          });
+
+          // Ensure result is not null before accessing its properties
+          if (result != null) {
+            if (result['loadNextPage'] == true) {
+              searchByName(firstName, lastName, isNextPage: true);
+            } else if (result['loadPreviousPage'] == true) {
+              searchByName(firstName, lastName, isNextPage: false);
+            }
+          }
+        }
+      } else {
+        print('Error: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Unexpected error: $e');
+    }
   }
 
-  // Future<void> _searchPerson(String firstName, String lastName) async {
-  //   final String apiUrl = 'https://api.galaxysearchapi.com/PersonSearch';
+// Common function for email, phone, and address search
+  Future<void> searchByField(String fieldType, String fieldValue) async {
+    final Map<String, dynamic> requestBody = {
+      fieldType: fieldValue,
+      'Page': currentPage,
+      'ResultsPerPage': resultsPerPage,
+    };
 
-  //   // Combine all headers into a single map, including new headers
-  //   final Map<String, String> headers = {
-  //     'Galaxy-Ap-Password':
-  //         '2397b0ba0f8a4ea0aaea17e781e11305', // Your API password or token
-  //     'Galaxy-Search-Type': 'Person',
-  //     'Content-Type': 'application/json',
-  //     'Accept': 'application/json', // Specify the expected response format
-  //     'Galaxy-Ap-Name':
-  //         'ethosinv', // Custom header (your application name or identifier)
-  //   };
-
-  //   // The body of the request
-  //   final Map<String, dynamic> requestBody = {
-  //     'FirstName': firstName,
-  //     'LastName': lastName,
-  //   };
-
-  //   // Log the request body for debugging
-  //   print("Request Body: ${json.encode(requestBody)}");
-
-  //   try {
-  //     Dio dio = Dio();
-
-  //     // Set the headers in the dio options
-  //     dio.options.headers = headers;
-
-  //     final response = await dio.post(
-  //       apiUrl,
-  //       data: requestBody,
-  //     );
-
-  //     if (response.statusCode == 200) {
-  //       // Handle the successful response
-  //       final data = response.data;
-  //       print('Response data: $data');
-  //     } else {
-  //       // Log error details
-  //       print('Error: ${response.statusCode}');
-  //       print('Response data: ${response.data}'); // More detailed error info
-  //     }
-  //   } catch (e) {
-  //     // Handle and log error
-  //     if (e is DioException) {
-  //       print('Error making API call: ${e.message}');
-  //       if (e.response != null) {
-  //         print('Error response: ${e.response!.data}');
-  //       }
-  //     } else {
-  //       print('Unexpected error: $e');
-  //     }
-  //   }
-  // }
-
-  // Future<void> _searchPerson(String firstName, String lastName) async {
-  //   final String apiUrl = 'https://api.galaxysearchapi.com/PersonSearch';
-
-  //   // Combine all headers into a single map
-  //   final Map<String, String> headers = {
-  //     'Galaxy-Ap-Password': '2397b0ba0f8a4ea0aaea17e781e11305',
-  //     'Galaxy-Search-Type': 'Person',
-  //     'Content-Type': 'application/json',
-  //     'Accept': 'application/json',
-  //     'Galaxy-Ap-Name': 'ethosinv',
-  //   };
-
-  //   // Request body
-  //   final Map<String, dynamic> requestBody = {
-  //     'FirstName': firstName,
-  //     'LastName': lastName,
-  //   };
-
-  //   print("Request Body: ${json.encode(requestBody)}");
-
-  //   try {
-  //     Dio dio = Dio();
-  //     dio.options.headers = headers;
-
-  //     final response = await dio.post(
-  //       apiUrl,
-  //       data: requestBody,
-  //     );
-
-  //     if (response.statusCode == 200) {
-  //       final data = response.data;
-
-  //       // Extract metadata
-  //       var counts = data['counts'];
-  //       var smartSearchStatistics = data['smartSearchStatistics'];
-  //       var criteriaType = data['criteriaType'];
-  //       var pagination = data['pagination'];
-  //       var totalRequestExecutionTimeMs = data['totalRequestExecutionTimeMs'];
-  //       var requestId = data['requestId'];
-  //       var requestType = data['requestType'];
-  //       var requestTime = data['requestTime'];
-  //       var isError = data['isError'];
-  //       var error = data['error'];
-
-  //       // Log metadata
-  //       print('Counts: $counts');
-  //       print('Smart Search Statistics: $smartSearchStatistics');
-  //       print('Criteria Type: $criteriaType');
-  //       print('Pagination: $pagination');
-  //       print(
-  //           'Total Request Execution Time (ms): $totalRequestExecutionTimeMs');
-  //       print('Request ID: $requestId');
-  //       print('Request Type: $requestType');
-  //       print('Request Time: $requestTime');
-  //       print('Is Error: $isError');
-  //       print('Error: $error');
-
-  //       // Check if the response contains persons
-  //       if (data.containsKey('persons') && data['persons'] is List) {
-  //         List<dynamic> persons = data['persons'];
-
-  //         for (var person in persons) {
-  //           // Extract person details
-  //           var name = person['name'];
-  //           var firstName = name?['firstName'] ?? 'Unknown';
-  //           var lastName = name?['lastName'] ?? 'Unknown';
-  //           var rawNames = name?['rawNames']?.join(', ') ?? 'Unknown';
-  //           var age = person['age']?.toString() ?? 'Unknown';
-  //           var dobFirstSeen = person['dobFirstSeen'] ?? 'Unknown';
-  //           var dobLastSeen = person['dobLastSeen'] ?? 'Unknown';
-  //           var akas = person['akas'];
-
-  //           // Log the extracted data
-  //           print('Person: $firstName $lastName');
-  //           print('Raw Names: $rawNames');
-  //           print(
-  //               'Details: Age - $age, DOB First Seen - $dobFirstSeen, DOB Last Seen - $dobLastSeen');
-
-  //           // Log AKAs (if available)
-  //           if (akas != null && akas is List) {
-  //             for (var aka in akas) {
-  //               var akaFirstName = aka['firstName'] ?? 'Unknown';
-  //               var akaLastName = aka['lastName'] ?? 'Unknown';
-  //               var akaRawNames = aka['rawNames']?.join(', ') ?? 'Unknown';
-  //               print('AKA: $akaFirstName $akaLastName');
-  //               print('AKA Raw Names: $akaRawNames');
-  //             }
-  //           }
-  //           print('----------------------------');
-  //         }
-  //       } else {
-  //         print('No persons found in the response.');
-  //       }
-  //     } else {
-  //       print('Error: ${response.statusCode}');
-  //       print('Response data: ${response.data}');
-  //     }
-  //   } catch (e) {
-  //     if (e is DioException) {
-  //       print('DioException occurred: ${e.message}');
-  //       if (e.response != null) {
-  //         print('Error response: ${e.response!.data}');
-  //       }
-  //     } else {
-  //       print('Unexpected error: $e');
-  //     }
-  //   }
-  // }
-
-  Future<void> _searchPerson(String firstName, String lastName) async {
     final String apiUrl = 'https://api.galaxysearchapi.com/PersonSearch';
     final Map<String, String> headers = {
       'Galaxy-Ap-Password': '2397b0ba0f8a4ea0aaea17e781e11305',
@@ -545,52 +332,58 @@ class _BottomNavBarState extends State<BottomNavBar> {
       'Accept': 'application/json',
       'Galaxy-Ap-Name': 'ethosinv',
     };
-    final Map<String, dynamic> requestBody = {
-      'FirstName': firstName,
-      'LastName': lastName,
-    };
 
     try {
       Dio dio = Dio();
       dio.options.headers = headers;
-
-      final response = await dio.post(
-        apiUrl,
-        data: requestBody,
-      );
+      final response = await dio.post(apiUrl, data: requestBody);
 
       if (response.statusCode == 200) {
         final data = response.data;
+        var persons = data['persons'] as List<dynamic>? ?? [];
 
-        // Extract response data
-        var persons = data['persons'] ?? [];
-        var counts = data['counts'] ?? {};
-        var pagination = data['pagination'] ?? {};
+        // Check if there are more pages
+        hasNextPage = persons.length == resultsPerPage;
 
-        // Navigate to the result screen with the data
-        Get.to(
-          ResultScreen(),
-          arguments: {
+        if (persons.isNotEmpty) {
+          Get.to(() => ResultScreen(), arguments: {
             'persons': persons,
-            'counts': counts,
-            'pagination': pagination,
-          },
-        );
-      } else {
-        print('Error: ${response.statusCode}');
-        print('Response data: ${response.data}');
-      }
-    } catch (e) {
-      if (e is DioException) {
-        print('DioException occurred: ${e.message}');
-        if (e.response != null) {
-          print('Error response: ${e.response!.data}');
+            'currentPage': currentPage,
+            'hasNextPage': hasNextPage,
+          });
+        } else {
+          print('No results found.');
         }
       } else {
-        print('Unexpected error: $e');
+        print('Error: ${response.statusCode}');
       }
+    } catch (e) {
+      print('Unexpected error: $e');
     }
   }
+
+  Future<void> searchByEmail(String email) async {
+    await searchByField('Email', email);
+  }
+
+  Future<void> searchByPhone(String phone) async {
+    await searchByField('Phone', phone);
+  }
+
+  Future<void> searchByAddress(String address) async {
+    await searchByField('Address', address);
+  }
+
+  void _onBottomSheetClosed() {
+    print("Bottom sheet closed.");
+  }
+
+  final List<GlobalKey<NavigatorState>> navigatorKeys = [
+    GlobalKey<NavigatorState>(),
+    GlobalKey<NavigatorState>(),
+    GlobalKey<NavigatorState>(),
+    GlobalKey<NavigatorState>(),
+  ];
 
   List<Widget> pages = [
     // HomeDataScreen(),
@@ -603,216 +396,75 @@ class _BottomNavBarState extends State<BottomNavBar> {
     Profile()
   ];
 
+  void indexChanged(int index) {
+    setState(() {
+      selectedScreenIndex = index;
+    });
+    widget.indexChanged(index);
+  }
+
+  void _onItemTapped(int index) {
+    if (navigatorKeys[index].currentState!.canPop()) {
+      navigatorKeys[index].currentState!.popUntil((route) => route.isFirst);
+    } else {
+      indexChanged(index);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: pages[selectedScreenIndex],
-      floatingActionButton: FloatingActionButton(
-        onPressed: _openSearchBottomSheet,
-        backgroundColor: COLOR_PRIMARY,
-        child: const Icon(Icons.search, color: Colors.white),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      backgroundColor: Colors.white,
-      bottomNavigationBar: ClipRRect(
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(20),
-          topRight: Radius.circular(20),
-        ),
-        child: BottomAppBar(
-          shape: const CircularNotchedRectangle(),
-          color: Colors.blueGrey,
-          notchMargin: 8.0,
-          clipBehavior: Clip.antiAlias,
-          child: BottomNavigationBar(
-            key: Get.find<HomeController>().bottomWidgetKey,
-            type: BottomNavigationBarType.fixed,
-            selectedItemColor: selectedItemColor,
-            unselectedItemColor: unselectedItemColor,
-            backgroundColor: Colors.white,
-            currentIndex: selectedScreenIndex,
-            onTap: (index) {
-              // Skip index 1 (notifications) if the user taps on it
-              widget.indexChanged(index); // No condition to skip index 1
-              setState(() {
-                selectedScreenIndex = index;
-              });
-            },
-            items: bottomNavList
-                .mapIndexed((i, e) => buildNavItem(e, i))
-                .toList()
-                .cast<BottomNavigationBarItem>(),
+        resizeToAvoidBottomInset: false,
+        body: SafeArea(
+          child: IndexedStack(
+            index: selectedScreenIndex,
+            children: List.generate(
+              pages.length,
+              (index) {
+                return Navigator(
+                  key: navigatorKeys[index],
+                  onGenerateRoute: (routeSettings) {
+                    // Return a MaterialPageRoute for each tab's screen
+                    return MaterialPageRoute(
+                      builder: (context) => pages[index],
+                    );
+                  },
+                );
+              },
+            ),
           ),
         ),
-      ),
-    );
+        floatingActionButton: FloatingActionButton(
+          onPressed: _openSearchBottomSheet,
+          backgroundColor: COLOR_PRIMARY,
+          child: const Icon(Icons.search, color: Colors.white),
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+        backgroundColor: Colors.white,
+        bottomNavigationBar: ClipRRect(
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(20),
+            topRight: Radius.circular(20),
+          ),
+          child: BottomAppBar(
+            shape: const CircularNotchedRectangle(),
+            notchMargin: 8.0,
+            clipBehavior: Clip.antiAlias,
+            height: 100,
+            child: BottomNavigationBar(
+              key: Get.find<HomeController>().bottomWidgetKey,
+              type: BottomNavigationBarType.fixed,
+              selectedItemColor: selectedItemColor,
+              unselectedItemColor: unselectedItemColor,
+              backgroundColor: Colors.white,
+              currentIndex: selectedScreenIndex,
+              onTap: _onItemTapped,
+              items: bottomNavList
+                  .mapIndexed((i, e) => buildNavItem(e, i))
+                  .toList()
+                  .cast<BottomNavigationBarItem>(),
+            ),
+          ),
+        ));
   }
 }
-
-// import 'package:collection/collection.dart';
-// import 'package:flutter/material.dart';
-// import 'package:form_builder_validators/form_builder_validators.dart';
-// import 'package:get/get.dart';
-// import 'package:virualapi/constants/constant.dart';
-// import 'package:virualapi/ui/home/home.dart';
-// import 'package:virualapi/ui/home/home_controller.dart';
-// import 'package:virualapi/ui/notification/notification.dart';
-// import 'package:virualapi/ui/support/support.dart';
-// import 'package:virualapi/ui/profile/profile.dart';
-// import 'package:virualapi/utils/metrics.dart';
-// import 'package:virualapi/widgets/text_field.dart';
-// import 'package:virualapi/ui/person/person_search_controller.dart';
-
-// class BottomNavBar extends StatefulWidget {
-//   final void Function(int index) indexChanged;
-
-//   const BottomNavBar({super.key, required this.indexChanged});
-
-//   @override
-//   State<BottomNavBar> createState() => _BottomNavBarState();
-// }
-
-// class _BottomNavBarState extends State<BottomNavBar> {
-//   int selectedScreenIndex = 0;
-//   final PersonSearchController personSearchController =
-//       Get.find(); // Getting the controller
-
-//   // Colors for selected and unselected states
-//   final selectedItemColor = COLOR_PRIMARY;
-//   final unselectedItemColor = Colors.grey;
-
-//   bool isSelected(int index) => selectedScreenIndex == index;
-
-//   Color getColor(int index) =>
-//       isSelected(index) ? selectedItemColor : unselectedItemColor;
-
-//   BottomNavigationBarItem buildNavItem(Map<String, dynamic> item, int index) {
-//     return BottomNavigationBarItem(
-//       label: item["title"] as String,
-//       icon: Image.asset(
-//         "assets/images/${item['icon'] as String}",
-//         width: getScreenWidth(context) * (index != 1 ? 0.065 : 0.1),
-//         height: getScreenHeight(context) * 0.05,
-//         color: getColor(index),
-//         fit: BoxFit.scaleDown,
-//       ),
-//     );
-//   }
-
-//   List<Widget> pages = [Home(), NotificationScreen(), Support(), Profile()];
-
-//   // Bottom Sheet for Search
-//   void _openSearchBottomSheet(BuildContext context) {
-//     TextEditingController firstNameController = TextEditingController();
-//     TextEditingController lastNameController = TextEditingController();
-
-//     showModalBottomSheet(
-//       context: context,
-//       isScrollControlled: true, // This is necessary for controlling the height
-//       shape: const RoundedRectangleBorder(
-//         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-//       ),
-//       builder: (BuildContext context) {
-//         return Padding(
-//           padding: const EdgeInsets.all(16.0),
-//           child: Column(
-//             mainAxisSize: MainAxisSize.min,
-//             children: [
-//               const Text(
-//                 "Search by Name",
-//                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-//               ),
-//               const SizedBox(height: 16),
-//               AppTextField(
-//                 name: 'first_name',
-//                 controller: firstNameController,
-//                 showTitle: false,
-//                 title: "First Name",
-//                 rectangleborder: true,
-//                 placeholder: "Enter First Name",
-//                 validator: FormBuilderValidators.compose([
-//                   FormBuilderValidators.required(),
-//                 ]),
-//               ),
-//               const SizedBox(height: 16),
-//               AppTextField(
-//                 name: 'last_name',
-//                 controller: lastNameController,
-//                 showTitle: false,
-//                 title: "Last Name",
-//                 rectangleborder: true,
-//                 placeholder: "Enter Last Name",
-//                 validator: FormBuilderValidators.compose([
-//                   FormBuilderValidators.required(),
-//                 ]),
-//               ),
-//               const SizedBox(height: 20),
-//               ElevatedButton(
-//                 style: ElevatedButton.styleFrom(
-//                     backgroundColor: COLOR_PRIMARY,
-//                     minimumSize: Size.fromHeight(50),
-//                     shape: RoundedRectangleBorder(
-//                         borderRadius: BorderRadius.circular(10))),
-//                 onPressed: () {
-//                   // Use the controller to perform the search
-//                   personSearchController.setSearchTerm(
-//                     firstName: firstNameController.text,
-//                     lastName: lastNameController.text,
-//                   );
-//                   Get.back(); // Close the modal after search
-//                 },
-//                 child: const Text("Search"),
-//               ),
-//             ],
-//           ),
-//         );
-//       },
-//     );
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       body: pages[selectedScreenIndex],
-//       floatingActionButton: FloatingActionButton(
-//         onPressed: () {
-//           _openSearchBottomSheet(context); // Open bottom sheet on button press
-//         },
-//         backgroundColor: COLOR_PRIMARY,
-//         child: const Icon(Icons.search, color: Colors.white),
-//       ),
-//       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-//       backgroundColor: Colors.white,
-//       bottomNavigationBar: ClipRRect(
-//         borderRadius: const BorderRadius.only(
-//           topLeft: Radius.circular(20),
-//           topRight: Radius.circular(20),
-//         ),
-//         child: BottomAppBar(
-//           shape: const CircularNotchedRectangle(),
-//           color: Colors.blueGrey,
-//           notchMargin: 8.0,
-//           clipBehavior: Clip.antiAlias,
-//           child: BottomNavigationBar(
-//             key: Get.find<HomeController>().bottomWidgetKey,
-//             type: BottomNavigationBarType.fixed,
-//             selectedItemColor: selectedItemColor,
-//             unselectedItemColor: unselectedItemColor,
-//             backgroundColor: Colors.white,
-//             currentIndex: selectedScreenIndex,
-//             onTap: (index) {
-//               widget.indexChanged(index);
-//               setState(() {
-//                 selectedScreenIndex = index;
-//               });
-//             },
-//             items: bottomNavList
-//                 .mapIndexed((i, e) => buildNavItem(e, i))
-//                 .toList()
-//                 .cast<BottomNavigationBarItem>(),
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-// }

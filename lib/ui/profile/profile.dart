@@ -15,8 +15,14 @@
 // }
 
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
+import 'package:virualapi/services/navigator_service.dart';
+import 'package:virualapi/ui/auth/signup/signup.dart';
+import 'package:virualapi/ui/subscriptionscreen/subscription_plan.dart';
 import 'package:virualapi/utils/metrics.dart';
 import 'package:virualapi/widgets/body_with_header.dart';
+import 'package:virualapi/widgets/resusable_widget.dart';
 
 class Profile extends StatefulWidget {
   const Profile({Key? key}) : super(key: key);
@@ -26,6 +32,7 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
+  bool showBottomBar = true;
   @override
   Widget build(BuildContext context) {
     return BodyWithHeader(
@@ -89,17 +96,46 @@ class _ProfileState extends State<Profile> {
           // Options List
           const Divider(height: 1),
           OptionTile(
-            icon: Icons.subscriptions,
+            icon: SizedBox(
+              width: 24, // Set appropriate size
+              height: 24,
+              child: SvgPicture.asset("assets/images/subscription.svg"),
+            ),
             text: "Subscription Details",
-            onTap: () {},
+            onTap: () {
+              // Set the flag to hide Bottom Navigation Bar when navigating
+              setState(() {
+                showBottomBar = false;
+              });
+
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => SubscriptionScreen(),
+                ),
+              ).then((_) {
+                // When returning from SubscriptionScreen, reset the flag to show the Bottom Navigation Bar
+                setState(() {
+                  showBottomBar = true;
+                });
+              });
+            },
           ),
           OptionTile(
-            icon: Icons.access_time,
+            icon: SizedBox(
+              width: 24, // Set appropriate size
+              height: 24,
+              child: SvgPicture.asset("assets/images/time.svg"),
+            ),
             text: "Recent Activity",
             onTap: () {},
           ),
           OptionTile(
-            icon: Icons.logout,
+            icon: SizedBox(
+              width: 24, // Set appropriate size
+              height: 24,
+              child: SvgPicture.asset("assets/images/logout.svg"),
+            ),
             text: "Logout",
             onTap: () {},
             textColor: Colors.red,
@@ -112,7 +148,7 @@ class _ProfileState extends State<Profile> {
 }
 
 class OptionTile extends StatelessWidget {
-  final IconData icon;
+  final Widget icon;
   final String text;
   final VoidCallback onTap;
   final Color textColor;
@@ -127,21 +163,36 @@ class OptionTile extends StatelessWidget {
   }) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      onTap: onTap,
-      contentPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
-      leading: Icon(icon, color: iconColor),
-      title: Text(
-        text,
-        style: TextStyle(
-          fontSize: 16,
-          fontWeight: FontWeight.w500,
-          color: textColor,
-        ),
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+      height: 50,
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+        color: Color(0xffEBEFEF),
+        borderRadius: BorderRadius.circular(5.0),
       ),
-      trailing:
-          const Icon(Icons.arrow_forward_ios, size: 18, color: Colors.grey),
-      tileColor: Colors.grey[200],
+      child: ListTile(
+        onTap: onTap,
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 24,
+        ),
+        leading: SizedBox(
+          width: 24,
+          height: 24,
+          child: icon, // Ensuring it fits properly
+        ),
+        title: Text(
+          text,
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
+            color: textColor,
+          ),
+        ),
+        trailing:
+            const Icon(Icons.arrow_forward_ios, size: 18, color: Colors.black),
+        tileColor: Colors.grey[200],
+      ),
     );
   }
 }

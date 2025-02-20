@@ -27,49 +27,50 @@ class _HomeState extends State<Home> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(height: 50), // Safe area padding
+            SizedBox(height: 10), // Safe area padding
 
             // Header Section
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(height: 16),
+            // Padding(
+            //   padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            //   child: Column(
+            //     crossAxisAlignment: CrossAxisAlignment.start,
+            //     children: [
+            //       SizedBox(height: 16),
 
-                  // Search Bar
-                  Container(
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        border: Border.all(color: Colors.black12)),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: TextFormField(
-                            decoration: InputDecoration(
-                              hintText: 'Search your data',
-                              border: InputBorder.none,
-                              contentPadding: EdgeInsets.only(left: 16),
-                            ),
-                          ),
-                        ),
-                        Container(
-                          padding: EdgeInsets.all(12.5),
-                          decoration: BoxDecoration(
-                            color: Colors.black,
-                            borderRadius: BorderRadius.only(
-                                topRight: Radius.circular(10),
-                                bottomRight: Radius.circular(10)),
-                          ),
-                          child: Icon(Icons.mic, color: Colors.white),
-                        )
-                      ],
+            //       // Search Bar
+
+            //     ],
+            //   ),
+            // ),
+            Container(
+              margin: EdgeInsets.symmetric(horizontal: 20),
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: Colors.black12)),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: TextFormField(
+                      decoration: InputDecoration(
+                        hintText: 'Search your data',
+                        border: InputBorder.none,
+                        contentPadding: EdgeInsets.only(left: 16),
+                      ),
                     ),
                   ),
+                  Container(
+                    padding: EdgeInsets.all(12.5),
+                    decoration: BoxDecoration(
+                      color: Colors.black,
+                      borderRadius: BorderRadius.only(
+                          topRight: Radius.circular(10),
+                          bottomRight: Radius.circular(10)),
+                    ),
+                    child: Icon(Icons.mic, color: Colors.white),
+                  )
                 ],
               ),
             ),
-
             SizedBox(height: 24),
 
             // Grid Section: Leading Reports

@@ -43,9 +43,30 @@ class MiscRepository {
   //   }
   // }
 
-  Future<Either<Failure, List<Map<String, dynamic>>>> getPersonSearch({
+//   Future<Either<Failure, List<Map<String, dynamic>>>> getPersonSearch({
+//     int page = 1,
+//     int size = 30,
+//     required String searchTerm,
+//   }) async {
+//     try {
+//       // Fetch paginated data from the data source
+//       final res = await miscDataSource.getPersonSearch(page: page, size: size);
+
+//       // Validate the response
+//       if (res == null || res.isEmpty) {
+//         return const Right([]);
+//       }
+
+//       return Right(res);
+//     } on Exception catch (e) {
+//       return Left(Error(errorMessage: e.toString()));
+//     }
+//   }
+// }
+
+  Future<Either<Failure, Map<String, dynamic>>> getPersonSearch({
     int page = 1,
-    int size = 10,
+    int size = 30,
     required String searchTerm,
   }) async {
     try {
@@ -54,10 +75,13 @@ class MiscRepository {
 
       // Validate the response
       if (res == null || res.isEmpty) {
-        return const Right([]);
+        return Right({"page": page, "data": []});
       }
 
-      return Right(res);
+      return Right({
+        "page": page,
+        "data": res,
+      });
     } on Exception catch (e) {
       return Left(Error(errorMessage: e.toString()));
     }

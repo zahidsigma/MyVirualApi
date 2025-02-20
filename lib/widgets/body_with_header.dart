@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:virualapi/constants/constant.dart';
+import 'package:virualapi/ui/home/home_controller.dart';
 import 'package:virualapi/ui/home/home_top_header.dart';
 
 import 'package:virualapi/utils/metrics.dart';
@@ -14,7 +15,7 @@ class BodyWithHeader extends StatelessWidget {
   bool? isMenuVisible = false;
   bool? islogovisible = false;
   bool? isrofile = false;
-  String? title;
+  String? title = "";
   String? subtitle;
   BodyWithHeader(
       {super.key,
@@ -29,7 +30,9 @@ class BodyWithHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.find<HomeController>();
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor:
           isMenuVisible == true ? Color(0xffF6F6F6) : DARK_BG_COLOR,
       body: SafeArea(
@@ -48,7 +51,7 @@ class BodyWithHeader extends StatelessWidget {
                   ),
                 Row(
                   children: [
-                    if (isBackVisible == true || isBackVisible == null)
+                    if (isBackVisible == true)
                       IconButton(
                           onPressed: () {
                             Get.back();
@@ -56,39 +59,42 @@ class BodyWithHeader extends StatelessWidget {
                           icon: Icon(
                             Icons.chevron_left,
                             size: 32,
-                            color: Colors.white,
+                            color: Colors.black,
                           )),
                     if (isMenuVisible != null && isMenuVisible == true) ...[
-                      Container(
-                        width: getScreenWidth(context),
-                        height: 150,
-                        padding: EdgeInsets.symmetric(horizontal: 10),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            RichText(
-                              text: TextSpan(
-                                style: TextStyle(
-                                  fontSize: 28,
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.w300,
-                                ),
-                                children: [
-                                  TextSpan(
-                                    text: '${title}\n',
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold),
+                      Expanded(
+                        child: Container(
+                          width: getScreenWidth(context),
+                          height: 150,
+                          padding: EdgeInsets.symmetric(horizontal: 5),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              RichText(
+                                text: TextSpan(
+                                  style: TextStyle(
+                                    fontSize: 28,
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.w300,
                                   ),
-                                  TextSpan(text: subtitle),
-                                ],
+                                  children: [
+                                    TextSpan(
+                                      text: '${title ?? ""}\n',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    TextSpan(text: subtitle),
+                                  ],
+                                ),
                               ),
-                            ),
-                            GestureDetector(
-                                // onTap: () => controller.homeKey.currentState!.openDrawer(),
-                                child: ReusableWidget.loadSvg(
-                              "assets/icons/munuapi.svg",
-                            )),
-                          ],
+                              GestureDetector(
+                                  onTap: () => controller.homeKey.currentState!
+                                      .openEndDrawer(),
+                                  child: ReusableWidget.loadSvg(
+                                    "assets/icons/munuapi.svg",
+                                  )),
+                            ],
+                          ),
                         ),
                       ),
                       AppSpacerH(70),
@@ -102,7 +108,7 @@ class BodyWithHeader extends StatelessWidget {
                         child: body,
                         width: MediaQuery.of(context).size.width,
                         height: getScreenHeight(context) * 0.7,
-                        margin: EdgeInsets.only(top: 30),
+                        margin: EdgeInsets.only(top: 40),
                         decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: isMenuVisible == true
