@@ -77,7 +77,6 @@ class LoginScreen extends GetView<LoginController> {
                             validator: FormBuilderValidators.compose(
                               [
                                 FormBuilderValidators.required(),
-                                FormBuilderValidators.minLength(6)
                               ],
                             ),
                             placeholder: "UserName",
@@ -151,31 +150,55 @@ class LoginScreen extends GetView<LoginController> {
                           //   backgroundColor: DARK_BG_COLOR,
                           // ),
                           Button(
-                            // isLoading: controller.isBusy.value,
                             height: 55,
                             title: "Sign in",
                             onPressed: () {
-                              // if (controller.formKey.currentState
-                              //         ?.saveAndValidate() ??
-                              //     false) {
-                              //   final formValues =
-                              //       controller.formKey.currentState!.value;
-                              //   final username = formValues['username'];
-                              //   final password = formValues['password'];
+                              // ===== OPTION 1: DEBUG PRINT CREDENTIALS =====
+                              if (controller.formKey.currentState
+                                      ?.saveAndValidate() ??
+                                  false) {
+                                final formValues =
+                                    controller.formKey.currentState!.value;
+                                debugPrint(
+                                    "Username: ${formValues['username']}");
+                                debugPrint(
+                                    "Password: ${formValues['password']}");
+                              }
 
-                              //   // Print username and password to the terminal
-                              //   debugPrint("Username: $username");
-                              //   debugPrint("Password: $password");
+                              // ===== OPTION 2: REAL LOGIN FLOW =====
+                              // controller.onLogin();
 
-                              //   // Call the login method or perform your logic here
-                              //   // controller.onLogin();
-                              // } else {
-                              //   debugPrint("Form validation failed");
-                              // }
+                              // ===== OPTION 3: TEMPORARY TESTING (SKIP LOGIN) =====
                               pushAndRemoveUntil(context, HomeScreen());
                             },
                             backgroundColor: DARK_BG_COLOR,
                           ),
+                          // Button(
+                          //   // isLoading: controller.isBusy.value,
+                          //   height: 55,
+                          //   title: "Sign in",
+                          //   onPressed: () {
+                          //     // if (controller.formKey.currentState
+                          //     //         ?.saveAndValidate() ??
+                          //     //     false) {
+                          //     //   final formValues =
+                          //     //       controller.formKey.currentState!.value;
+                          //     //   final username = formValues['username'];
+                          //     //   final password = formValues['password'];
+
+                          //     //   // Print username and password to the terminal
+                          //     //   debugPrint("Username: $username");
+                          //     //   debugPrint("Password: $password");
+
+                          //     //   // Call the login method or perform your logic here
+                          //     //   // controller.onLogin();
+                          //     // } else {
+                          //     //   debugPrint("Form validation failed");
+                          //     // }
+                          //     pushAndRemoveUntil(context, HomeScreen());
+                          //   },
+                          //   backgroundColor: DARK_BG_COLOR,
+                          // ),
 
                           SizedBox(
                             height: 50,

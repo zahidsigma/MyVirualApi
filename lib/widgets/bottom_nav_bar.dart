@@ -4,8 +4,10 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:get/get.dart';
+import 'package:lottie/lottie.dart';
 import 'package:virualapi/constants/constant.dart';
 import 'package:virualapi/core/routing/router_str.dart';
+import 'package:virualapi/ui/DetailsScreen/fileds.dart';
 import 'package:virualapi/ui/home/home.dart';
 import 'package:virualapi/ui/home/home_controller.dart';
 import 'package:virualapi/ui/notification/notification.dart';
@@ -104,10 +106,18 @@ class _BottomNavBarState extends State<BottomNavBar> {
                           onTap: (index) =>
                               setState(() => _selectedTab = index),
                           tabs: const [
-                            Tab(text: "By Name"),
-                            Tab(text: "By Email"),
-                            Tab(text: "By Phone"),
-                            Tab(text: "By Address"),
+                            Tab(
+                                child:
+                                    Text("By Name", textAlign: TextAlign.left)),
+                            Tab(
+                                child: Text("By Email",
+                                    textAlign: TextAlign.center)),
+                            Tab(
+                                child: Text("By Phone",
+                                    textAlign: TextAlign.center)),
+                            Tab(
+                                child: Text("By Address",
+                                    textAlign: TextAlign.center)),
                           ],
                           labelStyle: const TextStyle(
                             fontSize: 10,
@@ -123,7 +133,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
                             borderSide: BorderSide(
                               color:
                                   COLOR_PRIMARY, // Set the indicator color here
-                              width: 10, // Adjust the thickness of the line
+                              width: 15, // Adjust the thickness of the line
                             ),
                             borderRadius: BorderRadius.circular(
                                 20), // Rounded corners for the indicator
@@ -136,28 +146,31 @@ class _BottomNavBarState extends State<BottomNavBar> {
 
                         // Input fields based on selected tab
                         if (_selectedTab == 0)
-                          Column(
-                            children: [
-                              AppTextField(
-                                name: 'FirstName',
-                                controller: firstNameController,
-                                showTitle: false,
-                                title: "First Name",
-                                rectangleborder: true,
-                                placeholder: "Enter First Name",
-                                validator: FormBuilderValidators.required(),
-                              ),
-                              const SizedBox(height: 16),
-                              AppTextField(
-                                name: 'LastName',
-                                controller: lastNameController,
-                                showTitle: false,
-                                title: "Last Name",
-                                rectangleborder: true,
-                                placeholder: "Enter Last Name",
-                                validator: FormBuilderValidators.required(),
-                              ),
-                            ],
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              children: [
+                                AppTextField(
+                                  name: 'FirstName',
+                                  controller: firstNameController,
+                                  showTitle: false,
+                                  title: "First Name",
+                                  rectangleborder: true,
+                                  placeholder: "Enter First Name",
+                                  validator: FormBuilderValidators.required(),
+                                ),
+                                const SizedBox(height: 16),
+                                AppTextField(
+                                  name: 'LastName',
+                                  controller: lastNameController,
+                                  showTitle: false,
+                                  title: "Last Name",
+                                  rectangleborder: true,
+                                  placeholder: "Enter Last Name",
+                                  validator: FormBuilderValidators.required(),
+                                ),
+                              ],
+                            ),
                           ),
                         if (_selectedTab == 1)
                           AppTextField(
@@ -197,46 +210,61 @@ class _BottomNavBarState extends State<BottomNavBar> {
                   ),
                   const SizedBox(height: 20),
                   _isLoading
-                      ? const Center(child: CircularProgressIndicator())
-                      : ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: COLOR_PRIMARY,
-                            minimumSize: const Size.fromHeight(50),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10)),
-                          ),
-                          onPressed: () async {
-                            setState(() => _isLoading = true);
-
-                            if (_selectedTab == 0) {
-                              await searchByName(firstNameController.text,
-                                  lastNameController.text);
-                            } else if (_selectedTab == 1) {
-                              await searchByEmail(emailController.text);
-                            } else if (_selectedTab == 2) {
-                              await searchByPhone(phoneController.text);
-                            } else if (_selectedTab == 3) {
-                              await searchByAddress(addressController.text);
-                            }
-
-                            clearFields();
-
-                            // Avoid using the context immediately after an async operation
-                            setState(() {
-                              _isLoading = false;
-                            });
-
-                            // Ensure that the context is valid after the async operation
-                            Future.delayed(Duration.zero, () {
-                              if (!_isLoading) {
-                                Navigator.of(context)
-                                    .pop(); // This closes the bottom sheet
-                                print(
-                                    "closeddddddddddd"); // This confirms the bottom sheet closure
+                      ? Center(
+                          child: Lottie.asset(
+                          "assets/images/hand.json",
+                          height: 200,
+                          width: 200,
+                        ))
+                      : Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: COLOR_PRIMARY,
+                              minimumSize: const Size.fromHeight(55),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10)),
+                            ),
+                            onPressed: () async {
+                              setState(() => _isLoading =
+                                  true); // ✅ Show loading indicator
+                              await Future.delayed(Duration(seconds: 10));
+                              if (_selectedTab == 0) {
+                                await Get.to(() => FieldsScreen(), arguments: {
+                                  "firstName": firstNameController.text,
+                                  "lastName": lastNameController.text,
+                                });
+                              } else if (_selectedTab == 1) {
+                                print(emailController.text);
+                                await Get.to(() => FieldsScreen(), arguments: {
+                                  "email": emailController.text,
+                                });
+                              } else if (_selectedTab == 2) {
+                                await Get.to(() => FieldsScreen(), arguments: {
+                                  "email": emailController.text,
+                                });
+                              } else if (_selectedTab == 3) {
+                                await Get.to(() => FieldsScreen(), arguments: {
+                                  "email": emailController.text,
+                                });
                               }
-                            });
-                          },
-                          child: const Text("Search"),
+
+                              // ✅ Wait for 2 seconds before hiding loader
+
+                              clearFields(); // ✅ Clear input fields
+
+                              Future.delayed(Duration.zero, () {
+                                if (!_isLoading) {
+                                  Navigator.of(context)
+                                      .pop(); // ✅ Close bottom sheet safely
+                                  print("closeddddddddddd");
+                                }
+                              });
+
+                              setState(() => _isLoading = false);
+                            },
+                            child: const Text("Search"),
+                          ),
                         ),
                 ],
               ),
@@ -248,10 +276,11 @@ class _BottomNavBarState extends State<BottomNavBar> {
   }
 
   int currentPage = 1;
-  final int resultsPerPage = 10;
+  final int resultsPerPage = 20;
   bool hasNextPage = true;
 
-  Future<void> searchByName(String firstName, String lastName,
+  Future<void> searchByName(
+      String firstName, String lastName, int minAge, int maxAge,
       {bool isNextPage = false}) async {
     final String apiUrl = 'https://api.galaxysearchapi.com/PersonSearch';
 
@@ -263,23 +292,32 @@ class _BottomNavBarState extends State<BottomNavBar> {
       'Galaxy-Ap-Name': 'ethosinv',
     };
 
-    // Adjust the page number
+    // ✅ Adjust the page number correctly
     if (isNextPage) {
       currentPage++;
     } else if (currentPage > 1) {
-      currentPage--;
+      currentPage--; // Only decrease if there's a previous page
     }
 
+    // ✅ Correct API request body format
     final Map<String, dynamic> requestBody = {
       'FirstName': firstName,
       'LastName': lastName,
-      'Page': currentPage,
-      'ResultsPerPage': resultsPerPage,
+      'Filters': {
+        'AgeRange': {'Min': minAge, 'Max': maxAge} // ✅ Fix AgeRange format
+      },
+      'Pagination': {
+        // ✅ Fix Pagination structure
+        'Page': currentPage,
+        'ResultsPerPage': resultsPerPage
+      }
     };
 
     try {
       Dio dio = Dio();
       dio.options.headers = headers;
+
+      print("📢 Sending API Request: $requestBody");
 
       final response = await dio.post(apiUrl, data: requestBody);
 
@@ -287,7 +325,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
         final data = response.data;
         var persons = data['persons'] as List<dynamic>? ?? [];
 
-        // Check if there are more pages
+        // ✅ Determine if more pages exist
         hasNextPage = persons.length == resultsPerPage;
 
         if (persons.isEmpty) {
@@ -297,32 +335,96 @@ class _BottomNavBarState extends State<BottomNavBar> {
             'persons': persons,
             'currentPage': currentPage,
             'hasNextPage': hasNextPage,
+            'minAge': minAge,
+            'maxAge': maxAge,
+            'FirstName': firstName,
+            'LastName': lastName,
           });
 
-          // Ensure result is not null before accessing its properties
-          if (result != null) {
-            if (result['loadNextPage'] == true) {
-              searchByName(firstName, lastName, isNextPage: true);
-            } else if (result['loadPreviousPage'] == true) {
-              searchByName(firstName, lastName, isNextPage: false);
-            }
-          }
+          // ✅ Handle pagination response from ResultScreen
+          // if (result != null) {
+          //   if (result['loadNextPage'] == true) {
+          //     searchByName(firstName, lastName, minAge, maxAge,
+          //         isNextPage: true);
+          //   } else if (result['loadPreviousPage'] == true && currentPage > 1) {
+          //     searchByName(firstName, lastName, minAge, maxAge,
+          //         isNextPage: false);
+          //   }
+          // }
         }
       } else {
-        print('Error: ${response.statusCode}');
+        print('❌ Error ${response.statusCode}: ${response.data}');
       }
     } catch (e) {
-      print('Unexpected error: $e');
+      print('🚨 Unexpected error: $e');
     }
   }
 
+  // Future<void> searchByName(
+  //   String firstName,
+  //   String lastName,
+  //   int minAge,
+  //   int maxAge,
+  // ) async {
+  //   final String apiUrl = 'https://api.galaxysearchapi.com/PersonSearch';
+
+  //   final Map<String, String> headers = {
+  //     'Galaxy-Ap-Password': '2397b0ba0f8a4ea0aaea17e781e11305',
+  //     'Galaxy-Search-Type': 'Person',
+  //     'Content-Type': 'application/json',
+  //     'Accept': 'application/json',
+  //     'Galaxy-Ap-Name': 'ethosinv',
+  //   };
+
+  //   final Map<String, dynamic> requestBody = {
+  //     'FirstName': firstName,
+  //     'LastName': lastName,
+  //     'AgeRangeMinAge': minAge,
+  //     'AgeRangeMaxAge': maxAge,
+  //     'Page': 1,
+  //     'ResultsPerPage': 10,
+  //   };
+
+  //   try {
+  //     Dio dio = Dio();
+  //     dio.options.headers = headers;
+
+  //     final response = await dio.post(apiUrl, data: requestBody);
+
+  //     if (response.statusCode == 200) {
+  //       final data = response.data;
+  //       var persons = data['persons'] as List<dynamic>? ?? [];
+
+  //       Get.to(() => ResultScreen(), arguments: {
+  //         'persons': persons,
+  //         'minAge': minAge,
+  //         'maxAge': maxAge,
+  //       });
+  //     } else {
+  //       print('Error: ${response.statusCode}');
+  //     }
+  //   } catch (e) {
+  //     print('Unexpected error: $e');
+  //   }
+  // }
+
+// import 'package:dio/dio.dart';
+
 // Common function for email, phone, and address search
-  Future<void> searchByField(String fieldType, String fieldValue) async {
+
+  Future<void> searchByField(String fieldType, String fieldValue,
+      {int? minAge, int? maxAge}) async {
     final Map<String, dynamic> requestBody = {
       fieldType: fieldValue,
       'Page': currentPage,
       'ResultsPerPage': resultsPerPage,
     };
+
+    // Add age range only if provided
+    if (minAge != null && maxAge != null) {
+      requestBody['AgeRangeMinAge'] = minAge;
+      requestBody['AgeRangeMaxAge'] = maxAge;
+    }
 
     final String apiUrl = 'https://api.galaxysearchapi.com/PersonSearch';
     final Map<String, String> headers = {
@@ -342,7 +444,6 @@ class _BottomNavBarState extends State<BottomNavBar> {
         final data = response.data;
         var persons = data['persons'] as List<dynamic>? ?? [];
 
-        // Check if there are more pages
         hasNextPage = persons.length == resultsPerPage;
 
         if (persons.isNotEmpty) {
@@ -350,6 +451,8 @@ class _BottomNavBarState extends State<BottomNavBar> {
             'persons': persons,
             'currentPage': currentPage,
             'hasNextPage': hasNextPage,
+            'minAge': minAge,
+            'maxAge': maxAge,
           });
         } else {
           print('No results found.');
@@ -362,14 +465,17 @@ class _BottomNavBarState extends State<BottomNavBar> {
     }
   }
 
+// Search by Email
   Future<void> searchByEmail(String email) async {
     await searchByField('Email', email);
   }
 
+// Search by Phone
   Future<void> searchByPhone(String phone) async {
     await searchByField('Phone', phone);
   }
 
+// Search by Address
   Future<void> searchByAddress(String address) async {
     await searchByField('Address', address);
   }
@@ -415,6 +521,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
   Widget build(BuildContext context) {
     return Scaffold(
         resizeToAvoidBottomInset: false,
+        extendBody: true,
         body: SafeArea(
           child: IndexedStack(
             index: selectedScreenIndex,
@@ -440,29 +547,41 @@ class _BottomNavBarState extends State<BottomNavBar> {
           child: const Icon(Icons.search, color: Colors.white),
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-        backgroundColor: Colors.white,
-        bottomNavigationBar: ClipRRect(
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(20),
-            topRight: Radius.circular(20),
+        bottomNavigationBar: Container(
+          decoration: BoxDecoration(
+            boxShadow: [
+              BoxShadow(
+                color: Color(0XFF2626261A), // Grey with 50% opacity
+
+                offset:
+                    Offset(0, -4), // Move shadow to the top (negative Y value)
+                blurRadius: 8.0, // Size of the blur effect
+              ),
+            ],
           ),
-          child: BottomAppBar(
-            shape: const CircularNotchedRectangle(),
-            notchMargin: 8.0,
-            clipBehavior: Clip.antiAlias,
-            height: 100,
-            child: BottomNavigationBar(
-              key: Get.find<HomeController>().bottomWidgetKey,
-              type: BottomNavigationBarType.fixed,
-              selectedItemColor: selectedItemColor,
-              unselectedItemColor: unselectedItemColor,
-              backgroundColor: Colors.white,
-              currentIndex: selectedScreenIndex,
-              onTap: _onItemTapped,
-              items: bottomNavList
-                  .mapIndexed((i, e) => buildNavItem(e, i))
-                  .toList()
-                  .cast<BottomNavigationBarItem>(),
+          child: ClipRRect(
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(20),
+              topRight: Radius.circular(20),
+            ),
+            child: BottomAppBar(
+              shape: const CircularNotchedRectangle(),
+              notchMargin: 8.0,
+              clipBehavior: Clip.antiAlias,
+              height: 100,
+              child: BottomNavigationBar(
+                key: Get.find<HomeController>().bottomWidgetKey,
+                type: BottomNavigationBarType.fixed,
+                selectedItemColor: selectedItemColor,
+                unselectedItemColor: unselectedItemColor,
+                backgroundColor: Colors.white,
+                currentIndex: selectedScreenIndex,
+                onTap: _onItemTapped,
+                items: bottomNavList
+                    .mapIndexed((i, e) => buildNavItem(e, i))
+                    .toList()
+                    .cast<BottomNavigationBarItem>(),
+              ),
             ),
           ),
         ));

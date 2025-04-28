@@ -1,15 +1,22 @@
 import 'package:get/get.dart';
 import 'package:virualapi/models/login.dart';
+import 'package:virualapi/ui/Addon/Addon_screen.dart';
+import 'package:virualapi/ui/ConfirmScreen/confirm_screen.dart';
+import 'package:virualapi/ui/DetailsScreen/fileds.dart';
+import 'package:virualapi/ui/Stripe/stripe.dart';
+
 import 'package:virualapi/ui/auth/forgotPassword/forgot_password.dart';
 import 'package:virualapi/ui/auth/login/login_page.dart';
 import 'package:virualapi/ui/auth/otp/otp_page.dart';
 import 'package:virualapi/ui/auth/reset_password.dart';
 import 'package:virualapi/ui/auth/signup/signup.dart';
 import 'package:virualapi/ui/childrens/add_children.dart';
+import 'package:virualapi/ui/compare/compare_screen.dart';
 import 'package:virualapi/ui/home/home.dart';
 import 'package:virualapi/ui/home/home_screeen.dart';
 import 'package:virualapi/ui/on_boarding/on_boarding.dart';
 import 'package:virualapi/ui/notification/notification.dart';
+import 'package:virualapi/ui/profile/edit_profile.dart';
 import 'package:virualapi/ui/profile/profile.dart';
 import 'package:virualapi/ui/result/result.dart';
 import 'package:virualapi/ui/splash/splash.dart';
@@ -29,6 +36,37 @@ class PageRouter {
       name: Routers.result,
       page: () => ResultScreen(),
     ),
+
+    GetPage(
+      name: Routers.details,
+      page: () => FieldsScreen(),
+    ),
+
+    GetPage(
+      name: Routers.addons,
+      page: () => AddonScreen(),
+    ),
+    GetPage(
+      name: Routers.compare,
+      page: () => CompareScreen(),
+    ),
+    GetPage(
+      name: Routers.confirmScreen,
+      page: () => ConfirmScreen(),
+    ),
+
+    GetPage(
+      name: Routers.ProfileSettingsPage,
+      page: () => ProfileSettingsPage(),
+    ),
+    GetPage(
+      name: Routers.stripe,
+      page: () => StripeSandbox(),
+    ),
+    // GetPage(
+    //   name: Routers.addons,
+    //   page: () => AddonScreen(),
+    // ),
 
     //  GetPage(
     //   name: Routers.personSearch,

@@ -17,6 +17,7 @@ class _BodyState extends State<Body> {
         width: getScreenWidth(context),
         height: getScreenHeight(context),
         decoration: BoxDecoration(
+            color: Colors.amber,
             image: DecorationImage(
                 image: AssetImage(
                   "assets/images/bg.png",

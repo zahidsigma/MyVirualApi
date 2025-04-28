@@ -84,7 +84,7 @@ class _MyPageViewState extends State<MyPageView> {
               },
             ),
           ),
-          AppSpacerH(18.h),
+          AppSpacerH(15.h),
           Button(
             title: isLast ? "GET STARTED" : "NEXT",
             onPressed: () => _onPressed(),
@@ -93,6 +93,7 @@ class _MyPageViewState extends State<MyPageView> {
             // backgroundColor: isLast ? COLOR_PRIMARY : COLOR_ACCENT,
             backgroundColor: COLOR_PRIMARY,
           ),
+          AppSpacerH(5.h),
         ],
       ),
     );

@@ -17,8 +17,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:virualapi/core/routing/router_str.dart';
 import 'package:virualapi/services/navigator_service.dart';
 import 'package:virualapi/ui/auth/signup/signup.dart';
+import 'package:virualapi/ui/profile/edit_profile.dart';
 import 'package:virualapi/ui/subscriptionscreen/subscription_plan.dart';
 import 'package:virualapi/utils/metrics.dart';
 import 'package:virualapi/widgets/body_with_header.dart';
@@ -89,7 +91,14 @@ class _ProfileState extends State<Profile> {
                 borderRadius: BorderRadius.circular(25),
               ),
             ),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ProfileSettingsPage(),
+                ),
+              );
+            },
             child: const Text("Edit Profile"),
           ),
           const SizedBox(height: 32),

@@ -241,7 +241,7 @@ class _SupportState extends State<Support> {
   Widget _buildFAQTile(String title, String content) {
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      color: Colors.white24,
+      // color: Colors.white24,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
       ),

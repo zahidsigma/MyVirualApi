@@ -183,7 +183,7 @@ class SubscriptionScreen extends StatelessWidget {
                             ),
                           ],
                         ),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: 10),
                         // Update Button
                         SizedBox(
                           width: double.infinity,

@@ -1,7 +1,9 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:get/get.dart';
 import 'package:virualapi/constants/constant.dart';
 import 'package:virualapi/core/di.dart';
@@ -16,6 +18,11 @@ import 'package:timezone/data/latest.dart' as tz;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  // SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+    statusBarColor: Colors.transparent, // Fully transparent status bar
+    // Change to dark if needed
+  ));
   // await Firebase.initializeApp();
   await AppPreferences.init();
   await DI.initServices();
@@ -24,6 +31,8 @@ void main() async {
   // FirebaseService().init();
   HttpOverrides.global = MyHttpOverrides();
   tz.initializeTimeZones();
+  Stripe.publishableKey =
+      'pk_test_51RF2vfQsi7S6nCwCfGsmOe9TofjIQBggmmoPQObIzxRYVAiAx33xP7nW7nrb279TJgPlCkN4C9DQYw7yzmfS8rrO00qFJ9pwnK'; // Replace with your public key
   runApp(const MyApp());
 }
 

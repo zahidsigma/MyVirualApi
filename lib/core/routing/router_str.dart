@@ -8,9 +8,15 @@ class Routers {
   static const String homeScreen = '/home';
   static const String personSearch = '/PersonSearch';
   static const String result = '/result';
+  static const String addons = '/addons';
+  static const String compare = '/compare';
+  static const String confirmScreen = '/confirm';
+  static const String ProfileSettingsPage = '/ProfileSettingsPage';
+  static const String stripe = '/stripe';
   static const String home_scr = '/home_scr';
   static const String signUp = '/signUp';
   static const String subscription = '/subscription';
+  static const String details = '/details';
   // static const String profile = '/profile';
   static const String updateProfile = '/updateProfile';
   static const String login = '/login';
