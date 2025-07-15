@@ -23,7 +23,7 @@ class ForgotScreen extends GetView<ForgotPassController> {
                 horizontal: getScreenWidth(context) * 0.1, vertical: 10),
             child: Obx(
               () => FormBuilder(
-                key: controller.formKey,
+                key: controller.formKey4,
                 child: SingleChildScrollView(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -33,14 +33,15 @@ class ForgotScreen extends GetView<ForgotPassController> {
                       ),
                       Text("Forgot Password",
                           style: Theme.of(context).textTheme.titleLarge),
-                      Text("Enter your email OR phone number"),
+                      Text("Enter your email"),
                       SizedBox(
                         height: 80,
                       ),
                       AppTextField(
-                        title: "Username",
-                        placeholder: "Enter Username",
-                        name: "username",
+                        title: "",
+                        placeholder: "Enter Email",
+                        name: "email",
+                        rectangleborder: true,
                         validator: FormBuilderValidators.compose([
                           FormBuilderValidators.required(),
                         ]),
@@ -49,18 +50,17 @@ class ForgotScreen extends GetView<ForgotPassController> {
                         height: 40,
                       ),
                       Button(
-                        height: 45,
+                        height: 55,
                         isLoading: controller.isBusy.value,
+                        width: getScreenWidth(context) / 1.1,
                         title: "SUBMIT",
                         onPressed: () {
-                          if (controller.formKey.currentState!
+                          if (controller.formKey4.currentState!
                               .saveAndValidate()) {
-                            var username = controller
-                                .formKey.currentState!.value["username"];
-                            if (Util.isEmailValid(username)) {
-                              controller.forgotPassword(username, true);
-                            } else if (Util.isValidPhoneNumber(username)) {
-                              controller.forgotPassword(username, false);
+                            var email = controller
+                                .formKey4.currentState!.value["email"];
+                            if (Util.isEmailValid(email)) {
+                              controller.forgotPassword(email);
                             } else {
                               SnackbarUtil.info(
                                   message: "Invalid Email/Phone number");

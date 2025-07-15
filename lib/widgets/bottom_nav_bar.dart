@@ -48,7 +48,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
       icon: Image.asset(
         "assets/images/${item['icon'] as String}",
         width: getScreenWidth(context) * (index != 1 ? 0.065 : 0.1),
-        height: getScreenHeight(context) * 0.05,
+        height: getScreenHeight(context) * 0.03,
         color: getColor(index),
         fit: BoxFit.scaleDown,
       ),
@@ -86,7 +86,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
           builder: (context, setState) {
             return Container(
               height: MediaQuery.of(context).size.height / 1.2,
-              padding: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(10.0),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -133,7 +133,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
                             borderSide: BorderSide(
                               color:
                                   COLOR_PRIMARY, // Set the indicator color here
-                              width: 15, // Adjust the thickness of the line
+                              width: 5, // Adjust the thickness of the line
                             ),
                             borderRadius: BorderRadius.circular(
                                 20), // Rounded corners for the indicator
@@ -223,7 +223,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
                               backgroundColor: COLOR_PRIMARY,
                               minimumSize: const Size.fromHeight(55),
                               shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10)),
+                                  borderRadius: BorderRadius.circular(25)),
                             ),
                             onPressed: () async {
                               setState(() => _isLoading =
@@ -241,11 +241,11 @@ class _BottomNavBarState extends State<BottomNavBar> {
                                 });
                               } else if (_selectedTab == 2) {
                                 await Get.to(() => FieldsScreen(), arguments: {
-                                  "email": emailController.text,
+                                  "phone": phoneController.text,
                                 });
                               } else if (_selectedTab == 3) {
                                 await Get.to(() => FieldsScreen(), arguments: {
-                                  "email": emailController.text,
+                                  "address": addressController.text,
                                 });
                               }
 
@@ -276,8 +276,9 @@ class _BottomNavBarState extends State<BottomNavBar> {
   }
 
   int currentPage = 1;
-  final int resultsPerPage = 20;
+  final int resultsPerPage = 250;
   bool hasNextPage = true;
+  final int totalpages = 0;
 
   Future<void> searchByName(
       String firstName, String lastName, int minAge, int maxAge,
@@ -309,7 +310,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
       'Pagination': {
         // ✅ Fix Pagination structure
         'Page': currentPage,
-        'ResultsPerPage': resultsPerPage
+        'ResultsPerPage': resultsPerPage,
       }
     };
 
@@ -335,6 +336,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
             'persons': persons,
             'currentPage': currentPage,
             'hasNextPage': hasNextPage,
+            'totalPages': totalpages,
             'minAge': minAge,
             'maxAge': maxAge,
             'FirstName': firstName,
@@ -520,55 +522,56 @@ class _BottomNavBarState extends State<BottomNavBar> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        resizeToAvoidBottomInset: false,
-        extendBody: true,
-        body: SafeArea(
-          child: IndexedStack(
-            index: selectedScreenIndex,
-            children: List.generate(
-              pages.length,
-              (index) {
-                return Navigator(
-                  key: navigatorKeys[index],
-                  onGenerateRoute: (routeSettings) {
-                    // Return a MaterialPageRoute for each tab's screen
-                    return MaterialPageRoute(
-                      builder: (context) => pages[index],
-                    );
-                  },
-                );
-              },
-            ),
+      resizeToAvoidBottomInset: false,
+      extendBody: true,
+      body: SafeArea(
+        child: IndexedStack(
+          index: selectedScreenIndex,
+          children: List.generate(
+            pages.length,
+            (index) {
+              return Navigator(
+                key: navigatorKeys[index],
+                onGenerateRoute: (routeSettings) {
+                  // Return a MaterialPageRoute for each tab's screen
+                  return MaterialPageRoute(
+                    builder: (context) => pages[index],
+                  );
+                },
+              );
+            },
           ),
         ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: _openSearchBottomSheet,
-          backgroundColor: COLOR_PRIMARY,
-          child: const Icon(Icons.search, color: Colors.white),
-        ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-        bottomNavigationBar: Container(
-          decoration: BoxDecoration(
-            boxShadow: [
-              BoxShadow(
-                color: Color(0XFF2626261A), // Grey with 50% opacity
-
-                offset:
-                    Offset(0, -4), // Move shadow to the top (negative Y value)
-                blurRadius: 8.0, // Size of the blur effect
-              ),
-            ],
-          ),
-          child: ClipRRect(
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(20),
-              topRight: Radius.circular(20),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _openSearchBottomSheet,
+        backgroundColor: COLOR_PRIMARY,
+        child: const Icon(Icons.search, color: Colors.white),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      bottomNavigationBar: Container(
+        height: 90, // Your desired height
+        decoration: BoxDecoration(
+          boxShadow: [
+            BoxShadow(
+              color: const Color(0xFF262626).withValues(alpha: 0.1),
+              offset: const Offset(0, -4),
+              blurRadius: 5.0,
             ),
+          ],
+        ),
+        child: ClipRRect(
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(10),
+            topRight: Radius.circular(10),
+          ),
+          child: MediaQuery.removeViewPadding(
+            context: context,
+            removeBottom: true,
             child: BottomAppBar(
               shape: const CircularNotchedRectangle(),
-              notchMargin: 8.0,
+              notchMargin: 7.0,
               clipBehavior: Clip.antiAlias,
-              height: 100,
               child: BottomNavigationBar(
                 key: Get.find<HomeController>().bottomWidgetKey,
                 type: BottomNavigationBarType.fixed,
@@ -584,6 +587,8 @@ class _BottomNavBarState extends State<BottomNavBar> {
               ),
             ),
           ),
-        ));
+        ),
+      ),
+    );
   }
 }

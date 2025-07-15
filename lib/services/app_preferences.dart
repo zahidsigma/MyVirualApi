@@ -6,52 +6,137 @@ import 'package:shared_preferences/shared_preferences.dart';
 class AppPreferences {
   static late SharedPreferences _preferences;
 
-  static Future init() async {
+  static Future<void> init() async {
     _preferences = await SharedPreferences.getInstance();
   }
 
-  static String _loginData = "loginData";
-  static String _userData = "userData";
-  static String _fcmToken = "fcmToken";
-  static String session = "session";
+  static const String _loginData = "loginData";
+  static const String _userData = "userData";
+  static const String _fcmToken = "fcmToken";
+  static const String session = "session";
 
-  static setLoginData(Login login) async {
-    await _preferences.setString(_loginData, jsonEncode(login.toJson()));
+  // Set Login Data
+  static Future<void> setLoginData(Login login) async {
+    try {
+      print("Saving login data: ${login.toJson()}"); // Debug print
+      await _preferences.setString(_loginData, jsonEncode(login.toJson()));
+    } catch (e) {
+      print("Error saving login data: $e");
+    }
   }
 
+  static bool isLoggedIn() {
+    final token = getAuthToken(); // or however you store tokens
+    return token != null && token.isNotEmpty;
+  }
+
+  // Get Login Data
   static Login? getLoginData() {
-    final String? json = _preferences.getString(_loginData);
-    return json == null ? null : Login.fromJson(jsonDecode(json));
+    try {
+      final String? json = _preferences.getString(_loginData);
+      if (json == null) {
+        print("No login data found.");
+        return null;
+      }
+      final login = Login.fromJson(jsonDecode(json));
+      print("Login data loaded: $login");
+      return login;
+    } catch (e) {
+      print("Error loading login data: $e");
+      return null;
+    }
   }
 
-  static setUserData(User user) async {
-    await _preferences.setString(_userData, jsonEncode(user.toJson()));
+  // Save only the actual user data (not the full UserResponse)
+  static Future<void> setUserData(User user) async {
+    try {
+      final userJson = user.toJson();
+      print("Saving user data: $userJson");
+      await _preferences.setString(_userData, jsonEncode(userJson));
+    } catch (e) {
+      print("Error saving user data: $e");
+    }
   }
 
   static User? getUserData() {
-    final String? json = _preferences.getString(_userData);
-    return json == null ? null : User.fromJson(jsonDecode(json));
+    try {
+      final jsonString = _preferences.getString(_userData);
+      if (jsonString != null) {
+        final Map<String, dynamic> jsonMap = jsonDecode(jsonString);
+        return User.fromJson(jsonMap);
+      } else {
+        print("No user data found in SharedPreferences.");
+      }
+    } catch (e) {
+      print("Error loading user data: $e");
+    }
+    return null;
   }
 
-  static removeUserData() {
-    _preferences.remove(_loginData);
+  // Remove Login Data
+  static Future<void> removeLoginData() async {
+    await _preferences.remove(_loginData);
   }
 
-  static setFCMToken(String token) async {
+  // Remove User Data
+  static Future<void> removeUserData() async {
+    await _preferences.remove(_userData);
+  }
+
+  // Clear all user-related data
+  static Future<void> clearUserData() async {
+    await _preferences.remove(_loginData);
+    await _preferences.remove(_userData);
+    await _preferences.remove(_fcmToken); // Optionally clear FCM token too
+  }
+
+  // Set FCM Token
+  static Future<void> setFCMToken(String token) async {
     await _preferences.setString(_fcmToken, token);
   }
 
+  // Get FCM Token
   static String? getFCMToken() => _preferences.getString(_fcmToken);
 
-  static String? getAuthToken() => getLoginData()?.authToken;
-
-  static void setData(String key, Map<String, dynamic> data) =>
-      _preferences.setString(key, jsonEncode(data));
-
-  static Map<String, dynamic> getData(String key) {
-    final String? json = _preferences.getString(key);
-    return json == null ? {} : jsonDecode(json);
+  // Get Auth Token (from login data)
+  static String? getAuthToken() {
+    try {
+      final loginData = getLoginData();
+      if (loginData == null) {
+        print("No login data found, cannot fetch token.");
+        return null;
+      }
+      final token = loginData.token;
+      print("Login data token: $token");
+      return token;
+    } catch (e) {
+      print("Error getting auth token: $e");
+      return null;
+    }
   }
 
-  static void removeData(String key) => _preferences.remove(key);
+  // Set generic data
+  static Future<void> setData(String key, Map<String, dynamic> data) async {
+    try {
+      await _preferences.setString(key, jsonEncode(data));
+    } catch (e) {
+      print("Error saving data: $e");
+    }
+  }
+
+  // Get generic data
+  static Map<String, dynamic> getData(String key) {
+    try {
+      final String? json = _preferences.getString(key);
+      return json == null ? {} : jsonDecode(json);
+    } catch (e) {
+      print("Error loading data: $e");
+      return {};
+    }
+  }
+
+  // Remove generic data
+  static Future<void> removeData(String key) async {
+    await _preferences.remove(key);
+  }
 }

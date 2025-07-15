@@ -1,154 +1,164 @@
-// import 'package:flutter/material.dart';
+import 'dart:io';
 
-// class Profile extends StatefulWidget {
-//   const Profile({super.key});
-
-//   @override
-//   State<Profile> createState() => _ProfileState();
-// }
-
-// class _ProfileState extends State<Profile> {
-//   @override
-//   Widget build(BuildContext context) {
-//     return Container();
-//   }
-// }
-
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:virualapi/core/routing/router_str.dart';
-import 'package:virualapi/services/navigator_service.dart';
-import 'package:virualapi/ui/auth/signup/signup.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:virualapi/constants/config.dart';
+import 'package:virualapi/constants/constant.dart';
 import 'package:virualapi/ui/profile/edit_profile.dart';
-import 'package:virualapi/ui/subscriptionscreen/subscription_plan.dart';
+import 'package:virualapi/ui/profile/profile_controller.dart';
+import 'package:virualapi/ui/profile/recent_history_conroller.dart';
+import 'package:virualapi/utils/api_url_utils.dart';
 import 'package:virualapi/utils/metrics.dart';
+import 'package:virualapi/utils/snackbar_util.dart';
 import 'package:virualapi/widgets/body_with_header.dart';
+import 'package:virualapi/widgets/listview_item.dart';
+import 'package:virualapi/widgets/misc_widget.dart';
 import 'package:virualapi/widgets/resusable_widget.dart';
 
 class Profile extends StatefulWidget {
-  const Profile({Key? key}) : super(key: key);
+  final int startingViewIndex;
+  Profile({super.key, this.startingViewIndex = 0});
 
   @override
   State<Profile> createState() => _ProfileState();
 }
 
+enum ProfileView { profile, recentList, recentDetail }
+
 class _ProfileState extends State<Profile> {
-  bool showBottomBar = true;
+  final ProfileController controller = Get.isRegistered<ProfileController>()
+      ? Get.find<ProfileController>()
+      : Get.put(ProfileController())
+    ..fetchUser();
+
+  late int currentViewIndex;
+  ProfileView currentView = ProfileView.profile;
+
+  final formKey = GlobalKey<FormBuilderState>();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    currentViewIndex = widget.startingViewIndex;
+  }
+
+  // }
+
   @override
   Widget build(BuildContext context) {
     return BodyWithHeader(
-      // backgroundColor: Colors.grey[100],
-      isBackVisible: false,
+      isBackVisible: currentView != ProfileView.profile,
+      isrofile: currentView == ProfileView.profile,
       isMenuVisible: true,
-      isrofile: true,
-      title: 'My Profile',
-
-      body: Column(
-        children: [
-          // Profile Image with Edit Icon
-
-          // Container(
-          //   decoration: BoxDecoration(
-          //     color: Colors.green,
-          //     shape: BoxShape.circle,
-          //     border: Border.all(width: 2, color: Colors.white),
-          //   ),
-          //   child: const Icon(
-          //     Icons.edit,
-          //     color: Colors.white,
-          //     size: 20,
-          //   ),
-          // ),
-          // const SizedBox(height: 16),
-          // Name and Email
-          SizedBox(
-            height: getScreenHeight(context) * 0.1,
-          ),
-          const Text(
-            "Harris Siderakis",
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: 5),
-          const Text(
-            "Harris_siderakis@icloud.com",
-            style: TextStyle(
-              fontSize: 14,
-              color: Colors.grey,
-            ),
-          ),
-          const SizedBox(height: 16),
-          // Edit Profile Button
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.black,
-              foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(25),
-              ),
-            ),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ProfileSettingsPage(),
-                ),
-              );
-            },
-            child: const Text("Edit Profile"),
-          ),
-          const SizedBox(height: 32),
-          // Options List
-          const Divider(height: 1),
-          OptionTile(
-            icon: SizedBox(
-              width: 24, // Set appropriate size
-              height: 24,
-              child: SvgPicture.asset("assets/images/subscription.svg"),
-            ),
-            text: "Subscription Details",
-            onTap: () {
-              // Set the flag to hide Bottom Navigation Bar when navigating
-              setState(() {
-                showBottomBar = false;
-              });
-
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => SubscriptionScreen(),
-                ),
-              ).then((_) {
-                // When returning from SubscriptionScreen, reset the flag to show the Bottom Navigation Bar
+      onBackPressed: () {
+        setState(() {
+          if (currentView == ProfileView.recentDetail) {
+            currentView = ProfileView.recentList; // go back to list
+          } else {
+            currentView = ProfileView.profile; // go back to profile
+          }
+        });
+      },
+      istitle: true,
+      title: 'My',
+      subtitle: 'Profile',
+      body: Builder(
+        builder: (context) {
+          switch (currentView) {
+            case ProfileView.profile:
+              return _buildProfileView();
+            case ProfileView.recentList:
+              return _RecentActivity(onItemSelected: () {
                 setState(() {
-                  showBottomBar = true;
+                  currentView = ProfileView.recentDetail;
                 });
               });
+            case ProfileView.recentDetail:
+              return _RecentDetail(context);
+          }
+        },
+      ),
+    );
+  }
+
+  Widget _buildProfileView() {
+    return FormBuilder(
+      key: formKey,
+      child: Column(
+        children: [
+          SizedBox(height: getScreenHeight(context) * 0.1),
+
+          // Profile avatar
+
+          // Name
+          Obx(() => Text(
+                controller.name.value.isNotEmpty
+                    ? controller.name.value
+                    : 'No Name',
+                style:
+                    const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+              )),
+          const SizedBox(height: 8),
+
+          // Email
+          Obx(() => Text(
+                controller.email.value.isNotEmpty
+                    ? controller.email.value
+                    : 'No Email',
+                style: const TextStyle(fontSize: 12, color: Colors.grey),
+              )),
+          const SizedBox(height: 5),
+
+          SizedBox(
+            height: 40,
+            width: 100,
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                  backgroundColor: DARK_BG_COLOR,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20))),
+              onPressed: () async {
+                await Get.to(() => ProfileSettingsPage());
+                controller.fetchUser();
+              },
+              child: const Text(
+                "Edit Profile",
+                style: TextStyle(fontSize: 12),
+              ),
+            ),
+          ),
+          const SizedBox(height: 32),
+          const Divider(height: 1),
+
+          // Option list
+          // OptionTile(
+          //   icon: SvgPicture.asset("assets/images/subscription.svg",
+          //       width: 18, height: 18),
+          //   text: "Subscription Details",
+          //   onTap: () => Get.to(() => SubscriptionScreen()),
+          // ),
+          OptionTile(
+            icon: SvgPicture.asset("assets/images/time.svg",
+                width: 18, height: 18),
+            text: "Recent Activity",
+            onTap: () {
+              setState(() {
+                currentView = ProfileView.recentList;
+              });
             },
           ),
+
           OptionTile(
-            icon: SizedBox(
-              width: 24, // Set appropriate size
-              height: 24,
-              child: SvgPicture.asset("assets/images/time.svg"),
-            ),
-            text: "Recent Activity",
-            onTap: () {},
-          ),
-          OptionTile(
-            icon: SizedBox(
-              width: 24, // Set appropriate size
-              height: 24,
-              child: SvgPicture.asset("assets/images/logout.svg"),
-            ),
+            icon: SvgPicture.asset("assets/images/logout.svg",
+                width: 18, height: 18),
             text: "Logout",
-            onTap: () {},
+            onTap: controller.logoutUser,
             textColor: Colors.red,
-            iconColor: Colors.black,
           ),
         ],
       ),
@@ -162,6 +172,7 @@ class OptionTile extends StatelessWidget {
   final VoidCallback onTap;
   final Color textColor;
   final Color iconColor;
+
   const OptionTile({
     Key? key,
     required this.icon,
@@ -170,38 +181,306 @@ class OptionTile extends StatelessWidget {
     this.textColor = Colors.black,
     this.iconColor = Colors.grey,
   }) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: 15, vertical: 5),
-      height: 50,
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-        color: Color(0xffEBEFEF),
-        borderRadius: BorderRadius.circular(5.0),
-      ),
-      child: ListTile(
+    return Card(
+      margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+      color: const Color(0xffEBEFEF),
+      child: InkWell(
         onTap: onTap,
-        contentPadding: const EdgeInsets.symmetric(
-          horizontal: 24,
-        ),
-        leading: SizedBox(
-          width: 24,
-          height: 24,
-          child: icon, // Ensuring it fits properly
-        ),
-        title: Text(
-          text,
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w500,
-            color: textColor,
+        borderRadius: BorderRadius.circular(5),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 16),
+          child: Row(
+            children: [
+              icon,
+              const SizedBox(width: 16),
+              Expanded(
+                child: Text(
+                  text,
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    color: textColor,
+                  ),
+                ),
+              ),
+              const Icon(Icons.arrow_forward_ios,
+                  size: 14, color: Colors.black),
+            ],
           ),
         ),
-        trailing:
-            const Icon(Icons.arrow_forward_ios, size: 18, color: Colors.black),
-        tileColor: Colors.grey[200],
       ),
     );
   }
+}
+
+Widget _RecentActivity({required VoidCallback onItemSelected}) {
+  final controller = Get.put(RecentHistoryController());
+
+  return Obx(() {
+    if (controller.isBusy.value) {
+      return Center(child: CircularProgressIndicator());
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(top: 20, left: 15),
+          child: RichText(
+            text: TextSpan(
+              style: TextStyle(
+                fontSize: 28,
+                color: Colors.black,
+                fontWeight: FontWeight.w300,
+              ),
+              children: [
+                TextSpan(
+                  text: 'Recent ',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                TextSpan(
+                  text: 'Activity',
+                ),
+              ],
+            ),
+          ),
+        ),
+        AppSpacerH(20),
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 5),
+            child: Obx(() {
+              if (controller.isBusy.value) {
+                return Center(child: CircularProgressIndicator());
+              }
+
+              if (controller.dataList.isEmpty) {
+                return Center(child: Text('No recent activity found.'));
+              }
+
+              return ListView.builder(
+                itemCount: controller.dataList.length,
+                itemBuilder: (context, index) {
+                  final item = controller.dataList[index];
+
+                  return CompletedListItem(
+                    name: '${item.firstName} ${item.lastName}',
+                    email: item.email,
+                    onDetailsTap: () {
+                      controller.selectedOrder.value = item;
+                      onItemSelected();
+                      // TODO: Navigate to detail screen or open PDF/report link
+                      print('Open report for ${item.firstName}');
+                    },
+                  );
+                },
+              );
+            }),
+          ),
+        ),
+      ],
+    );
+  });
+}
+
+Widget _RecentDetail(BuildContext context) {
+  final controller = Get.find<RecentHistoryController>();
+  final selected = controller.selectedOrder.value;
+
+  if (selected == null) return Center(child: Text("No detail selected"));
+
+  return Padding(
+    padding: const EdgeInsets.all(16.0),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(
+            top: 15,
+          ),
+          child: RichText(
+            text: TextSpan(
+              style: TextStyle(
+                fontSize: 28,
+                color: Colors.black,
+                fontWeight: FontWeight.w300,
+              ),
+              children: [
+                TextSpan(
+                  text: 'Recent ',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                TextSpan(
+                  text: 'Activity',
+                ),
+              ],
+            ),
+          ),
+        ),
+        AppSpacerH(10),
+        Row(
+          children: [
+            // Left info box
+            Expanded(
+              child: Container(
+                height: getScreenHeight(context) * 0.25,
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade200,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    ReusableWidget.loadSvg("assets/icons/infosearch.svg",
+                        height: 60),
+                    SizedBox(height: 10),
+                    Text("Investigation Search",
+                        style: TextStyle(fontWeight: FontWeight.bold)),
+                    SizedBox(height: 6),
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.calendar_month_rounded,
+                          size: 16,
+                          color: Colors.grey,
+                        ),
+                        SizedBox(width: 4),
+                        Text(selected.createdAt.split('T').first),
+                      ],
+                    ),
+                    SizedBox(height: 6),
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.access_time,
+                          size: 16,
+                          color: Colors.grey,
+                        ),
+                        SizedBox(width: 4),
+                        Text(
+                          selected.createdAt.split('T').last.split('.').first,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            SizedBox(width: 10),
+            // Right status box
+            Expanded(
+              child: Container(
+                height: getScreenHeight(context) * 0.25,
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [Colors.black, Colors.grey.shade800],
+                  ),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Column(
+                  children: [
+                    Icon(Icons.check_circle, color: Colors.green, size: 60),
+                    SizedBox(height: 10),
+                    Text(
+                      "Search request for ${selected.firstName} ${selected.lastName} has been completed.",
+                      textAlign: TextAlign.left,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+        SizedBox(height: 20),
+        // ElevatedButton(
+        //   onPressed: () {
+        //     final url = selected.reportLinks.isNotEmpty
+        //         ? selected.reportLinks.first
+        //         : null;
+        //     if (url != null) {
+        //       print("Download: $url");
+        //       SnackbarUtil.info(message: "Your Report Has Been Downloaded");
+        //       // TODO: implement PDF viewer or download logic
+        //     }
+        //   },
+        //   style: ElevatedButton.styleFrom(
+        //     backgroundColor: Colors.black,
+        //     minimumSize: Size.fromHeight(45),
+        //     shape: const StadiumBorder(),
+        //     padding: EdgeInsets.symmetric(horizontal: 40, vertical: 12),
+        //   ),
+        //   child: Text("Download Report"),
+        // ),
+
+// Inside your widget or function:
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.black,
+            minimumSize: Size.fromHeight(45),
+            shape: const StadiumBorder(),
+            padding: EdgeInsets.symmetric(horizontal: 40, vertical: 12),
+          ),
+          onPressed: () async {
+            final relativeUrl =
+                'storage/app/public/reports/workplace_records_1752163008.pdf';
+            final baseUrl =
+                'https://server.testlinkwebsitespace.com/virtual-pi-backend/';
+            final fullUrl = Uri.parse(baseUrl).resolve(relativeUrl).toString();
+
+            final status = await Permission.storage.request();
+            if (!status.isGranted) {
+              SnackbarUtil.error(message: "Storage permission denied");
+              return;
+            }
+
+            Directory? dir;
+            try {
+              if (Platform.isAndroid) {
+                dir = await getExternalStorageDirectory();
+              } else if (Platform.isIOS) {
+                dir = await getApplicationDocumentsDirectory();
+              } else {
+                dir = await getApplicationDocumentsDirectory(); // fallback
+              }
+            } catch (e) {
+              SnackbarUtil.error(message: "Cannot access storage directory");
+              return;
+            }
+
+            if (dir == null) {
+              SnackbarUtil.error(message: "Cannot access storage directory");
+              return;
+            }
+
+            final fileName =
+                "report_${DateTime.now().millisecondsSinceEpoch}.pdf";
+            final savePath = "${dir.path}/$fileName";
+
+            try {
+              print('Downloading from: $fullUrl');
+              print('Saving to: $savePath');
+
+              await Dio().download(fullUrl, savePath);
+
+              SnackbarUtil.info(message: "Report Download And Saved");
+              print("PDF saved to $savePath");
+            } catch (e) {
+              print("Download failed: $e");
+              SnackbarUtil.error(message: "Download failed");
+            }
+          },
+          child: Text("Download Report"),
+        )
+      ],
+    ),
+  );
 }

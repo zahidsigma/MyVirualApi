@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:dartz/dartz.dart';
 import 'package:virualapi/datasource/user_datasource.dart';
+import 'package:virualapi/services/app_preferences.dart';
 import 'package:virualapi/utils/snackbar_util.dart';
 import '../core/error/failure.dart';
 import '../models/user.dart';
@@ -15,6 +16,15 @@ class UserRepository {
 
   Future<Either<Failure, User>> fetchUser() async {
     try {
+      // Get the token
+      String? token = AppPreferences.getAuthToken();
+
+      print('Fetched token: $token'); // Debugging
+
+      // if (token == null) {
+      //   return Left(Error(errorMessage: 'Authentication token is missing.'));
+      // }
+
       var res = await _userDataSource.fetchUserDetail();
       return Right(res);
     } catch (e) {

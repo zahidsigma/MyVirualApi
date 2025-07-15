@@ -5,7 +5,9 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:get/get.dart';
+import 'package:virualapi/constants/config.dart';
 import 'package:virualapi/constants/constant.dart';
+import 'package:virualapi/constants/enums.dart';
 import 'package:virualapi/core/di.dart';
 import 'package:virualapi/core/routing/router_str.dart';
 import 'package:virualapi/services/firebase_service.dart';
@@ -28,11 +30,15 @@ void main() async {
   await DI.initServices();
   await Permission.camera.request();
   await Permission.microphone.request();
+  AppConfig.setEnv(EnvironmentEnum.dev);
+  print(AppConfig.baseUrl);
   // FirebaseService().init();
   HttpOverrides.global = MyHttpOverrides();
   tz.initializeTimeZones();
+  // Stripe.publishableKey =
+  //     'pk_test_51RF2vfQsi7S6nCwCfGsmOe9TofjIQBggmmoPQObIzxRYVAiAx33xP7nW7nrb279TJgPlCkN4C9DQYw7yzmfS8rrO00qFJ9pwnK'; // Replace with your public key
   Stripe.publishableKey =
-      'pk_test_51RF2vfQsi7S6nCwCfGsmOe9TofjIQBggmmoPQObIzxRYVAiAx33xP7nW7nrb279TJgPlCkN4C9DQYw7yzmfS8rrO00qFJ9pwnK'; // Replace with your public key
+      'pk_test_51RVtfyQLD6zl82IGXRPRGZSgD2wkOodvdSIBAbpNGP4U2VxA8Ntki40XrXfSyIjsxbTOMaXCbYJmjpE7ezeIzilG00g3I6hAYa';
   runApp(const MyApp());
 }
 

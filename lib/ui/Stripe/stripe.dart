@@ -32,76 +32,332 @@
 //   }
 // }
 
+// import 'package:flutter/material.dart';
+// import 'package:virualapi/constants/constant.dart';
+// import 'package:webview_flutter/webview_flutter.dart';
+
+// class StripeSandbox extends StatefulWidget {
+//   const StripeSandbox({super.key});
+
+//   @override
+//   State<StripeSandbox> createState() => _StripeSandboxState();
+// }
+
+// class _StripeSandboxState extends State<StripeSandbox> {
+//   final String paymentUrl = 'https://buy.stripe.com/test_4gwaHjbeo2x46BOaEG';
+
+//   late final WebViewController _controller;
+//   bool _isLoading = true;
+
+//   @override
+//   void initState() {
+//     super.initState();
+//     _controller = WebViewController()
+//       ..setJavaScriptMode(JavaScriptMode.unrestricted)
+//       ..setNavigationDelegate(
+//         NavigationDelegate(
+//           onProgress: (progress) {
+//             setState(() => _isLoading = progress < 100);
+//           },
+//           onPageStarted: (url) {
+//             setState(() => _isLoading = true);
+//           },
+//           onPageFinished: (url) {
+//             setState(() => _isLoading = false);
+//           },
+//           onNavigationRequest: (request) {
+//             final url = request.url;
+
+//             if (url.contains('success')) {
+//               _showStatus('✅ Payment Successful');
+//               return NavigationDecision.prevent;
+//             } else if (url.contains('cancel') || url.contains('fail')) {
+//               _showStatus('❌ Payment Cancelled');
+//               return NavigationDecision.prevent;
+//             }
+
+//             return NavigationDecision.navigate;
+//           },
+//         ),
+//       )
+//       ..loadRequest(Uri.parse(paymentUrl));
+//   }
+
+//   void _showStatus(String message) {
+//     ScaffoldMessenger.of(context)
+//         .showSnackBar(SnackBar(content: Text(message)));
+//     Navigator.pop(context); // close WebView page
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: const Text('Stripe Payment'),
+//         backgroundColor: COLOR_PRIMARY,
+//       ),
+//       body: Stack(
+//         children: [
+//           WebViewWidget(controller: _controller),
+//           if (_isLoading) const Center(child: CircularProgressIndicator()),
+//         ],
+//       ),
+//     );
+//   }
+// }
+
+// import 'package:flutter/material.dart';
+// import 'package:virualapi/constants/constant.dart';
+// import 'package:webview_flutter/webview_flutter.dart';
+// import 'package:dio/dio.dart';
+
+// class StripeSandbox extends StatefulWidget {
+//   final String useremail;
+//   final String tahoeId;
+//   final List<Map<String, dynamic>> selectedItems;
+//   final bool isComprehensive;
+
+//   const StripeSandbox({
+//     super.key,
+//     required this.useremail,
+//     required this.tahoeId,
+//     required this.selectedItems,
+//     required this.isComprehensive,
+//   });
+
+//   @override
+//   State<StripeSandbox> createState() => _StripeSandboxState();
+// }
+
+// class _StripeSandboxState extends State<StripeSandbox> {
+//   final String paymentUrl = 'https://buy.stripe.com/test_4gwaHjbeo2x46BOaEG';
+
+//   late final WebViewController _controller;
+//   bool _isLoading = true;
+//   final Dio dio = Dio();
+//   final double _comprehensiveReportPrice = 3.00;
+
+//   @override
+//   void initState() {
+//     super.initState();
+//     _controller = WebViewController()
+//       ..setJavaScriptMode(JavaScriptMode.unrestricted)
+//       ..setNavigationDelegate(
+//         NavigationDelegate(
+//           onProgress: (progress) {
+//             setState(() => _isLoading = progress < 100);
+//           },
+//           onPageStarted: (url) {
+//             setState(() => _isLoading = true);
+//           },
+//           onPageFinished: (url) {
+//             setState(() => _isLoading = false);
+//           },
+//           onNavigationRequest: (request) {
+//             final url = request.url;
+
+//             if (url.contains('success')) {
+//               _showStatus('✅ Payment Successful', success: true);
+//               return NavigationDecision.prevent;
+//             } else if (url.contains('cancel') || url.contains('fail')) {
+//               _showStatus('❌ Payment Cancelled', success: false);
+//               return NavigationDecision.prevent;
+//             }
+
+//             return NavigationDecision.navigate;
+//           },
+//         ),
+//       )
+//       ..loadRequest(Uri.parse(paymentUrl));
+//   }
+
+//   void _showStatus(String message, {required bool success}) async {
+//     ScaffoldMessenger.of(context)
+//         .showSnackBar(SnackBar(content: Text(message)));
+
+//     if (success) {
+//       if (widget.isComprehensive) {
+//         await _callSingleBackgroundApi(widget.tahoeId, widget.useremail);
+//       } else {
+//         await _callSelectedReports(widget.tahoeId, widget.useremail);
+//       }
+//     }
+
+//     Navigator.pop(context); // close WebView page
+//   }
+
+//   Future<void> _callSingleBackgroundApi(String id, String email) async {
+//     final headers = {
+//       'Galaxy-Ap-Password': '2397b0ba0f8a4ea0aaea17e781e11305',
+//       'Galaxy-Search-Type': 'BackgroundReport',
+//       'Content-Type': 'application/json',
+//       'Accept': 'application/json',
+//       'Galaxy-Ap-Name': 'ethosinv',
+//     };
+
+//     final payload = {
+//       "email": email,
+//       "tahoe_id": id,
+//       "types": [
+//         {
+//           "label": "Comprehensive Report",
+//           "key": "hasComprehensiveReport",
+//           "price": _comprehensiveReportPrice,
+//           "count": 0
+//         }
+//       ]
+//     };
+
+//     try {
+//       dio.options.headers = headers;
+//       final response = await dio.post(
+//         'https://server.testlinkwebsitespace.com/trasers-search/public/api/generate-report',
+//         data: payload,
+//       );
+
+//       if (response.statusCode == 200 && response.data['status'] == true) {
+//         print("✅ Report Success: \${response.data['message']}");
+//       } else {
+//         print(
+//             "❌ Report Error: \${response.data['message'] ?? 'Unknown error'}");
+//       }
+//     } catch (e) {
+//       print("❌ Request error: \$e");
+//     }
+//   }
+
+//   Future<void> _callSelectedReports(String id, String email) async {
+//     final Map<String, dynamic> collectedResponses = {};
+
+//     final apiMap = {
+//       'Background': {
+//         'url': 'https://api.galaxysearchapi.com/personsearch',
+//         'type': 'BackgroundReport',
+//       },
+//       'Criminal': {
+//         'url': 'https://api.galaxysearchapi.com/CriminalSearch/V2',
+//         'type': 'CriminalV2',
+//       },
+//       'Business Records': {
+//         'url': 'https://api.galaxysearchapi.com/BusinessV2Search',
+//         'type': 'BusinessV2',
+//       },
+//       'Debt Records': {
+//         'url': 'https://api.galaxysearchapi.com/DebtSearch/V2',
+//         'type': 'DebtV2',
+//       },
+//       'Ofac': {
+//         'url': 'https://api.galaxysearchapi.com/OfacSearch',
+//         'type': 'Ofac',
+//       },
+//       'Property Records': {
+//         'url': 'https://api.galaxysearchapi.com/PropertyV2Search',
+//         'type': 'PropertyV2',
+//       },
+//     };
+
+//     try {
+//       for (final selected in widget.selectedItems) {
+//         final label = selected['label'];
+//         if (!apiMap.containsKey(label)) continue;
+
+//         final api = apiMap[label]!;
+//         final headers = {
+//           'Galaxy-Ap-Password': '2397b0ba0f8a4ea0aaea17e781e11305',
+//           'Galaxy-Search-Type': api['type'],
+//           'Content-Type': 'application/json',
+//           'Accept': 'application/json',
+//           'Galaxy-Ap-Name': 'ethosinv',
+//         };
+
+//         dio.options.headers = headers;
+//         final response = await dio.post(api['url']!, data: {'tahoeId': id});
+
+//         if (response.statusCode == 200) {
+//           collectedResponses[label] = response.data;
+//           print("✅ \$label response: \${response.data}");
+//         }
+//       }
+//     } catch (e) {
+//       print('❌ Report fetch error: \$e');
+//     }
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: const Text('Stripe Payment'),
+//         backgroundColor: COLOR_PRIMARY,
+//       ),
+//       body: Stack(
+//         children: [
+//           WebViewWidget(controller: _controller),
+//           if (_isLoading) const Center(child: CircularProgressIndicator()),
+//         ],
+//       ),
+//     );
+//   }
+// }
+
 import 'package:flutter/material.dart';
-import 'package:virualapi/constants/constant.dart';
-import 'package:webview_flutter/webview_flutter.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
+import 'package:virualapi/services/stripe_service.dart';
 
-class StripeSandbox extends StatefulWidget {
-  const StripeSandbox({super.key});
-
+class PaymentScreen extends StatefulWidget {
   @override
-  State<StripeSandbox> createState() => _StripeSandboxState();
+  _PaymentScreenState createState() => _PaymentScreenState();
 }
 
-class _StripeSandboxState extends State<StripeSandbox> {
-  final String paymentUrl = 'https://buy.stripe.com/test_4gwaHjbeo2x46BOaEG';
-
-  late final WebViewController _controller;
-  bool _isLoading = true;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = WebViewController()
-      ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      ..setNavigationDelegate(
-        NavigationDelegate(
-          onProgress: (progress) {
-            setState(() => _isLoading = progress < 100);
-          },
-          onPageStarted: (url) {
-            setState(() => _isLoading = true);
-          },
-          onPageFinished: (url) {
-            setState(() => _isLoading = false);
-          },
-          onNavigationRequest: (request) {
-            final url = request.url;
-
-            if (url.contains('success')) {
-              _showStatus('✅ Payment Successful');
-              return NavigationDecision.prevent;
-            } else if (url.contains('cancel') || url.contains('fail')) {
-              _showStatus('❌ Payment Cancelled');
-              return NavigationDecision.prevent;
-            }
-
-            return NavigationDecision.navigate;
-          },
-        ),
-      )
-      ..loadRequest(Uri.parse(paymentUrl));
-  }
-
-  void _showStatus(String message) {
-    ScaffoldMessenger.of(context)
-        .showSnackBar(SnackBar(content: Text(message)));
-    Navigator.pop(context); // close WebView page
-  }
+class _PaymentScreenState extends State<PaymentScreen> {
+  CardFieldInputDetails? _card;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Stripe Payment'),
-        backgroundColor: COLOR_PRIMARY,
-      ),
-      body: Stack(
-        children: [
-          WebViewWidget(controller: _controller),
-          if (_isLoading) const Center(child: CircularProgressIndicator()),
-        ],
+      appBar: AppBar(title: Text('Stripe Card Input')),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            CardField(
+              countryCode: '',
+              cvcHintText: '',
+              androidPlatformViewRenderType:
+                  AndroidPlatformViewRenderType.androidView,
+              onCardChanged: (card) {
+                setState(() {
+                  _card = card;
+                });
+              },
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+              ),
+              enablePostalCode: true,
+            ),
+
+            SizedBox(height: 20),
+            // ElevatedButton(
+            //   onPressed: StripeTokenService.createCardToken(address: "",name: "", currency: ),
+            //   child: Text('Create Token'),
+            // ),
+          ],
+        ),
       ),
     );
   }
+
+//   Future<void> _createToken() async {
+//     if (_card == null) return;
+
+//     try {
+//       StripeTokenService.createCardToken
+
+//       print('Token created: ${tokenData.id}');
+//       // Use tokenData.id to send to your backend/payment gateway
+
+//     } catch (e) {
+//       print('Error creating token: $e');
+//     }
+//   }
 }

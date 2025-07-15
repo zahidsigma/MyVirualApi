@@ -2,6 +2,7 @@ enum EnvironmentEnum {
   dev,
   uat,
   prod,
+  stage,
 }
 
 enum UrlEndPointEnum {
@@ -13,6 +14,8 @@ enum UrlEndPointEnum {
   verifyResetOtp,
   resetPassword,
   forgotPassword,
+  updateprofilepic,
+  updateUserWithProfile,
   updateUser,
   updateUserExt,
   uploadImage,
@@ -36,10 +39,12 @@ enum UrlEndPointEnum {
   recentConsultations,
   validateCoupon,
   labReports,
+  searchHistory,
   payments,
+  contactUs,
   getSessionNote,
   getAppointments,
   personSearch,
 }
 
-enum FileType { profilepic, labreport }
+enum FileType { profilepic, labreport, custom }

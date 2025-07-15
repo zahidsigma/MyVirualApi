@@ -5,11 +5,24 @@ import 'package:virualapi/ui/compare/compare_screen.dart';
 class AddonScreen extends StatefulWidget {
   final Map<String, int>? indicators;
   final String? tahoeId;
+  final String? address;
+  final String? email;
+  final String? firstname;
+  final String? lastname;
+  final String? age;
+  final String? dob;
+  final String? gender;
 
-  AddonScreen({
-    this.indicators,
-    this.tahoeId,
-  });
+  AddonScreen(
+      {this.indicators,
+      this.tahoeId,
+      this.address,
+      this.age,
+      this.dob,
+      this.gender,
+      this.email,
+      this.firstname,
+      this.lastname});
 
   @override
   _AddonScreenState createState() => _AddonScreenState();
@@ -33,7 +46,7 @@ class _AddonScreenState extends State<AddonScreen> {
   // ];
   final List<Map<String, dynamic>> fields = [
     // {"key": "hasBankruptcyRecords", "label": "Bankruptcy Records", "price": 7},
-    {"key": "hasBusinessRecords", "label": "Business", "price": 3},
+    {"key": "hasBusinessRecords", "label": "Business Records", "price": 3},
     {"key": "hasDivorceRecords", "label": "Divorce Records", "price": 5},
     {"key": "hasDomainsRecords", "label": "Domains Records", "price": 2},
     {"key": "hasEvictionsRecords", "label": "Evictions Records", "price": 9},
@@ -68,8 +81,10 @@ class _AddonScreenState extends State<AddonScreen> {
     // selectedIndicators = {
     //   for (var entry in widget.indicators.entries)
     //     if (entry.value > 0) entry.key: false, // Only show non-zero indicators
-    // };
-    print(widget?.tahoeId);
+    // };print(`$widget,email,widget klasname`);
+
+    print(
+        'object: Email :${widget.email}, LastName ${widget.lastname},${widget.firstname}, ${widget.tahoeId}, ${widget.address},Age: ${widget.age},Dob: ${widget.dob},Gender: ${widget.gender}');
 
     selectedIndicators = {
       for (var entry in widget.indicators!.entries)
@@ -98,12 +113,12 @@ class _AddonScreenState extends State<AddonScreen> {
                           Icon(Icons.warning, size: 48, color: Colors.orange),
                           SizedBox(height: 16),
                           Text(
-                            'No indicators found',
+                            'No Records found',
                             style: TextStyle(fontSize: 18),
                           ),
                           SizedBox(height: 8),
                           Text(
-                            'This User Have No Indicators Found',
+                            'This User Have No  Found',
                             style: TextStyle(color: Colors.grey),
                           ),
                         ],
@@ -135,6 +150,7 @@ class _AddonScreenState extends State<AddonScreen> {
                                   setState(() {
                                     selectedIndicators[key] = value ?? false;
                                   });
+                                  print(selectedIndicators[key]);
                                 },
                                 activeColor: COLOR_PRIMARY,
                                 checkColor: Colors.white,
@@ -205,12 +221,11 @@ class _AddonScreenState extends State<AddonScreen> {
                       'key': entry.key,
                     };
                   }).toList();
+                  print(selectedItems);
 
                   if (selectedItems.isEmpty) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                          content:
-                              Text('This User Have No Indicators Record ')),
+                      SnackBar(content: Text('This User Have No  Record ')),
                     );
                     return;
                   }
@@ -224,16 +239,23 @@ class _AddonScreenState extends State<AddonScreen> {
                       builder: (context) => CompareScreen(
                           selectedItems: selectedItems,
                           totalPrice: totalPrice,
+                          firstname: widget.firstname,
+                          lastname: widget.lastname,
+                          age: widget.age,
+                          dob: widget.dob,
+                          email: widget.email,
+                          address: widget.address,
                           tahoeId: widget.tahoeId),
                     ),
                   );
+                  // print(selectedItems);
                 },
                 child: Text("Generate Report"),
               ),
             if (selectedIndicators.isEmpty)
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.grey,
+                  backgroundColor: COLOR_PRIMARY,
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(15)),
                   minimumSize: Size.fromHeight(50),

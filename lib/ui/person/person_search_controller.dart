@@ -375,7 +375,7 @@ class PersonSearchController extends GetxController {
           logMessage: failure.errorMessage,
           logScreenName: Routers.personSearch,
           logMethodName: 'getPersonSearch',
-          message: failure.errorMessage,
+          message: failure.errorMessage ?? 'Unknown error',
         );
       },
       (data) {

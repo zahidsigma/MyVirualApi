@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/instance_manager.dart';
+import 'package:virualapi/ui/home/home_controller.dart';
 import 'package:virualapi/utils/util.dart';
 import 'package:virualapi/widgets/misc_widget.dart';
 import 'package:virualapi/widgets/resusable_widget.dart';
@@ -10,7 +11,7 @@ class HomeTopHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // final controller = Get.find<HomeController>();
+    final controller = Get.find<HomeController>();
     return Padding(
       padding: EdgeInsets.only(top: 10),
       child: Row(
@@ -18,9 +19,10 @@ class HomeTopHeader extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           GestureDetector(
-              // onTap: () => controller.homeKey.currentState!.openDrawer(),
-              child: ReusableWidget.loadSvg("assets/icons/menu.svg",
-                  color: Colors.white)),
+              onTap: () => controller.homeKey.currentState!.openDrawer(),
+              child: ReusableWidget.loadSvg(
+                "assets/icons/menu.svg",
+              )),
           if (contact != null && contact!.isNotEmpty)
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,

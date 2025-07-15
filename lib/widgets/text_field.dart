@@ -35,7 +35,7 @@ class AppTextField extends StatefulWidget {
       this.icon,
       this.validator,
       this.focusNode,
-      this.fontSize = 15,
+      this.fontSize = 14,
       this.formatters = const [],
       this.onCompleted,
       this.obsecureText = false,
@@ -56,34 +56,50 @@ class _AppTextFieldState extends State<AppTextField> {
             ? Text(
                 widget.title ?? widget.placeholder,
                 style: TextStyle(
-                    fontWeight: FontWeight.bold, fontFamily: 'Poppinsb'),
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'Poppinsb',
+                ),
               )
             : SizedBox(),
-        FormBuilderTextField(
-          name: widget.name,
-          controller: widget.controller,
-          expands: false,
-          maxLines: widget.maxline,
-          validator: widget.validator,
-          obscureText: widget.obsecureText,
-          keyboardType: widget.inputType,
-          focusNode: widget.focusNode,
-          maxLength: widget.maxLength,
-          inputFormatters: widget.formatters,
-          enabled: widget.enabled ?? true,
-          style: TextStyle(fontSize: widget.fontSize),
-          onEditingComplete: () {
-            FocusManager.instance.primaryFocus?.unfocus();
-            widget.onCompleted?.call();
-          },
-          //Dimiss keyboard widget.onCompleted,
-          decoration: InputDecoration(
-              counterText: "",
-              hintText: widget.placeholder,
-              border: widget.rectangleborder == true
-                  ? OutlineInputBorder(borderRadius: BorderRadius.circular(10))
-                  : null,
-              suffixIcon: widget.icon),
+        Container(
+          padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+          decoration: BoxDecoration(
+            color: widget.rectangleborder == false
+                ? Color(0xffEBEFEF)
+                : Colors.white,
+            borderRadius: BorderRadius.circular(30),
+          ),
+          child: FormBuilderTextField(
+            name: widget.name,
+            controller: widget.controller,
+            expands: false,
+            maxLines: widget.maxline,
+            validator: widget.validator,
+            obscureText: widget.obsecureText,
+            keyboardType: widget.inputType,
+
+            focusNode: widget.focusNode,
+            maxLength: widget.maxLength,
+            inputFormatters: widget.formatters,
+            enabled: widget.enabled ?? true,
+
+            style: TextStyle(fontSize: widget.fontSize),
+            onEditingComplete: () {
+              FocusManager.instance.primaryFocus?.unfocus();
+              widget.onCompleted?.call();
+            },
+            //Dimiss keyboard widget.onCompleted,
+            decoration: InputDecoration(
+                counterText: "",
+                hintText: widget.placeholder,
+                contentPadding:
+                    const EdgeInsets.symmetric(horizontal: 8, vertical: 17),
+                border: widget.rectangleborder == true
+                    ? OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(20))
+                    : InputBorder.none,
+                suffixIcon: widget.icon),
+          ),
         ),
       ],
     );

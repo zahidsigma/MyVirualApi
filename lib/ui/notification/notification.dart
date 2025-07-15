@@ -202,6 +202,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
       isMenuVisible: true,
       title: 'Recent ',
       subtitle: 'Notifications',
+      istitle: true,
       body: Column(
         children: [
           Padding(

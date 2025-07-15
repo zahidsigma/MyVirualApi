@@ -246,7 +246,7 @@ class _FieldsScreenState extends State<FieldsScreen> {
 
   bool isLoading = false;
   int currentPage = 1;
-  int resultsPerPage = 50; // ✅ Define results per page
+  int resultsPerPage = 300; // ✅ Define results per page
   bool hasNextPage = false;
 
   // Future<void> searchByName({bool isNextPage = false}) async {

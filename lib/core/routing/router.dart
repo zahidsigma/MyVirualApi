@@ -3,7 +3,11 @@ import 'package:virualapi/models/login.dart';
 import 'package:virualapi/ui/Addon/Addon_screen.dart';
 import 'package:virualapi/ui/ConfirmScreen/confirm_screen.dart';
 import 'package:virualapi/ui/DetailsScreen/fileds.dart';
+import 'package:virualapi/ui/PrivacyPolicy/privac_pplicy.dart';
+import 'package:virualapi/ui/RecentActivity/recent_activity.dart';
+import 'package:virualapi/ui/Review/review_screen.dart';
 import 'package:virualapi/ui/Stripe/stripe.dart';
+import 'package:virualapi/ui/about/aboutScreen.dart';
 
 import 'package:virualapi/ui/auth/forgotPassword/forgot_password.dart';
 import 'package:virualapi/ui/auth/login/login_page.dart';
@@ -38,6 +42,11 @@ class PageRouter {
     ),
 
     GetPage(
+      name: Routers.resetPassword,
+      page: () => ResetPassword(),
+    ),
+
+    GetPage(
       name: Routers.details,
       page: () => FieldsScreen(),
     ),
@@ -56,13 +65,24 @@ class PageRouter {
     ),
 
     GetPage(
-      name: Routers.ProfileSettingsPage,
-      page: () => ProfileSettingsPage(),
-    ),
-    GetPage(
       name: Routers.stripe,
-      page: () => StripeSandbox(),
+      page: () => PaymentScreen(),
     ),
+    // GetPage(
+    //   name: Routers.stripe,
+    //   page: () {
+    //     final args = Get.arguments as Map<String, dynamic>;
+
+    //     return StripeSandbox(
+    //       useremail: args['useremail'] ?? '',
+    //       tahoeId: args['tahoeId'] ?? '',
+    //       selectedItems:
+    //           List<Map<String, dynamic>>.from(args['selectedItems'] ?? []),
+    //       isComprehensive: args['isComprehensive'] ?? false,
+    //     );
+    //   },
+    // ),
+
     // GetPage(
     //   name: Routers.addons,
     //   page: () => AddonScreen(),
@@ -115,6 +135,39 @@ class PageRouter {
       name: Routers.support,
       page: () => Support(),
     ),
+    GetPage(
+      name: Routers.reviewScreen,
+      page: () => ReviewScreen(
+        onBack: () {
+          // Your back action, e.g., navigate back or update controller state
+          Get.back();
+        },
+      ),
+    ),
+    GetPage(
+      name: Routers.about,
+      page: () => AboutScreen(
+        onBack: () {
+          // Your back action, e.g., navigate back or update controller state
+          Get.back();
+        },
+      ),
+    ),
+
+    GetPage(
+      name: Routers.privacy,
+      page: () => PrivacyScreen(
+        onBack: () {
+          // Your back action, e.g., navigate back or update controller state
+          Get.back();
+        },
+      ),
+    ),
+
+    // GetPage(
+    //   name: Routers.recent_Activiy,
+    //   page: () => RecentActivity(),
+    // ),
 
     GetPage(
       name: Routers.otp,

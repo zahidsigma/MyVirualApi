@@ -1,97 +1,145 @@
+import 'package:virualapi/constants/config.dart';
+
 import '../constants/enums.dart';
 
 class ApiUrlUtils {
-  static EnvironmentEnum env = EnvironmentEnum.dev;
+  static EnvironmentEnum env = AppConfig.env;
 
   static setEnv(EnvironmentEnum environment) {
     env = environment;
   }
 
+  // Get the base URL based on the environment (uses AppConfig)
   static String get baseUrl {
     switch (env) {
       case EnvironmentEnum.dev:
-        {
-          return 'https://api.galaxysearchapi.com/';
-        }
+        return 'https://server.testlinkwebsitespace.com/virtual-pi-backend/public/api'; // Dev URL
+
+      // Optionally add more environments as needed
+      // case EnvironmentEnum.prod:
+      //   return 'https://api.prodoc.live/care/v2/'; // Prod URL
+
       default:
-        // return 'https://api.thegogirlapp.com/api/v1/';
-        return '';
+        return ''; // Default empty URL, you can handle this gracefully in production
     }
   }
 
+  // Combine baseUrl with endpoint paths and id if needed
   static String getApiUrl(UrlEndPointEnum urlEndPoint, {String? id}) {
+    String path;
+
     switch (urlEndPoint) {
       case UrlEndPointEnum.createUser:
-        return '/patient/registration';
+        path = '/user-register';
+        break;
       case UrlEndPointEnum.login:
-        return '/sign-in';
-      case UrlEndPointEnum.getSessionNote:
-        return '/telemed/session/$id/notes?from=';
+        path = '/user-login';
+        break;
+      // case UrlEndPointEnum.getSessionNote:
+      //   path = '/telemed/session/$id/notes?from=';
+      //   break;
       case UrlEndPointEnum.logout:
-        return '/logout';
+        path = '/logout';
+        break;
       case UrlEndPointEnum.forgotPassword:
-        return '/user/reset-password';
+        path = '/forgot-password';
+        break;
       case UrlEndPointEnum.resetPassword:
-        return '/user/reset';
+        path = '/reset-password';
+        break;
       case UrlEndPointEnum.fetchUserProfile:
-      case UrlEndPointEnum.updateUser:
-        return '/patient';
-      case UrlEndPointEnum.updateUserExt:
-        return '/patient/ext';
+        path = '/edit-profile';
+        break;
+
       case UrlEndPointEnum.verifyOtp:
-        return '/account/verify';
-      case UrlEndPointEnum.verifyResetOtp:
-        return '/user/reset/$id';
+        path = '/otp-verification';
+        break;
+      // case UrlEndPointEnum.updateUserExt:
+      //   path = '/patient/ext';
+      //   break;
+      // case UrlEndPointEnum.verifyOtp:
+      //   path = '/account/verify';
+      //   break;
+      // case UrlEndPointEnum.verifyResetOtp:
+      //   path = '/user/reset/$id';
+      //   break;
       case UrlEndPointEnum.uploadImage:
-        return '/media/upload';
-      case UrlEndPointEnum.allDoctors:
-        return '/public/doctors';
-      case UrlEndPointEnum.searchDoctor:
-        return '/doctors/search';
-      case UrlEndPointEnum.specialties:
-        return '/doctor/specialties';
-      case UrlEndPointEnum.doctorBySpecialty:
-        return '/doctors'; //doctors?specialty=Family Medicine&pageSize=20&pageNo=0
-      case UrlEndPointEnum.doctorDetails:
-        return '/doctor'; //doctor/rick.shaw@fabrik.com
-      case UrlEndPointEnum.searchDoctors:
-        return 'doctors/search'; //doctors/search?keywords=bodyache,stomach ache&online=true&gender=female (Online Optional)
-      case UrlEndPointEnum.userExtras:
-        return 'patient/ext';
-      case UrlEndPointEnum.createInstantVisit:
-        return 'telemed/session/instant';
-      case UrlEndPointEnum.registerDeviceFCM:
-        return 'device/gcm/registry';
-      case UrlEndPointEnum.getTelemedSessions:
-        return 'telemed/sessions';
-      case UrlEndPointEnum.availableSlots:
-        return 'telemed/apt';
-      case UrlEndPointEnum.createAppointment:
-        return 'telemed/apt/create';
-      case UrlEndPointEnum.abhipayPayment:
-        return 'processors/abhipay/payment/init';
-      case UrlEndPointEnum.medications:
-        return 'phr/medications';
-      case UrlEndPointEnum.saveSession:
-        return 'user/feedback';
-      case UrlEndPointEnum.updateSession:
-        return '/telemed/session/$id';
-      case UrlEndPointEnum.recentConsultations:
-        return '/telemed/pastdoctors';
-      case UrlEndPointEnum.validateCoupon:
-        return '/telemed/session/discountcode/$id/verify';
-      case UrlEndPointEnum.labReports:
-        return '/patientlab/self';
-      case UrlEndPointEnum.payments:
-        return 'payment/list';
-      case UrlEndPointEnum.getAppointments:
-        return 'telemed/apt/patient/$id';
-      case UrlEndPointEnum.personSearch:
-        return 'PersonSearch';
-      case UrlEndPointEnum.cancelAppointment:
-        return 'telemed/apt/$id/?status=CANCELLED';
+        path = '/images/users-profile/';
+        break;
+      case UrlEndPointEnum.updateUserWithProfile:
+        path = '/update-profile';
+        break;
+      case UrlEndPointEnum.contactUs:
+        path = '/submit-query';
+        break;
+
+      case UrlEndPointEnum.searchHistory:
+        path = '/order-history';
+        break;
+      // case UrlEndPointEnum.specialties:
+      //   path = '/doctor/specialties';
+      //   break;
+      // case UrlEndPointEnum.doctorBySpecialty:
+      //   path = '/doctors'; // Example, adjust as necessary
+      //   break;
+      // case UrlEndPointEnum.doctorDetails:
+      //   path = '/doctor';
+      //   break;
+      // case UrlEndPointEnum.searchDoctors:
+      //   path = 'doctors/search'; // Example, adjust as necessary
+      //   break;
+      // case UrlEndPointEnum.createInstantVisit:
+      //   path = 'telemed/session/instant';
+      //   break;
+      // case UrlEndPointEnum.registerDeviceFCM:
+      //   path = 'device/gcm/registry';
+      //   break;
+      // case UrlEndPointEnum.getTelemedSessions:
+      //   path = 'telemed/sessions';
+      //   break;
+      // case UrlEndPointEnum.availableSlots:
+      //   path = 'telemed/apt';
+      //   break;
+      // case UrlEndPointEnum.createAppointment:
+      //   path = 'telemed/apt/create';
+      //   break;
+      // case UrlEndPointEnum.abhipayPayment:
+      //   path = 'processors/abhipay/payment/init';
+      //   break;
+      // case UrlEndPointEnum.medications:
+      //   path = 'phr/medications';
+      //   break;
+      // case UrlEndPointEnum.saveSession:
+      //   path = 'user/feedback';
+      //   break;
+      // case UrlEndPointEnum.updateSession:
+      //   path = '/telemed/session/$id';
+      //   break;
+      // case UrlEndPointEnum.recentConsultations:
+      //   path = '/telemed/pastdoctors';
+      //   break;
+      // case UrlEndPointEnum.validateCoupon:
+      //   path = '/telemed/session/discountcode/$id/verify';
+      //   break;
+      // case UrlEndPointEnum.labReports:
+      //   path = '/patientlab/self';
+      //   break;
+      // case UrlEndPointEnum.payments:
+      //   path = 'payment/list';
+      //   break;
+      // case UrlEndPointEnum.getAppointments:
+      //   path = 'telemed/apt/patient/$id';
+      //   break;
+      // case UrlEndPointEnum.personSearch:
+      //   path = 'PersonSearch';
+      //   break;
+      // case UrlEndPointEnum.cancelAppointment:
+      //   path = 'telemed/apt/$id/?status=CANCELLED';
+      //   break;
       default:
-        return '';
+        path = '';
     }
+
+    return baseUrl + path;
   }
 }
