@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
-import 'package:virualapi/constants/key.dart'; // your StripeSecret
 
 // class StripeService {
 //   StripeService._();
@@ -146,7 +146,7 @@ import 'package:virualapi/constants/key.dart'; // your StripeSecret
 
 import 'package:dio/dio.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
-import 'package:virualapi/constants/key.dart'; // Contains StripeSecret
+// Contains StripeSecret
 
 class PaymentIntentData {
   final String clientSecret;
@@ -159,6 +159,7 @@ class StripeService {
   StripeService._();
 
   static final StripeService instance = StripeService._();
+  final secretKey = dotenv.env['STRIPE_SECRET_KEY'] ?? '';
 
   Future<String?> makePayment({
     required int amount,
@@ -207,7 +208,7 @@ class StripeService {
         options: Options(
           contentType: Headers.formUrlEncodedContentType,
           headers: {
-            'Authorization': 'Bearer $stripeSecretKey',
+            'Authorization': 'Bearer $secretKey',
             'Content-Type': 'application/x-www-form-urlencoded',
           },
         ),
