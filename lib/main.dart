@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
@@ -28,6 +29,7 @@ void main() async {
   // await Firebase.initializeApp();
   await AppPreferences.init();
   await DI.initServices();
+  await dotenv.load();
   await Permission.camera.request();
   await Permission.microphone.request();
   AppConfig.setEnv(EnvironmentEnum.dev);
