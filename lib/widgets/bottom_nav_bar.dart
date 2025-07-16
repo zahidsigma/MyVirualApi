@@ -440,6 +440,8 @@ class _BottomNavBarState extends State<BottomNavBar> {
     try {
       Dio dio = Dio();
       dio.options.headers = headers;
+      print("📢 Sending API Request Email And Phone : $requestBody");
+
       final response = await dio.post(apiUrl, data: requestBody);
 
       if (response.statusCode == 200) {

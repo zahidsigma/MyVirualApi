@@ -282,3 +282,252 @@
 //     }
 //   }
 // }
+
+// corrected
+
+// import 'dart:convert';
+// import 'dart:math';
+// import 'package:crypto/crypto.dart';
+// import 'package:firebase_auth/firebase_auth.dart';
+// import 'package:google_sign_in/google_sign_in.dart';
+// import 'package:sign_in_with_apple/sign_in_with_apple.dart';
+
+// class FirebaseAuthService {
+//   final FirebaseAuth _auth = FirebaseAuth.instance;
+
+//   // Google Sign-In
+//   Future<UserCredential?> signInWithGoogle() async {
+//     try {
+//       final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+//       if (googleUser == null) return null;
+
+//       final GoogleSignInAuthentication googleAuth =
+//           await googleUser.authentication;
+
+//       final credential = GoogleAuthProvider.credential(
+//         accessToken: googleAuth.accessToken,
+//         idToken: googleAuth.idToken,
+//       );
+
+//       return await _auth.signInWithCredential(credential);
+//     } catch (e) {
+//       print('Google sign-in error: $e');
+//       return null;
+//     }
+//   }
+
+//   // Apple Sign-In
+//   String _generateNonce([int length = 32]) {
+//     const charset =
+//         '0123456789ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvwxyz-._';
+//     final random = Random.secure();
+//     return List.generate(length, (_) => charset[random.nextInt(charset.length)])
+//         .join();
+//   }
+
+//   String _sha256ofString(String input) {
+//     final bytes = utf8.encode(input);
+//     final digest = sha256.convert(bytes);
+//     return digest.toString();
+//   }
+
+//   Future<UserCredential?> signInWithApple() async {
+//     try {
+//       final rawNonce = _generateNonce();
+//       final nonce = _sha256ofString(rawNonce);
+
+//       final appleCredential = await SignInWithApple.getAppleIDCredential(
+//         scopes: [
+//           AppleIDAuthorizationScopes.email,
+//           AppleIDAuthorizationScopes.fullName
+//         ],
+//         nonce: nonce,
+//       );
+
+//       final oauthCredential = OAuthProvider("apple.com").credential(
+//         idToken: appleCredential.identityToken,
+//         rawNonce: rawNonce,
+//       );
+
+//       return await _auth.signInWithCredential(oauthCredential);
+//     } catch (e) {
+//       print('Apple sign-in error: $e');
+//       return null;
+//     }
+//   }
+
+//   Future<void> signOut() async {
+//     await _auth.signOut();
+//     await GoogleSignIn().signOut();
+//   }
+
+//   User? get currentUser => _auth.currentUser;
+// }
+
+import 'dart:convert';
+import 'dart:io';
+import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
+
+@pragma('vm:entry-point')
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp();
+  print("🔕 Background Message: ${message.messageId}");
+}
+
+class FirebaseService {
+  static final FirebaseMessaging messaging = FirebaseMessaging.instance;
+  static final FlutterLocalNotificationsPlugin localNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
+
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  final AndroidNotificationChannel channel = AndroidNotificationChannel(
+    'high_importance_channel',
+    'High Importance Notifications',
+    description: 'Used for important notifications',
+    importance: Importance.max,
+  );
+
+  /// 🔰 Initialize Firebase Messaging and Notification
+  Future<void> init() async {
+    await _requestNotificationPermission();
+    await _initLocalNotification();
+    _listenToForegroundMessages();
+    _handleBackgroundMessages();
+    await _getFCMToken();
+  }
+
+  /// 🔐 Sign in with Google
+  Future<UserCredential?> signInWithGoogle() async {
+    try {
+      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+      if (googleUser == null) return null;
+
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
+
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+
+      return await _auth.signInWithCredential(credential);
+    } catch (e) {
+      print("Google Sign-In Error: $e");
+      return null;
+    }
+  }
+
+  /// 🍏 Sign in with Apple (only works on iOS)
+  Future<UserCredential?> signInWithApple() async {
+    try {
+      if (!Platform.isIOS) return null;
+
+      final appleCredential = await SignInWithApple.getAppleIDCredential(
+        scopes: [
+          AppleIDAuthorizationScopes.email,
+          AppleIDAuthorizationScopes.fullName,
+        ],
+      );
+
+      final oauthCredential = OAuthProvider("apple.com").credential(
+        idToken: appleCredential.identityToken,
+        accessToken: appleCredential.authorizationCode,
+      );
+
+      return await _auth.signInWithCredential(oauthCredential);
+    } catch (e) {
+      print("Apple Sign-In Error: $e");
+      return null;
+    }
+  }
+
+  Future<void> signOut() async {
+    await _auth.signOut();
+    await GoogleSignIn().signOut();
+  }
+
+  /// 🛑 Request Notification Permissions
+  Future<void> _requestNotificationPermission() async {
+    await messaging.requestPermission(
+      alert: true,
+      badge: true,
+      sound: true,
+    );
+
+    if (Platform.isAndroid) {
+      await localNotificationsPlugin
+          .resolvePlatformSpecificImplementation<
+              AndroidFlutterLocalNotificationsPlugin>()
+          ?.createNotificationChannel(channel);
+    }
+  }
+
+  /// 🚀 Initialize Local Notification Plugin
+  Future<void> _initLocalNotification() async {
+    const androidInit = AndroidInitializationSettings('@mipmap/ic_launcher');
+    const iosInit = DarwinInitializationSettings();
+
+    final settings = InitializationSettings(android: androidInit, iOS: iosInit);
+
+    await localNotificationsPlugin.initialize(
+      settings,
+      onDidReceiveNotificationResponse: (details) {
+        final payload = details.payload;
+        if (payload != null) {
+          final data = jsonDecode(payload);
+          print("🧭 Notification Tapped: $data");
+          // TODO: Navigate to screen or handle tap
+        }
+      },
+    );
+  }
+
+  /// 🔔 Foreground Push Handling
+  void _listenToForegroundMessages() {
+    FirebaseMessaging.onMessage.listen((message) {
+      final notification = message.notification;
+      final android = message.notification?.android;
+
+      if (notification != null && android != null && Platform.isAndroid) {
+        localNotificationsPlugin.show(
+          notification.hashCode,
+          notification.title,
+          notification.body,
+          NotificationDetails(
+            android: AndroidNotificationDetails(
+              channel.id,
+              channel.name,
+              channelDescription: channel.description,
+              icon: '@mipmap/ic_launcher',
+            ),
+          ),
+          payload: jsonEncode(message.data),
+        );
+      }
+    });
+  }
+
+  /// 📲 Background/Terminated Notification Handling
+  void _handleBackgroundMessages() {
+    FirebaseMessaging.onMessageOpenedApp.listen((message) {
+      print("📬 Opened from notification: ${message.data}");
+      // TODO: Handle navigation or logic
+    });
+
+    FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  }
+
+  /// 🔑 Get FCM Token
+  Future<void> _getFCMToken() async {
+    final token = await messaging.getToken();
+    print("📲 FCM Token: $token");
+    // TODO: Save to backend or preferences
+  }
+}

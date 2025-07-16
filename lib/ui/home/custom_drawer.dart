@@ -353,15 +353,39 @@ class CustomDrawer extends GetView<HomeController> {
   //   }
   // }
 
+  // void _onDrawerItemTapped(Map<String, dynamic> item) async {
+  //   try {
+  //     // Close the drawer
+  //     controller.homeKey.currentState?.closeDrawer();
+
+  //     // Wait for the drawer to fully close (default animation ~250ms)
+  //     await Future.delayed(const Duration(milliseconds: 300));
+  //   } catch (e) {
+  //     print("_onDrawerItemTapped_error: $e");
+  //   }
+
+  //   // Navigate only after drawer is closed
+  //   final route = item["route"]?.toString();
+  //   if (route != null && route.isNotEmpty) {
+  //     Get.toNamed(route);
+  //   }
+  // }
   void _onDrawerItemTapped(Map<String, dynamic> item) async {
     try {
-      controller.homeKey.currentState?.closeDrawer();
+      final scaffoldState = controller.homeKey.currentState;
+
+      // ✅ Force close the endDrawer if it's open
+      if (scaffoldState != null && scaffoldState.isEndDrawerOpen) {
+        scaffoldState.closeEndDrawer(); // ✅ This works for right-side drawer
+      }
+
+      // Wait for the drawer animation to close
+      await Future.delayed(const Duration(milliseconds: 300));
     } catch (e) {
-      print("_onDrawerItemTapped_error $e");
+      print("_onDrawerItemTapped_error: $e");
     }
 
-    await Future.delayed(Duration(milliseconds: 150));
-
+    // Navigate to the route
     final route = item["route"]?.toString();
     if (route != null && route.isNotEmpty) {
       Get.toNamed(route);
