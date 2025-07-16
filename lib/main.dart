@@ -18,29 +18,42 @@ import 'services/app_preferences.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:timezone/data/latest.dart' as tz;
+// IMPORTANT: Replace 'your_app_name' with your actual Flutter project name
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  await Firebase.initializeApp();
+
   // SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
     statusBarColor: Colors.transparent, // Fully transparent status bar
     // Change to dark if needed
   ));
-  // await Firebase.initializeApp();
+  // final firebaseService = FirebaseService();
+  // await firebaseService.init();
   await AppPreferences.init();
   await DI.initServices();
-  await dotenv.load();
+
+  try {
+    await dotenv.load(fileName: "assets/.env"); // Specify the full path
+  } catch (e) {
+    print('Error loading .env file: $e');
+  }
+  Stripe.publishableKey = dotenv.env['STRIPE_PUBLISHABLE_KEY'] ?? '';
+  await Stripe.instance.applySettings();
+
+  // await dotenv.load(fileName: "/Users/mac/Desktop/FlutterProjects/virualapi/.env");
   await Permission.camera.request();
   await Permission.microphone.request();
   AppConfig.setEnv(EnvironmentEnum.dev);
   print(AppConfig.baseUrl);
   // FirebaseService().init();
   HttpOverrides.global = MyHttpOverrides();
+  print("Stripe Key Loaded: ${dotenv.env['STRIPE_PUBLISHABLE_KEY']}");
+
   tz.initializeTimeZones();
-  // Stripe.publishableKey =
-  //     'pk_test_51RF2vfQsi7S6nCwCfGsmOe9TofjIQBggmmoPQObIzxRYVAiAx33xP7nW7nrb279TJgPlCkN4C9DQYw7yzmfS8rrO00qFJ9pwnK'; // Replace with your public key
-  Stripe.publishableKey =
-      'pk_test_51RVtfyQLD6zl82IGXRPRGZSgD2wkOodvdSIBAbpNGP4U2VxA8Ntki40XrXfSyIjsxbTOMaXCbYJmjpE7ezeIzilG00g3I6hAYa';
+
   runApp(const MyApp());
 }
 

@@ -4,6 +4,7 @@ import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:get/get.dart';
 import 'package:virualapi/constants/constant.dart';
 import 'package:virualapi/core/routing/router_str.dart';
+import 'package:virualapi/services/firebase_service.dart';
 import 'package:virualapi/ui/auth/signup/signup.dart';
 import 'package:virualapi/ui/home/home_screeen.dart';
 import 'package:virualapi/utils/metrics.dart';
@@ -148,6 +149,7 @@ class LoginScreen extends GetView<LoginController> {
                                 isLoading: controller.isBusy.value,
                                 height: 55,
                                 title: "Sign in",
+
                                 // onPressed: () {},
                                 onPressed: controller.onLogin,
                                 backgroundColor: DARK_BG_COLOR,
@@ -248,7 +250,15 @@ class LoginScreen extends GetView<LoginController> {
                                       child: ReusableWidget.loadSvg(
                                           "assets/images/tw.svg")),
                                   GestureDetector(
-                                      onTap: () {},
+                                      onTap: () async {
+                                        final userCred = await FirebaseService()
+                                            .signInWithGoogle();
+                                        if (userCred != null) {
+                                          // handle success
+                                          print(
+                                              "Apple signed in: ${userCred.user?.email}");
+                                        }
+                                      },
                                       child: ReusableWidget.loadSvg(
                                           "assets/images/go.svg")),
                                 ],

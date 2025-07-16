@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "360069957260",
+    "project_id": "my-virtual-pi-dd104",
+    "storage_bucket": "my-virtual-pi-dd104.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:360069957260:android:01e3707dd253cb11f3dda9",
+        "android_client_info": {
+          "package_name": "com.example.virualapi"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "360069957260-ujc9ef950pcoqvo178400u5rvamctvtl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDoyPWejK00rzlBDPnrbgVzJwmzVDiFCyM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "360069957260-ujc9ef950pcoqvo178400u5rvamctvtl.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "360069957260-2dkemr5ui9up3slha931f5o6i2gm614s.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.virualapi"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

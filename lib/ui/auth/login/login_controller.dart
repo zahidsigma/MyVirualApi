@@ -89,6 +89,15 @@ class LoginController extends GetxController {
     );
   }
 
+//   final auth = AuthService();
+// final result = await auth.signInWithGoogle(); // or signInWithApple()
+
+// if (result != null) {
+//   print("✅ Signed in: ${result.user?.email}");
+//   AppPreferences.setUserData(result.user);
+//   Get.offAllNamed(Routers.homeScreen);
+// }
+
   void forgotPassword() {
     Get.toNamed(Routers.forgotPassword);
   }

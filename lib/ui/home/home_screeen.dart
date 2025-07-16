@@ -45,7 +45,6 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         key: controller.homeKey,
-        // endDrawer: CustomDrawer(),
         endDrawer: Padding(
           padding:
               EdgeInsets.symmetric(vertical: getScreenHeight(context) * 0.1),

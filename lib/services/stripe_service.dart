@@ -166,6 +166,7 @@ class StripeService {
     String currency = 'usd',
   }) async {
     try {
+      print(secretKey);
       // Step 1: Create PaymentIntent
       PaymentIntentData? paymentIntentData =
           await _createPaymentIntent(amount, currency);
