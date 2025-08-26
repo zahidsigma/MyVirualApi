@@ -28,62 +28,115 @@ class Profile extends StatefulWidget {
   State<Profile> createState() => _ProfileState();
 }
 
-enum ProfileView { profile, recentList, recentDetail }
-
-class _ProfileState extends State<Profile> {
+class _ProfileState extends State<Profile> with RouteAware {
   final ProfileController controller = Get.isRegistered<ProfileController>()
       ? Get.find<ProfileController>()
       : Get.put(ProfileController())
     ..fetchUser();
 
-  late int currentViewIndex;
-  ProfileView currentView = ProfileView.profile;
+  // late int currentViewIndex;
+  // ProfileView currentView = ProfileView.profile;
 
   final formKey = GlobalKey<FormBuilderState>();
 
   @override
-  void initState() {
-    // TODO: implement initState
-    currentViewIndex = widget.startingViewIndex;
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    RouteObserver<PageRoute>()
+        .subscribe(this, ModalRoute.of(context)! as PageRoute);
   }
 
+  @override
+  void dispose() {
+    RouteObserver<PageRoute>().unsubscribe(this);
+    super.dispose();
+  }
+
+  @override
+  void didPopNext() {
+    // Called when user navigates back to this screen
+    controller.resetToProfile();
+  }
+
+  // @override
+  // void initState() {
+  //   // TODO: implement initState
+  //   currentViewIndex = widget.startingViewIndex;
+  //   print("Change: $currentViewIndex");
+  // }
+
+  // }
+
+  // @override
+  // Widget build(BuildContext context) {
+  //   return BodyWithHeader(
+  //     isBackVisible: currentView != ProfileView.profile,
+  //     isrofile: currentView == ProfileView.profile,
+  //     isMenuVisible: true,
+  //     onBackPressed: () {
+  //       setState(() {
+  //         if (currentView == ProfileView.recentDetail) {
+  //           currentView = ProfileView.recentList; // go back to list
+  //         } else {
+  //           currentView = ProfileView.profile; // go back to profile
+  //         }
+  //       });
+  //     },
+  //     istitle: true,
+  //     title: 'My',
+  //     subtitle: 'Profile',
+  //     body: Builder(
+  //       builder: (context) {
+  //         switch (currentView) {
+  //           case ProfileView.profile:
+  //             return _buildProfileView();
+  //           case ProfileView.recentList:
+  //             return _RecentActivity(onItemSelected: () {
+  //               setState(() {
+  //                 currentView = ProfileView.recentDetail;
+  //               });
+  //             });
+  //           case ProfileView.recentDetail:
+  //             return _RecentDetail(context);
+  //         }
+  //       },
+  //     ),
+  //   );
   // }
 
   @override
   Widget build(BuildContext context) {
-    return BodyWithHeader(
-      isBackVisible: currentView != ProfileView.profile,
-      isrofile: currentView == ProfileView.profile,
-      isMenuVisible: true,
-      onBackPressed: () {
-        setState(() {
-          if (currentView == ProfileView.recentDetail) {
-            currentView = ProfileView.recentList; // go back to list
+    return Obx(() {
+      return BodyWithHeader(
+        isBackVisible: controller.currentView.value != ProfileView.profile,
+        isrofile: controller.currentView.value == ProfileView.profile,
+        isMenuVisible: true,
+        onBackPressed: () {
+          if (controller.currentView.value == ProfileView.recentDetail) {
+            controller.goToRecentList();
           } else {
-            currentView = ProfileView.profile; // go back to profile
-          }
-        });
-      },
-      istitle: true,
-      title: 'My',
-      subtitle: 'Profile',
-      body: Builder(
-        builder: (context) {
-          switch (currentView) {
-            case ProfileView.profile:
-              return _buildProfileView();
-            case ProfileView.recentList:
-              return _RecentActivity(onItemSelected: () {
-                setState(() {
-                  currentView = ProfileView.recentDetail;
-                });
-              });
-            case ProfileView.recentDetail:
-              return _RecentDetail(context);
+            controller.goToProfile();
           }
         },
-      ),
-    );
+        istitle: true,
+        title: 'My',
+        subtitle: 'Profile',
+        body: Builder(
+          builder: (context) {
+            switch (controller.currentView.value) {
+              case ProfileView.profile:
+                return _buildProfileView();
+              case ProfileView.recentList:
+                return _RecentActivity(onItemSelected: () {
+                  controller.goToRecentDetail();
+                });
+              case ProfileView.recentDetail:
+                return _RecentDetail(context);
+            }
+          },
+        ),
+      );
+    });
   }
 
   Widget _buildProfileView() {
@@ -119,7 +172,7 @@ class _ProfileState extends State<Profile> {
             width: 100,
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
-                  backgroundColor: DARK_BG_COLOR,
+                  backgroundColor: COLOR_PRIMARY,
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20))),
               onPressed: () async {
@@ -147,9 +200,7 @@ class _ProfileState extends State<Profile> {
                 width: 18, height: 18),
             text: "Recent Activity",
             onTap: () {
-              setState(() {
-                currentView = ProfileView.recentList;
-              });
+              controller.currentView.value = ProfileView.recentList;
             },
           ),
 
@@ -268,7 +319,8 @@ Widget _RecentActivity({required VoidCallback onItemSelected}) {
 
                   return CompletedListItem(
                     name: '${item.firstName} ${item.lastName}',
-                    email: item.email,
+                    orderEmail: item.email,
+                    userEmail: item.user_email,
                     onDetailsTap: () {
                       controller.selectedOrder.value = item;
                       onItemSelected();
@@ -326,7 +378,7 @@ Widget _RecentDetail(BuildContext context) {
             // Left info box
             Expanded(
               child: Container(
-                height: getScreenHeight(context) * 0.25,
+                height: getScreenHeight(context) * 0.23,
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
                   color: Colors.grey.shade200,
@@ -374,12 +426,13 @@ Widget _RecentDetail(BuildContext context) {
             // Right status box
             Expanded(
               child: Container(
-                height: getScreenHeight(context) * 0.25,
+                height: getScreenHeight(context) * 0.23,
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [Colors.black, Colors.grey.shade800],
-                  ),
+                  gradient: const LinearGradient(
+                      colors: [Color(0xff0252C9), Color(0xff000000)],
+                      begin: Alignment.topRight,
+                      end: Alignment.bottomRight),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Column(
@@ -388,7 +441,7 @@ Widget _RecentDetail(BuildContext context) {
                     SizedBox(height: 10),
                     Text(
                       "Search request for ${selected.firstName} ${selected.lastName} has been completed.",
-                      textAlign: TextAlign.left,
+                      textAlign: TextAlign.center,
                       style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
@@ -424,7 +477,7 @@ Widget _RecentDetail(BuildContext context) {
 // Inside your widget or function:
         ElevatedButton(
           style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.black,
+            backgroundColor: COLOR_PRIMARY,
             minimumSize: Size.fromHeight(45),
             shape: const StadiumBorder(),
             padding: EdgeInsets.symmetric(horizontal: 40, vertical: 12),

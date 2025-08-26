@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:virualapi/models/login.dart';
 import 'package:virualapi/models/user.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:virualapi/services/firebase_service.dart';
 
 class AppPreferences {
   static late SharedPreferences _preferences;
@@ -10,16 +11,27 @@ class AppPreferences {
     _preferences = await SharedPreferences.getInstance();
   }
 
+  final FirebaseService _firebaseService = FirebaseService();
   static const String _loginData = "loginData";
   static const String _userData = "userData";
   static const String _fcmToken = "fcmToken";
   static const String session = "session";
 
   // Set Login Data
+  // static Future<void> setLoginData(Login login) async {
+  //   try {
+  //     print("Saving login data: ${login.toJson()}"); // Debug print
+  //     await _preferences.setString(_loginData, jsonEncode(login.toJson()));
+  //   } catch (e) {
+  //     print("Error saving login data: $e");
+  //   }
+  // }
+
   static Future<void> setLoginData(Login login) async {
     try {
-      print("Saving login data: ${login.toJson()}"); // Debug print
-      await _preferences.setString(_loginData, jsonEncode(login.toJson()));
+      final jsonString = jsonEncode(login.toJson());
+      await _preferences.setString(_loginData, jsonString);
+      print("Saved login data: $jsonString");
     } catch (e) {
       print("Error saving login data: $e");
     }
@@ -30,27 +42,56 @@ class AppPreferences {
     return token != null && token.isNotEmpty;
   }
 
+  // static bool isLoggedIn() {
+  //   final firebaseUser = _firebaseService?.currentUser;
+  //   final token = getAuthToken(); // your own stored token
+
+  //   return firebaseUser != null || (token != null && token.isNotEmpty);
+  // }
+
   // Get Login Data
+  // static Login? getLoginData() {
+  //   try {
+  //     final String? json = _preferences.getString(_loginData);
+  //     if (json == null) {
+  //       print("No login data found.");
+  //       return null;
+  //     }
+  //     final login = Login.fromJson(jsonDecode(json));
+  //     print("Login data loaded: $login");
+  //     return login;
+  //   } catch (e) {
+  //     print("Error loading login data: $e");
+  //     return null;
+  //   }
+  // }
+
   static Login? getLoginData() {
     try {
-      final String? json = _preferences.getString(_loginData);
-      if (json == null) {
-        print("No login data found.");
-        return null;
-      }
-      final login = Login.fromJson(jsonDecode(json));
-      print("Login data loaded: $login");
-      return login;
+      final jsonString = _preferences.getString(_loginData);
+      if (jsonString == null) return null;
+
+      final Map<String, dynamic> jsonMap = jsonDecode(jsonString);
+      return Login.fromJson(jsonMap);
     } catch (e) {
-      print("Error loading login data: $e");
+      print("Error reading login data: $e");
       return null;
     }
   }
 
   // Save only the actual user data (not the full UserResponse)
-  static Future<void> setUserData(User user) async {
+  // static Future<void> setUserData(User user) async {
+  //   try {
+  //     final userJson = user.toJson();
+  //     print("Saving user data: $userJson");
+  //     await _preferences.setString(_userData, jsonEncode(userJson));
+  //   } catch (e) {
+  //     print("Error saving user data: $e");
+  //   }
+  // }
+
+  static Future<void> setUserData(Map<String, dynamic> userJson) async {
     try {
-      final userJson = user.toJson();
       print("Saving user data: $userJson");
       await _preferences.setString(_userData, jsonEncode(userJson));
     } catch (e) {

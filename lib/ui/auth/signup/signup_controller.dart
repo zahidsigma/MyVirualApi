@@ -17,7 +17,7 @@ class SignupController extends GetxController {
 
   final AuthRepository _authRepository;
 
-  final signupFormKey1 = GlobalKey<FormBuilderState>();
+  final formKey = GlobalKey<FormBuilderState>();
   RxBool isBusy = false.obs;
   RxBool isObsecure = true.obs;
   RxBool isConfirmPasswordObscure = true.obs;
@@ -29,10 +29,10 @@ class SignupController extends GetxController {
   String? phoneNumberVal = "";
 
   void handleSignupData() {
-    bool isValid = signupFormKey1.currentState!.saveAndValidate();
+    bool isValid = formKey.currentState!.saveAndValidate();
 
     if (isValid) {
-      var signupFormData = signupFormKey1.currentState!.value;
+      var signupFormData = formKey.currentState!.value;
 
       // Validate Email
       if (!GetUtils.isEmail(signupFormData["email"])) {
@@ -66,6 +66,22 @@ class SignupController extends GetxController {
     }
   }
 
+  String extractMessage(dynamic message) {
+    if (message == null) return 'Unknown error occurred';
+
+    if (message is String) return message;
+
+    if (message is List) {
+      return message.map((e) => extractMessage(e)).join(', ');
+    }
+
+    if (message is Map) {
+      return message.values.map((e) => extractMessage(e)).join(', ');
+    }
+
+    return message.toString();
+  }
+
   callApi(data) async {
     var result = await _authRepository.createUser(data: data);
     isBusy.value = false;
@@ -74,20 +90,26 @@ class SignupController extends GetxController {
     result.fold((failure) {
       SnackbarUtil.error(
         logMessage: (failure as Error).errorMessage.toString(),
-        // logScreenName: Routers.signUp,
         logMethodName: 'createUser',
         message: failure.errorMessage.toString(),
       );
     }, (res) {
-      // Check the response from the API
-      // SnackbarUtil.info(
-      //     message: res['message'], isInfo: false); // Show success message
-      // Get.offNamed(Routers.login); // Redirect to home page
+      if (res['status'] == false) {
+        var errorMessage = extractMessage(res['message']);
+        print('API returned false status: $errorMessage');
+        SnackbarUtil.error(message: errorMessage ?? 'Registration failed');
+      } else if (res['status'] == true) {
+        var successMessage = res['message'] ?? 'User registered!';
+        SnackbarUtil.info(message: successMessage, isInfo: false);
 
-      final message = res['message'] ?? 'User registered!';
-      final data = res['data'];
-      SnackbarUtil.info(message: message, isInfo: false);
-      Get.offNamed(Routers.login);
+        var userData = res['data'];
+        print('Registered user data: $userData');
+
+        // Navigate to login or another page
+        Get.offNamed(Routers.login);
+      } else {
+        SnackbarUtil.error(message: 'Unexpected response');
+      }
     });
   }
 }

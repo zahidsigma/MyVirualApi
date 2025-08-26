@@ -54,6 +54,23 @@ class ApiUrlUtils {
       case UrlEndPointEnum.verifyOtp:
         path = '/otp-verification';
         break;
+
+      case UrlEndPointEnum.pricing:
+        path = '/pricing';
+        break;
+
+      case UrlEndPointEnum.notification:
+        path = '/notifications';
+        break;
+
+      case UrlEndPointEnum.markasRead:
+        path = '/notifications/mark-as-read';
+        break;
+
+      case UrlEndPointEnum.orderView:
+        path = '/order-history';
+        break;
+
       // case UrlEndPointEnum.updateUserExt:
       //   path = '/patient/ext';
       //   break;

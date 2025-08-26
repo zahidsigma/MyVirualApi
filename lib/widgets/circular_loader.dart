@@ -7,7 +7,7 @@ class CircluarLoader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: CircularProgressIndicator(color: COLOR_ACCENT),
+      child: CircularProgressIndicator(color: DARK_BG_COLOR),
     );
   }
 }

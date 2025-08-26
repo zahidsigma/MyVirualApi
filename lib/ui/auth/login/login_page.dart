@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
@@ -80,6 +82,7 @@ class LoginScreen extends GetView<LoginController> {
                                 validator: FormBuilderValidators.compose(
                                   [
                                     FormBuilderValidators.required(),
+                                    FormBuilderValidators.email(),
                                   ],
                                 ),
                                 placeholder: "UserName",
@@ -237,32 +240,104 @@ class LoginScreen extends GetView<LoginController> {
                               SizedBox(
                                 height: 20,
                               ),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
-                                children: [
-                                  GestureDetector(
-                                      onTap: () {},
-                                      child: ReusableWidget.loadSvg(
-                                          "assets/images/facebok.svg")),
-                                  GestureDetector(
-                                      onTap: () {},
-                                      child: ReusableWidget.loadSvg(
-                                          "assets/images/tw.svg")),
-                                  GestureDetector(
-                                      onTap: () async {
-                                        final userCred = await FirebaseService()
-                                            .signInWithGoogle();
-                                        if (userCred != null) {
-                                          // handle success
-                                          print(
-                                              "Apple signed in: ${userCred.user?.email}");
+
+                              GestureDetector(
+                                // onTap: () {
+                                //   FirebaseService().signInWithGoogle();
+                                // },
+                                // child: ReusableWidget.loadSvg(
+                                //     "assets/images/go.svg"),
+                                onTap: controller.isSocial.value
+                                    ? null // disable tap while loading
+                                    : () {
+                                        if (Platform.isIOS) {
+                                          controller.loginWithApple();
+                                        } else {
+                                          controller.loginWithGoogle();
                                         }
                                       },
-                                      child: ReusableWidget.loadSvg(
-                                          "assets/images/go.svg")),
-                                ],
-                              )
+                                child: controller.isSocial.value
+                                    ? CircularProgressIndicator()
+                                    : ReusableWidget.loadSvg(
+                                        Platform.isIOS
+                                            ? "assets/images/apple.svg"
+                                            : "assets/images/go.svg",
+                                      ),
+                              ),
+
+                              // Row(
+                              //   mainAxisAlignment:
+                              //       MainAxisAlignment.spaceAround,
+                              //   children: [
+                              // Obx(() => GestureDetector(
+                              //       onTap: controller.isSocialface.value
+                              //           ? null
+                              //           : () async {
+                              //               controller.isSocialface.value =
+                              //                   true; // show loader immediately
+                              //               await controller
+                              //                   .loginWithFacebook();
+                              //               controller.isSocialface.value =
+                              //                   false; // hide loader after done
+                              //             },
+                              //       child: controller.isSocialface.value
+                              //           ? const CircularProgressIndicator()
+                              //           : ReusableWidget.loadSvg(
+                              //               "assets/images/facebok.svg"),
+                              //     )),
+
+                              // Obx(() => GestureDetector(
+                              //       onTap: controller.isSocialface.value
+                              //           ? null
+                              //           : () {
+                              //               controller
+                              //                   .loginWithFacebook(); // loader handled inside
+                              //             },
+                              //       child: controller.isSocialface.value
+                              //           ? CircularProgressIndicator()
+                              //           : ReusableWidget.loadSvg(
+                              //               "assets/images/facebok.svg"),
+                              //     )),
+
+                              // Text(
+                              //   'OR',
+                              //   style: TextStyle(
+                              //       fontSize: 18,
+                              //       fontWeight: FontWeight.w600),
+                              // ),
+                              // GestureDetector(
+                              //   onTap: () {
+                              //     // Your Twitter login or other
+                              //   },
+                              //   child: ReusableWidget.loadSvg(
+                              //       "assets/images/tw.svg"),
+                              // ),
+                              // GestureDetector(
+                              //   // onTap: () {
+                              //   //   FirebaseService().signInWithGoogle();
+                              //   // },
+                              //   // child: ReusableWidget.loadSvg(
+                              //   //     "assets/images/go.svg"),
+                              //   onTap: controller.isSocial.value
+                              //       ? null // disable tap while loading
+                              //       : () {
+                              //           if (Platform.isIOS) {
+                              //             controller.loginWithApple();
+                              //           } else {
+                              //             controller.loginWithGoogle();
+                              //           }
+                              //         },
+                              //   child: controller.isSocial.value
+                              //       ? CircularProgressIndicator()
+                              //       : ReusableWidget.loadSvg(
+                              //           Platform.isIOS
+                              //               ? "assets/images/apple.svg"
+                              //               : "assets/images/go.svg",
+                              //         ),
+                              // ),
+
+                              //   ],
+                              // )
                             ],
                           ),
                         ),

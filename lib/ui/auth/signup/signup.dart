@@ -292,7 +292,6 @@ import '../../../widgets/button.dart';
 import '../../../widgets/text_field.dart';
 
 class SignupScreen extends GetView<SignupController> {
-  // final _signupFormKey = GlobalKey<FormBuilderState>();
   @override
   Widget build(BuildContext context) {
     return BodyWithHeader(
@@ -306,7 +305,7 @@ class SignupScreen extends GetView<SignupController> {
           ),
           child: Obx(
             () => FormBuilder(
-              key: controller.signupFormKey1,
+              key: controller.formKey,
               initialValue: {
                 'name': '',
                 'email': '',
@@ -468,27 +467,27 @@ class SignupScreen extends GetView<SignupController> {
                           AppSpacerH(20),
 
                           // Social login
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              GestureDetector(
-                                onTap: () {},
-                                child: ReusableWidget.loadSvg(
-                                    "assets/images/facebok.svg"),
-                              ),
-                              GestureDetector(
-                                onTap: () {},
-                                child: ReusableWidget.loadSvg(
-                                    "assets/images/tw.svg"),
-                              ),
-                              GestureDetector(
-                                onTap: () {},
-                                child: ReusableWidget.loadSvg(
-                                    "assets/images/go.svg"),
-                              ),
-                            ],
-                          ),
-                          AppSpacerH(20),
+                          // Row(
+                          //   mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          //   children: [
+                          //     GestureDetector(
+                          //       onTap: () {},
+                          //       child: ReusableWidget.loadSvg(
+                          //           "assets/images/facebok.svg"),
+                          //     ),
+                          //     GestureDetector(
+                          //       onTap: () {},
+                          //       child: ReusableWidget.loadSvg(
+                          //           "assets/images/tw.svg"),
+                          //     ),
+                          //     GestureDetector(
+                          //       onTap: () {},
+                          //       child: ReusableWidget.loadSvg(
+                          //           "assets/images/go.svg"),
+                          //     ),
+                          //   ],
+                          // ),
+                          // AppSpacerH(20),
 
                           // Already have an account
                           Row(

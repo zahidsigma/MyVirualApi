@@ -1,14 +1,107 @@
+// import 'package:flutter/material.dart';
+
+// class CompletedListItem extends StatelessWidget {
+//   final String name;
+//   final String? email;
+//   final String? useEmail;
+//   final VoidCallback onDetailsTap;
+
+//   const CompletedListItem({
+//     Key? key,
+//     required this.name,
+//     required this.email,
+//     required this.useEmail,
+//     required this.onDetailsTap,
+//   }) : super(key: key);
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Card(
+//       color: const Color(0xFFEFF3F3),
+//       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+//       margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+//       child: Padding(
+//         padding: const EdgeInsets.all(14),
+//         child: Row(
+//           crossAxisAlignment: CrossAxisAlignment.start,
+//           children: [
+//             const CircleAvatar(
+//               backgroundColor: Colors.white,
+//               radius: 24,
+//               child: Icon(Icons.person, size: 28, color: Colors.grey),
+//             ),
+//             const SizedBox(width: 12),
+//             Expanded(
+//               child: Column(
+//                 crossAxisAlignment: CrossAxisAlignment.start,
+//                 children: [
+//                   Text(name,
+//                       overflow: TextOverflow.ellipsis,
+//                       style: const TextStyle(
+//                           fontSize: 14, fontWeight: FontWeight.bold)),
+//                   const SizedBox(height: 4),
+//                   Text(email ?? "No Order Email Found",
+//                       overflow: TextOverflow.ellipsis,
+//                       style: TextStyle(
+//                           fontSize: 12,
+//                           color: Colors.grey.shade600,
+//                           fontWeight: FontWeight.w500)),
+//                   const SizedBox(height: 4),
+//                   Text(useEmail ?? "No User Email Found",
+//                       overflow: TextOverflow.ellipsis,
+//                       style: TextStyle(
+//                           fontSize: 12,
+//                           color: Colors.grey.shade600,
+//                           fontWeight: FontWeight.w500)),
+//                   const SizedBox(height: 4),
+//                   Row(
+//                     children: const [
+//                       Icon(Icons.check_circle,
+//                           color: Color(0xff44C454), size: 20),
+//                       SizedBox(width: 6),
+//                       Text("Completed",
+//                           style: TextStyle(
+//                               color: Color(0xff44C454),
+//                               fontWeight: FontWeight.w500,
+//                               fontSize: 14)),
+//                     ],
+//                   )
+//                 ],
+//               ),
+//             ),
+//             ElevatedButton(
+//               onPressed: onDetailsTap,
+//               style: ElevatedButton.styleFrom(
+//                 backgroundColor: Colors.black,
+//                 shape: RoundedRectangleBorder(
+//                     borderRadius: BorderRadius.circular(20)),
+//                 padding:
+//                     const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+//               ),
+//               child: const Text("View Details",
+//                   style: TextStyle(color: Colors.white, fontSize: 13)),
+//             )
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+// }
+
 import 'package:flutter/material.dart';
+import 'package:virualapi/constants/constant.dart';
 
 class CompletedListItem extends StatelessWidget {
   final String name;
-  final String email;
+  final String? orderEmail;
+  final String? userEmail;
   final VoidCallback onDetailsTap;
 
   const CompletedListItem({
     Key? key,
     required this.name,
-    required this.email,
+    required this.orderEmail,
+    required this.userEmail,
     required this.onDetailsTap,
   }) : super(key: key);
 
@@ -38,13 +131,26 @@ class CompletedListItem extends StatelessWidget {
                       style: const TextStyle(
                           fontSize: 14, fontWeight: FontWeight.bold)),
                   const SizedBox(height: 4),
-                  Text(email,
+                  Text(
+                      orderEmail?.isNotEmpty == true
+                          ? orderEmail!
+                          : "No Order Email Found",
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
                           fontSize: 12,
                           color: Colors.grey.shade600,
                           fontWeight: FontWeight.w500)),
-                  const SizedBox(height: 6),
+                  const SizedBox(height: 4),
+                  Text(
+                      userEmail?.isNotEmpty == true
+                          ? userEmail!
+                          : "No User Email Found",
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.grey.shade600,
+                          fontWeight: FontWeight.w500)),
+                  const SizedBox(height: 4),
                   Row(
                     children: const [
                       Icon(Icons.check_circle,
@@ -63,7 +169,7 @@ class CompletedListItem extends StatelessWidget {
             ElevatedButton(
               onPressed: onDetailsTap,
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.black,
+                backgroundColor: COLOR_PRIMARY,
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20)),
                 padding:

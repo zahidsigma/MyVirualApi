@@ -138,6 +138,7 @@
 // }
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:virualapi/constants/config.dart';
 import 'package:virualapi/constants/constant.dart';
@@ -151,12 +152,13 @@ import 'package:virualapi/widgets/resusable_widget.dart';
 import 'dart:io'; // for File handling
 import 'package:shared_preferences/shared_preferences.dart';
 
-class BodyWithHeader extends StatelessWidget {
+class BodyWithHeader extends StatefulWidget {
   final Widget body;
   final Color backgroundColor;
   bool? isBackVisible = false;
   bool? isMenuVisible = false;
   bool? islogovisible = false;
+
   final VoidCallback? onBackPressed;
   bool? isrofile = false;
   String? title = "";
@@ -179,25 +181,51 @@ class BodyWithHeader extends StatelessWidget {
   });
 
   @override
+  State<BodyWithHeader> createState() => _BodyWithHeaderState();
+}
+
+class _BodyWithHeaderState extends State<BodyWithHeader> {
+  @override
+  void initState() {
+    super.initState();
+
+    // Set status bar color & icon style based on istitle
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarColor: widget.istitle == true
+          ? const Color(0xffF6F6F6)
+          : DARK_BG_COLOR, // your dark background
+      statusBarIconBrightness:
+          widget.istitle == true ? Brightness.dark : Brightness.light,
+      statusBarBrightness:
+          widget.istitle == true ? Brightness.light : Brightness.dark,
+    ));
+  }
+
   Widget build(BuildContext context) {
     final ProfileController controller = Get.find<ProfileController>();
     final homecontroller = Get.find<HomeController>();
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      backgroundColor: istitle == true ? Color(0xffF6F6F6) : DARK_BG_COLOR,
+      // backgroundColor: DARK_BG_COLOR,
+      backgroundColor:
+          widget.istitle == true ? Color(0xffF6F6F6) : DARK_BG_COLOR,
+      // backgroundColor: istitle == true ? Color(0xff183766) : DARK_BG_COLOR,
+
+      // appBar: AppBar(backgroundColor: DARK_BG_COLOR),
       body: SafeArea(
         top: true,
         bottom: false,
         child: Padding(
-          padding: EdgeInsets.only(top: isBackVisible == true ? 0 : 30),
+          padding: EdgeInsets.only(top: widget.isBackVisible == true ? 0 : 30),
           child: Column(
-              crossAxisAlignment: islogovisible == true
+              crossAxisAlignment: widget.islogovisible == true
                   ? CrossAxisAlignment.center
                   : CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.max,
               children: [
-                if (islogovisible == true)
+                if (widget.islogovisible == true)
                   Image.asset('assets/images/logoapi.png',
                       height: getScreenHeight(context) * 0.15),
                 Row(
@@ -205,18 +233,18 @@ class BodyWithHeader extends StatelessWidget {
                   // mainAxisAlignment: MainAxisAlignment.spaceAround,
 
                   children: [
-                    if (isMenuVisible == false)
+                    if (widget.isMenuVisible == false)
                       Row(
                         children: [
                           IconButton(
-                              onPressed: onBackPressed ??
+                              onPressed: widget.onBackPressed ??
                                   () {
                                     Navigator.of(context).pop();
                                   },
                               icon: Icon(
                                 Icons.chevron_left,
                                 size: 32,
-                                color: istitle == true
+                                color: widget.istitle == true
                                     ? Colors.black
                                     : Colors.white,
                               )),
@@ -229,46 +257,48 @@ class BodyWithHeader extends StatelessWidget {
                               ),
                               children: [
                                 TextSpan(
-                                  text: '${title ?? ""}',
+                                  text: '${widget.title ?? ""}',
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 25),
                                 ),
                                 TextSpan(
-                                  text: '${middletext ?? ""}\n',
+                                  text: '${widget.middletext ?? ""}\n',
                                 ),
                                 TextSpan(
-                                    text: subtitle,
+                                    text: widget.subtitle,
                                     style: TextStyle(fontSize: 25)),
                               ],
                             ),
                           ),
                         ],
                       ),
-                    if (isMenuVisible != null && isMenuVisible == true) ...[
+                    if (widget.isMenuVisible != null &&
+                        widget.isMenuVisible == true) ...[
                       Expanded(
                         child: Container(
+                          // color: Colors.amber,
                           width: getScreenWidth(context),
-                          height: 120,
+                          height: 130,
                           padding: EdgeInsets.symmetric(
                               horizontal: 10, vertical: 30),
                           child: Container(
                             margin: EdgeInsets.only(
-                                top: isBackVisible == true ? 20 : 0),
+                                top: widget.isBackVisible == true ? 20 : 0),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                isBackVisible == true
+                                widget.isBackVisible == true
                                     ? InkWell(
-                                        onTap: onBackPressed ??
+                                        onTap: widget.onBackPressed ??
                                             () {
                                               Navigator.of(context).pop();
                                             },
                                         child: Icon(
                                           Icons.chevron_left,
                                           size: 32,
-                                          color: istitle == true
+                                          color: widget.istitle == true
                                               ? Colors.black
                                               : Colors.white,
                                         ),
@@ -285,28 +315,86 @@ class BodyWithHeader extends StatelessWidget {
                                     //           ? Colors.black
                                     //           : Colors.white,
                                     //     ))
-                                    : RichText(
-                                        text: TextSpan(
-                                          style: TextStyle(
-                                            fontSize: 28,
-                                            color: Colors.black,
-                                            fontWeight: FontWeight.w300,
+                                    // : Row(
+                                    //     crossAxisAlignment:
+                                    //         CrossAxisAlignment.start,
+                                    //     mainAxisAlignment:
+                                    //         MainAxisAlignment.start,
+                                    //     children: [
+                                    //       Container(
+                                    //         color: Colors.red,
+                                    //         child: Image.asset(
+                                    //             'assets/images/logoapi.png',
+                                    //             height: 30),
+                                    //       ),
+                                    //       RichText(
+                                    //         text: TextSpan(
+                                    //           style: TextStyle(
+                                    //             fontSize: 28,
+                                    //             color: Colors.black,
+                                    //             fontWeight: FontWeight.w300,
+                                    //           ),
+                                    //           children: [
+                                    //             TextSpan(
+                                    //               text: '${title ?? ""}',
+                                    //               style: TextStyle(
+                                    //                   fontWeight:
+                                    //                       FontWeight.bold,
+                                    //                   fontSize: 25),
+                                    //             ),
+                                    //             TextSpan(
+                                    //               text: '${middletext ?? ""}\n',
+                                    //             ),
+                                    //             TextSpan(
+                                    //                 text: subtitle,
+                                    //                 style: TextStyle(
+                                    //                     fontSize: 25)),
+                                    //           ],
+                                    //         ),
+                                    //       ),
+                                    //     ],
+                                    //   ),
+                                    : Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        // mainAxisAlignment:
+                                        //     MainAxisAlignment.center,
+                                        children: [
+                                          // color: Colors.red,
+                                          Image.asset(
+                                            'assets/images/logoapi.png',
+                                            height: 60,
                                           ),
-                                          children: [
-                                            TextSpan(
-                                              text: '${title ?? ""}',
+
+                                          RichText(
+                                            text: TextSpan(
                                               style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 25),
+                                                fontSize: 28,
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.w300,
+                                              ),
+                                              children: [
+                                                TextSpan(
+                                                  text: '${widget.title ?? ""}',
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    color: COLOR_PRIMARY,
+                                                    fontSize: 25,
+                                                  ),
+                                                ),
+                                                TextSpan(
+                                                  text:
+                                                      '${widget.middletext ?? ""}\n',
+                                                ),
+                                                TextSpan(
+                                                  text: widget.subtitle,
+                                                  style:
+                                                      TextStyle(fontSize: 25),
+                                                ),
+                                              ],
                                             ),
-                                            TextSpan(
-                                              text: '${middletext ?? ""}\n',
-                                            ),
-                                            TextSpan(
-                                                text: subtitle,
-                                                style: TextStyle(fontSize: 25)),
-                                          ],
-                                        ),
+                                          ),
+                                        ],
                                       ),
                                 GestureDetector(
                                   onTap: () {
@@ -329,14 +417,14 @@ class BodyWithHeader extends StatelessWidget {
                   child: Stack(
                     children: [
                       Container(
-                        child: body,
+                        child: widget.body,
                         width: MediaQuery.of(context).size.width,
-                        // height: getScreenHeight(context) * 0.9,
+                        height: getScreenHeight(context) / 1.2,
                         margin: EdgeInsets.only(top: 30),
-                        height: double.infinity,
+                        // height: double.infinity,
                         decoration: BoxDecoration(
                             color: Colors.white,
-                            borderRadius: istitle == true
+                            borderRadius: widget.istitle == true
                                 ? BorderRadius.only(
                                     topLeft: Radius.circular(50),
                                     topRight: Radius.circular(50)
@@ -349,7 +437,7 @@ class BodyWithHeader extends StatelessWidget {
                       Positioned(
                         top: 0,
                         left: getScreenWidth(context) / 2 - 50,
-                        child: isrofile == true
+                        child: widget.isrofile == true
                             ? Obx(() {
                                 final path = controller.profileImagePath.value;
                                 ImageProvider? imageProvider;

@@ -66,7 +66,7 @@ class _SupportState extends State<Support> {
         });
       },
       style: ElevatedButton.styleFrom(
-        backgroundColor: isSelected ? Colors.black : Colors.grey[300],
+        backgroundColor: isSelected ? COLOR_PRIMARY : Colors.grey[300],
         foregroundColor: isSelected ? Colors.white : Colors.grey,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
@@ -99,6 +99,10 @@ class _SupportState extends State<Support> {
         _buildFAQTile('How do I reset my password?',
             'Click on "Forgot Password" on the login screen.'),
         _buildFAQTile('Can I update my email?',
+            'Go to account settings to update your details.'),
+        _buildFAQTile("What Should i do if i can't login?",
+            'Go to account settings to update your details.'),
+        _buildFAQTile('Is my Payment Information Secure?',
             'Go to account settings to update your details.'),
       ],
     );
@@ -482,22 +486,63 @@ class _SupportState extends State<Support> {
   }
 
   // FAQ Tile Widget
+//   Widget _buildFAQTile(String title, String content) {
+//     return SizedBox(
+//       height: 60,
+//       child: Card(
+//         margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+//         color: Color(0xffEBEFEF),
+//         shape: RoundedRectangleBorder(
+//           borderRadius: BorderRadius.circular(12),
+//         ),
+//         child: ExpansionTile(
+//           title: Text(title,
+//               style:
+//                   const TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
+//           children: [
+//             Padding(
+//               padding: const EdgeInsets.all(12.0),
+//               child: Text(content),
+//             ),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+// }
+
   Widget _buildFAQTile(String title, String content) {
-    return Card(
+    return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      // color: Colors.white24,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(6),
+        color: const Color(0xffEBEFEF),
       ),
-      child: ExpansionTile(
-        title: Text(title,
-            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: Text(content),
+      child: Theme(
+        data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+        child: ExpansionTile(
+          tilePadding: const EdgeInsets.symmetric(horizontal: 16),
+          childrenPadding: const EdgeInsets.symmetric(horizontal: 16),
+          title: SizedBox(
+            height: 60, // <-- controls collapsed title height
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                title,
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
           ),
-        ],
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 12.0),
+              child: Text(content),
+            ),
+          ],
+        ),
       ),
     );
   }

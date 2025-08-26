@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:virualapi/constants/constant.dart';
 import 'package:virualapi/utils/metrics.dart';
 import 'package:virualapi/widgets/body_with_header.dart';
 import 'package:virualapi/widgets/resusable_widget.dart';
 
 class Home extends StatefulWidget {
-  const Home({super.key});
+  final VoidCallback? onShowModal;
+  const Home({super.key, this.onShowModal});
 
   @override
   State<Home> createState() => _HomeState();
@@ -23,37 +25,37 @@ class _HomeState extends State<Home> {
       'title': '130 Million',
       'subtitle': 'Property\nRecords',
       'image': 'assets/icons/build.svg',
-      'image1': 'assets/icons/one.svg'
+      'image1': 'assets/icons/GroupHome1.svg'
     },
     {
       'title': '3.9 Billion',
       'subtitle': 'Historical\nRecords',
       'image': 'assets/icons/his.svg',
-      'image1': 'assets/icons/two.svg'
+      'image1': 'assets/icons/GroupHome2.svg'
     },
     {
       'title': '89 Billion',
       'subtitle': 'Business\nRecords',
       'image': 'assets/icons/sear.svg',
-      'image1': 'assets/icons/three.svg'
+      'image1': 'assets/icons/GroupHome3.svg'
     },
     {
       'title': '6 Billion',
       'subtitle': 'Consumer\nRecords',
       'image': 'assets/icons/consumer.svg',
-      'image1': 'assets/icons/four.svg'
+      'image1': 'assets/icons/GroupHome4.svg'
     },
     {
       'title': '600 Million',
       'subtitle': 'Court\nRecords',
       'image': 'assets/icons/coort.svg',
-      'image1': 'assets/icons/five.svg'
+      'image1': 'assets/icons/GroupHome5.svg'
     },
     {
       'title': '120 + Social',
       'subtitle': 'Networks',
       'image': 'assets/icons/socialrecord.svg',
-      'image1': 'assets/icons/six.svg'
+      'image1': 'assets/icons/GroupHome6.svg'
     },
   ];
 
@@ -66,54 +68,11 @@ class _HomeState extends State<Home> {
       subtitle: ' Confidence',
       istitle: true,
       body: SingleChildScrollView(
+        physics: BouncingScrollPhysics(),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(height: 10), // Safe area padding
-
-            // Header Section
-            // Padding(
-            //   padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            //   child: Column(
-            //     crossAxisAlignment: CrossAxisAlignment.start,
-            //     children: [
-            //       SizedBox(height: 16),
-
-            //       // Search Bar
-
-            //     ],
-            //   ),
-            // ),
-            // Container(
-            //   margin: EdgeInsets.symmetric(horizontal: 20),
-            //   decoration: BoxDecoration(
-            //       borderRadius: BorderRadius.circular(10),
-            //       border: Border.all(color: Colors.black12)),
-            //   child: Row(
-            //     children: [
-            //       Expanded(
-            //         child: TextFormField(
-            //           decoration: InputDecoration(
-            //             hintText: 'Search your data',
-            //             border: InputBorder.none,
-            //             contentPadding: EdgeInsets.only(left: 16),
-            //           ),
-            //         ),
-            //       ),
-            //       Container(
-            //         padding: EdgeInsets.all(12.5),
-            //         decoration: BoxDecoration(
-            //           color: Colors.black,
-            //           borderRadius: BorderRadius.only(
-            //               topRight: Radius.circular(10),
-            //               bottomRight: Radius.circular(10)),
-            //         ),
-            //         child: Icon(Icons.mic, color: Colors.white),
-            //       )
-            //     ],
-            //   ),
-            // ),
-            SizedBox(height: 24),
+            SizedBox(height: 20), // Safe area padding
 
             // Grid Section: Leading Reports
             Container(
@@ -136,7 +95,9 @@ class _HomeState extends State<Home> {
                           TextSpan(text: 'Get '),
                           TextSpan(
                             text: 'Industry\n',
-                            style: TextStyle(fontWeight: FontWeight.bold),
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: COLOR_PRIMARY),
                           ),
                           TextSpan(text: 'Leading Reports'),
                         ],
@@ -144,83 +105,113 @@ class _HomeState extends State<Home> {
                     ),
                   ),
                   SizedBox(height: 16),
-                  GridView.count(
-                    crossAxisCount: 3,
-                    crossAxisSpacing: 12,
-                    mainAxisSpacing: 12,
-                    shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
-                    children: [
-                      ReportCard(
-                        imageWidget: ReusableWidget.loadSvg(
-                            "assets/icons/contact.svg",
-                            height: 25),
-                        title: 'Contact',
-                        subtitle: 'Information',
-                      ),
-                      ReportCard(
-                        imageWidget: ReusableWidget.loadSvg(
-                            "assets/icons/location.svg",
-                            height: 25),
-                        title: 'Location',
-                        subtitle: 'History',
-                      ),
-                      ReportCard(
-                        imageWidget: ReusableWidget.loadSvg(
-                            "assets/icons/family.svg",
-                            height: 25),
-                        title: 'Family And',
-                        subtitle: 'Associates',
-                      ),
-                      ReportCard(
-                        imageWidget: ReusableWidget.loadSvg(
-                            "assets/icons/socialmedia.svg",
-                            height: 25),
-                        title: 'Social Media',
-                        subtitle: 'Accounts',
-                      ),
-                      ReportCard(
-                        imageWidget: ReusableWidget.loadSvg(
-                            "assets/icons/persondeails.svg",
-                            height: 25),
-                        title: 'Personal',
-                        subtitle: 'Details',
-                      ),
-                      ReportCard(
-                        imageWidget: ReusableWidget.loadSvg(
-                            "assets/icons/criminal.svg",
-                            height: 25),
-                        title: 'Criminal',
-                        subtitle: 'Records',
-                      )
-                    ],
+                  MediaQuery.removePadding(
+                    context: context,
+                    removeBottom: true,
+                    child: GridView.count(
+                      crossAxisCount: 3,
+                      crossAxisSpacing: 12,
+                      mainAxisSpacing: 12,
+                      shrinkWrap: true,
+                      physics:
+                          const NeverScrollableScrollPhysics(), // ✅ disable inner scroll
+                      padding: EdgeInsets.zero,
+
+                      children: [
+                        ReportCard(
+                            imageWidget: ReusableWidget.loadSvg(
+                                "assets/icons/contact1.svg",
+                                height: 40),
+                            title: 'Contact',
+                            subtitle: 'Information',
+                            onTap: widget.onShowModal),
+                        ReportCard(
+                            imageWidget: ReusableWidget.loadSvg(
+                                "assets/icons/contact6.svg",
+                                height: 40),
+                            title: 'Location',
+                            subtitle: 'History',
+                            onTap: widget.onShowModal),
+                        ReportCard(
+                            imageWidget: ReusableWidget.loadSvg(
+                                "assets/icons/contact5.svg",
+                                height: 40),
+                            title: 'Family And',
+                            subtitle: 'Associates',
+                            onTap: widget.onShowModal),
+                        ReportCard(
+                            imageWidget: ReusableWidget.loadSvg(
+                                "assets/icons/contact2.svg",
+                                height: 40),
+                            title: 'Social Media',
+                            subtitle: 'Accounts',
+                            onTap: widget.onShowModal),
+                        ReportCard(
+                            imageWidget: ReusableWidget.loadSvg(
+                                "assets/icons/contact3.svg",
+                                height: 40),
+                            title: 'Personal',
+                            subtitle: 'Details',
+                            onTap: widget.onShowModal),
+                        ReportCard(
+                            imageWidget: ReusableWidget.loadSvg(
+                                "assets/icons/contact4.svg",
+                                height: 40),
+                            title: 'Criminal',
+                            subtitle: 'Records',
+                            onTap: widget.onShowModal),
+                        ReportCard(
+                            imageWidget: ReusableWidget.loadSvg(
+                                "assets/icons/contact7.svg",
+                                height: 40),
+                            title: 'Property',
+                            subtitle: 'Records',
+                            onTap: widget.onShowModal),
+                        ReportCard(
+                            imageWidget: ReusableWidget.loadSvg(
+                                "assets/icons/contact9.svg",
+                                height: 40),
+                            title: 'Business',
+                            subtitle: 'Records',
+                            onTap: widget.onShowModal),
+                        ReportCard(
+                            imageWidget: ReusableWidget.loadSvg(
+                                "assets/icons/contact8.svg",
+                                height: 40),
+                            title: 'Comprehensive',
+                            subtitle: 'Reports',
+                            onTap: widget.onShowModal)
+                      ],
+                    ),
                   ),
                 ],
               ),
             ),
 
-            SizedBox(height: 24),
-
             // Records Section
             Container(
-              padding: EdgeInsets.symmetric(horizontal: 16),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  RichText(
-                    text: TextSpan(
-                      style: TextStyle(
-                          fontSize: 20,
-                          color: Colors.black,
-                          fontWeight: FontWeight.w300),
-                      children: [
-                        TextSpan(
-                            text: 'Billions ',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 28)),
-                        TextSpan(
-                            text: 'of Records', style: TextStyle(fontSize: 28)),
-                      ],
+                  Padding(
+                    padding: const EdgeInsets.all(5.0),
+                    child: RichText(
+                      text: TextSpan(
+                        style: TextStyle(
+                            fontSize: 20,
+                            color: Colors.black,
+                            fontWeight: FontWeight.w300),
+                        children: [
+                          TextSpan(
+                              text: 'Billions ',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 28)),
+                          TextSpan(
+                              text: 'of Records',
+                              style: TextStyle(fontSize: 28)),
+                        ],
+                      ),
                     ),
                   ),
                   SizedBox(height: 16),
@@ -234,9 +225,7 @@ class _HomeState extends State<Home> {
 
                         return Padding(
                           padding: EdgeInsets.only(
-                            right: index == Record.length - 1
-                                ? 0
-                                : 8, // spacing between cards
+                            right: index == Record.length - 1 ? 0 : 8,
                           ),
                           child: RecordCard(
                             title: item['title'],
@@ -252,7 +241,9 @@ class _HomeState extends State<Home> {
               ),
             ),
 
-            SizedBox(height: 24),
+            SizedBox(
+              height: 30,
+            )
           ],
         ),
       ),
@@ -260,150 +251,61 @@ class _HomeState extends State<Home> {
   }
 }
 
-// Report Card Widget
-// class ReportCard extends StatelessWidget {
-//   final Image image;
-//   final String title;
-//   final String subtitle;
-
-//   const ReportCard({
-//     required this.image,
-//     required this.title,
-//     required this.subtitle,
-//   });
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Container(
-//       padding: EdgeInsets.all(8),
-//       decoration: BoxDecoration(
-//         color: Color(0xffEBEFEF),
-//         borderRadius: BorderRadius.circular(8),
-//         boxShadow: [
-//           // BoxShadow(color: Colors.black12, blurRadius: 4, offset: Offset(0, 2)),
-//         ],
-//       ),
-//       child: Column(
-//         mainAxisAlignment: MainAxisAlignment.center,
-//         children: [
-//           Image.asset(image as String),
-//           SizedBox(height: 8),
-//           Text(
-//             title,
-//             style: TextStyle(
-//                 fontSize: 14, fontWeight: FontWeight.bold, color: Colors.black),
-//           ),
-//           Text(
-//             subtitle,
-//             style: TextStyle(fontSize: 12, color: Colors.grey[600]),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-// }
-
 class ReportCard extends StatelessWidget {
-  final Widget imageWidget; // Change from Image/String to Widget
+  final Widget imageWidget;
   final String title;
   final String subtitle;
+  final VoidCallback? onTap; // 👈 Add this
 
   const ReportCard({
     required this.imageWidget,
     required this.title,
     required this.subtitle,
+    this.onTap, // 👈 Accept from constructor
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(0),
-      decoration: BoxDecoration(
-        color: Color(0xffEBEFEF),
-        borderRadius: BorderRadius.circular(5),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          imageWidget, // Directly use the widget
-          SizedBox(height: 8),
-          Text(
-            title,
-            style: TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w600,
-              color: Colors.black,
+    return GestureDetector(
+      onTap: onTap, // 👈 Tap callback here
+      child: Container(
+        padding: EdgeInsets.all(0),
+        decoration: BoxDecoration(
+          color: Color(0xffEBEFEF),
+          // color: COLOR_PRIMARY,
+          // gradient: LinearGradient(
+          //   colors: [COLOR_PRIMARY, DARK_BG_COLOR],
+          //   begin: Alignment.topLeft,
+          //   end: Alignment.bottomRight,
+          // ),
+
+          // border: Border.all(width: 1, color: COLOR_PRIMARY),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            imageWidget,
+            SizedBox(height: 8),
+            Text(
+              title,
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+                color: Colors.black,
+              ),
             ),
-          ),
-          Text(
-            subtitle,
-            style: TextStyle(fontSize: 11.5, color: Colors.black87),
-          ),
-        ],
+            Text(
+              subtitle,
+              style: TextStyle(fontSize: 11.5, color: Colors.black87),
+            ),
+          ],
+        ),
       ),
     );
   }
 }
-
-// Record Card Widget
-// class RecordCard extends StatelessWidget {
-//   final String title;
-//   final String subtitle;
-//   final String? image; // Icon/image displayed at the top
-//   final String? image1; // Background image
-
-//   const RecordCard({
-//     required this.title,
-//     required this.subtitle,
-//     required this.image,
-//     required this.image1,
-//   });
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Container(
-//       width: 140,
-//       height: 100,
-//       padding: EdgeInsets.all(12),
-//       margin: EdgeInsets.symmetric(horizontal: 6), // spacing between cards
-//       decoration: BoxDecoration(
-//         color: Colors.black87,
-//         borderRadius: BorderRadius.circular(8),
-//       ),
-//       child: Stack(
-//         // crossAxisAlignment: CrossAxisAlignment.start,
-//         children: [
-//           Image.asset(
-//             ReusableWidget.loadSvg(image1!, height: 25),
-//           ),
-//           if (image != null) ReusableWidget.loadSvg(image!, height: 25),
-//           // Image.asset(
-//           //   image!,
-//           //   width: 32,
-//           //   height: 32,
-//           //   fit: BoxFit.contain,
-//           // ),
-//           SizedBox(height: 12),
-//           Text(
-//             title,
-//             style: TextStyle(
-//               fontSize: 15,
-//               color: Colors.white,
-//             ),
-//           ),
-//           Text(
-//             subtitle,
-//             style: TextStyle(
-//               fontSize: 13,
-//               color: Colors.white,
-//             ),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-// }
 
 class RecordCard extends StatelessWidget {
   final String title;

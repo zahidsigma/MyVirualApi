@@ -11,6 +11,14 @@ PODS:
     - PromisesObjC (~> 2.4)
   - device_info_plus (0.0.1):
     - Flutter
+  - FBAEMKit (18.0.0):
+    - FBSDKCoreKit_Basics (= 18.0.0)
+  - FBSDKCoreKit (18.0.0):
+    - FBAEMKit (= 18.0.0)
+    - FBSDKCoreKit_Basics (= 18.0.0)
+  - FBSDKCoreKit_Basics (18.0.0)
+  - FBSDKLoginKit (18.0.0):
+    - FBSDKCoreKit (= 18.0.0)
   - Firebase/Auth (11.15.0):
     - Firebase/CoreOnly
     - FirebaseAuth (~> 11.15.0)
@@ -64,6 +72,9 @@ PODS:
     - GoogleUtilities/UserDefaults (~> 8.1)
     - nanopb (~> 3.30910.0)
   - Flutter (1.0.0)
+  - flutter_facebook_auth (7.1.2):
+    - FBSDKLoginKit (~> 18.0.0)
+    - Flutter
   - flutter_inappwebview_ios (0.0.1):
     - Flutter
     - flutter_inappwebview_ios/Core (= 0.0.1)
@@ -71,9 +82,13 @@ PODS:
   - flutter_inappwebview_ios/Core (0.0.1):
     - Flutter
     - OrderedSet (~> 6.0.3)
+  - flutter_keyboard_visibility (0.0.1):
+    - Flutter
   - flutter_local_notifications (0.0.1):
     - Flutter
   - flutter_pdfview (1.0.2):
+    - Flutter
+  - flutter_secure_storage (6.0.0):
     - Flutter
   - google_sign_in_ios (0.0.1):
     - AppAuth (>= 1.7.4)
@@ -145,6 +160,8 @@ PODS:
   - PhoneNumberKit/PhoneNumberKitCore (3.8.0)
   - PhoneNumberKit/UIKit (3.8.0):
     - PhoneNumberKit/PhoneNumberKitCore
+  - pointer_interceptor_ios (0.0.1):
+    - Flutter
   - printing (1.0.0):
     - Flutter
   - PromisesObjC (2.4.0)
@@ -226,9 +243,12 @@ DEPENDENCIES:
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
   - firebase_messaging (from `.symlinks/plugins/firebase_messaging/ios`)
   - Flutter (from `Flutter`)
+  - flutter_facebook_auth (from `.symlinks/plugins/flutter_facebook_auth/ios`)
   - flutter_inappwebview_ios (from `.symlinks/plugins/flutter_inappwebview_ios/ios`)
+  - flutter_keyboard_visibility (from `.symlinks/plugins/flutter_keyboard_visibility/ios`)
   - flutter_local_notifications (from `.symlinks/plugins/flutter_local_notifications/ios`)
   - flutter_pdfview (from `.symlinks/plugins/flutter_pdfview/ios`)
+  - flutter_secure_storage (from `.symlinks/plugins/flutter_secure_storage/ios`)
   - google_sign_in_ios (from `.symlinks/plugins/google_sign_in_ios/darwin`)
   - image_picker_ios (from `.symlinks/plugins/image_picker_ios/ios`)
   - libphonenumber_plugin (from `.symlinks/plugins/libphonenumber_plugin/ios`)
@@ -236,6 +256,7 @@ DEPENDENCIES:
   - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
   - permission_handler_apple (from `.symlinks/plugins/permission_handler_apple/ios`)
   - PhoneNumberKit (~> 3.6)
+  - pointer_interceptor_ios (from `.symlinks/plugins/pointer_interceptor_ios/ios`)
   - printing (from `.symlinks/plugins/printing/ios`)
   - share_plus (from `.symlinks/plugins/share_plus/ios`)
   - shared_preferences_foundation (from `.symlinks/plugins/shared_preferences_foundation/darwin`)
@@ -249,6 +270,10 @@ SPEC REPOS:
   trunk:
     - AppAuth
     - AppCheckCore
+    - FBAEMKit
+    - FBSDKCoreKit
+    - FBSDKCoreKit_Basics
+    - FBSDKLoginKit
     - Firebase
     - FirebaseAppCheckInterop
     - FirebaseAuth
@@ -288,12 +313,18 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/firebase_messaging/ios"
   Flutter:
     :path: Flutter
+  flutter_facebook_auth:
+    :path: ".symlinks/plugins/flutter_facebook_auth/ios"
   flutter_inappwebview_ios:
     :path: ".symlinks/plugins/flutter_inappwebview_ios/ios"
+  flutter_keyboard_visibility:
+    :path: ".symlinks/plugins/flutter_keyboard_visibility/ios"
   flutter_local_notifications:
     :path: ".symlinks/plugins/flutter_local_notifications/ios"
   flutter_pdfview:
     :path: ".symlinks/plugins/flutter_pdfview/ios"
+  flutter_secure_storage:
+    :path: ".symlinks/plugins/flutter_secure_storage/ios"
   google_sign_in_ios:
     :path: ".symlinks/plugins/google_sign_in_ios/darwin"
   image_picker_ios:
@@ -306,6 +337,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/path_provider_foundation/darwin"
   permission_handler_apple:
     :path: ".symlinks/plugins/permission_handler_apple/ios"
+  pointer_interceptor_ios:
+    :path: ".symlinks/plugins/pointer_interceptor_ios/ios"
   printing:
     :path: ".symlinks/plugins/printing/ios"
   share_plus:
@@ -327,6 +360,10 @@ SPEC CHECKSUMS:
   AppAuth: d4f13a8fe0baf391b2108511793e4b479691fb73
   AppCheckCore: cc8fd0a3a230ddd401f326489c99990b013f0c4f
   device_info_plus: bf2e3232933866d73fe290f2942f2156cdd10342
+  FBAEMKit: e34530df538b8eb8aeb53c35867715ba6c63ef0c
+  FBSDKCoreKit: d3f479a69127acebb1c6aad91c1a33907bcf6c2f
+  FBSDKCoreKit_Basics: 017b6dc2a1862024815a8229e75661e627ac1e29
+  FBSDKLoginKit: 5875762d1fe09ddcb05d03365d4f5dc34413843d
   Firebase: d99ac19b909cd2c548339c2241ecd0d1599ab02e
   firebase_auth: b8ed959bf77eca5cf0312b5e29708fe8311a0ddf
   firebase_core: cf4d42a8ac915e51c0c2dc103442f3036d941a2d
@@ -340,9 +377,12 @@ SPEC CHECKSUMS:
   FirebaseInstallations: 317270fec08a5d418fdbc8429282238cab3ac843
   FirebaseMessaging: 3b26e2cee503815e01c3701236b020aa9b576f09
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
+  flutter_facebook_auth: fa503a7103e482577bf50694ceefe6b61a78ef1a
   flutter_inappwebview_ios: 6f63631e2c62a7c350263b13fa5427aedefe81d4
+  flutter_keyboard_visibility: 0339d06371254c3eb25eeb90ba8d17dca8f9c069
   flutter_local_notifications: 4cde75091f6327eb8517fa068a0a5950212d2086
   flutter_pdfview: 2e4d13ffb774858562ffbdfdb61b40744b191adc
+  flutter_secure_storage: d33dac7ae2ea08509be337e775f6b59f1ff45f12
   google_sign_in_ios: 7411fab6948df90490dc4620ecbcabdc3ca04017
   GoogleDataTransport: aae35b7ea0c09004c3797d53c8c41f66f219d6a7
   GoogleSignIn: ce8c89bb9b37fb624b92e7514cc67335d1e277e4
@@ -357,6 +397,7 @@ SPEC CHECKSUMS:
   path_provider_foundation: 2b6b4c569c0fb62ec74538f866245ac84301af46
   permission_handler_apple: 9878588469a2b0d0fc1e048d9f43605f92e6cec2
   PhoneNumberKit: ec00ab8cef5342c1dc49fadb99d23fa7e66cf0ef
+  pointer_interceptor_ios: 508241697ff0947f853c061945a8b822463947c1
   printing: 233e1b73bd1f4a05615548e9b5a324c98588640b
   PromisesObjC: f5707f49cb48b9636751c5b2e7d227e43fba9f47
   RecaptchaInterop: 11e0b637842dfb48308d242afc3f448062325aba

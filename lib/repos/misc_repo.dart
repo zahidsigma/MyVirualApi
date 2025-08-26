@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:virualapi/core/error/failure.dart';
 import 'package:virualapi/datasource/misc_datasource.dart';
 import 'package:virualapi/models/contact_us.dart';
+import 'package:virualapi/models/dynamic_price.dart';
 import 'package:virualapi/models/search_history.dart';
 
 class MiscRepository {
@@ -47,8 +48,19 @@ class MiscRepository {
           .getSearchHistory(); // This calls your actual data source
       return Right(res); // Success: returns SearchHistoryModel
     } catch (e) {
+      print(e);
       return Left(Error(
           errorMessage: e.toString())); // Failure: returns your Failure class
+    }
+  }
+
+  @override
+  Future<Either<Failure, PricingResponse>> getPricing() async {
+    try {
+      final res = await miscDataSource.getPricing(); // Calls DataSource
+      return Right(res); // Success
+    } catch (e) {
+      return Left(Error(errorMessage: e.toString())); // Wrap in your Failure
     }
   }
 

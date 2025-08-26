@@ -1,97 +1,28 @@
 // class Login {
-//   String? token; // Change the name from authToken to token
-//   String? email;
-
-//   Login({
-//     this.token,
-//     this.email,
-//   });
-
-//   // Update the fromJson method to correctly parse the response
-//   Login.fromJson(Map<String, dynamic> json) {
-//     token = json['data'] != null ? json['data']['token'] : null;
-//     email = json['data'] != null ? json['data']['email'] : null;
-//   }
-
-//   Map<String, dynamic> toJson() {
-//     return {
-//       'token': token,
-//       'email': email,
-//     };
-//   }
-// }
-
-class Login {
-  String? token;
-  String? email;
-  String? message;
-
-  Login({
-    this.token,
-    this.email,
-    this.message,
-  });
-
-  // From JSON with 'data' wrapper
-  factory Login.fromJson(Map<String, dynamic> json) {
-    return Login(
-      token: json['data'] != null ? json['data']['token'] : null,
-      email: json['data'] != null ? json['data']['email'] : null,
-      message: json['message'],
-    );
-  }
-
-  // To JSON with 'data' wrapper
-  Map<String, dynamic> toJson() {
-    return {
-      'data': {
-        'token': token,
-        'email': email,
-      },
-      'message': message,
-    };
-  }
-
-  @override
-  String toString() {
-    return 'Login(token: $token, email: $email, message: $message)';
-  }
-}
-
-// import 'package:virualapi/models/user.dart';
-
-// class Login {
 //   String? token;
 //   String? email;
 //   String? message;
-//   User? user; // Add the User object here
 
 //   Login({
 //     this.token,
 //     this.email,
 //     this.message,
-//     this.user, // Add user in the constructor
 //   });
 
-//   // From JSON with 'data' wrapper
 //   factory Login.fromJson(Map<String, dynamic> json) {
+//     final data = json['data'] ?? {};
 //     return Login(
-//       token: json['data'] != null ? json['data']['token'] : null,
-//       email: json['data'] != null ? json['data']['email'] : null,
+//       token: data['token'],
+//       email: data['email'],
 //       message: json['message'],
-//       user: json['data'] != null
-//           ? User.fromJson(json['data']['user'])
-//           : null, // Parse the user data
 //     );
 //   }
 
-//   // To JSON with 'data' wrapper
 //   Map<String, dynamic> toJson() {
 //     return {
 //       'data': {
 //         'token': token,
 //         'email': email,
-//         'user': user?.toJson(), // Include user data in the JSON
 //       },
 //       'message': message,
 //     };
@@ -99,6 +30,102 @@ class Login {
 
 //   @override
 //   String toString() {
-//     return 'Login(token: $token, email: $email, message: $message, user: $user)';
+//     return 'Login(token: $token, email: $email, message: $message)';
 //   }
 // }
+
+// class Login {
+//   String? token;
+//   String? email;
+//   String? message;
+
+//   Login({
+//     this.token,
+//     this.email,
+//     this.message,
+//   });
+
+//   factory Login.fromJson(Map<String, dynamic> json) {
+//     final data = json['data'];
+
+//     return Login(
+//       token: data != null ? data['token'] : json['token'],
+//       email: data != null ? data['email'] : json['email'],
+//       message: json['message'],
+//     );
+//   }
+
+//   Map<String, dynamic> toJson() {
+//     final hasData = token != null || email != null;
+
+//     return {
+//       if (hasData)
+//         'data': {
+//           'token': token,
+//           'email': email,
+//         }
+//       else ...{
+//         'token': token,
+//         'email': email,
+//       },
+//       'message': message,
+//     };
+//   }
+
+//   @override
+//   String toString() {
+//     return 'Login(token: $token, email: $email, message: $message)';
+//   }
+// }
+
+class Login {
+  String? token;
+  String? email;
+  String? message;
+  String? deviceToken; // Optional device token
+
+  Login({
+    this.token,
+    this.email,
+    this.message,
+    this.deviceToken,
+  });
+
+  factory Login.fromJson(Map<String, dynamic> json) {
+    final data = json['data'];
+
+    return Login(
+      token: data != null ? data['token'] : json['token'],
+      email: data != null ? data['email'] : json['email'],
+      deviceToken: data != null
+          ? data['device_token']
+          : json['device_token'], // parse optional
+      message: json['message'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    final hasData = token != null || email != null || deviceToken != null;
+
+    return {
+      if (hasData)
+        'data': {
+          'token': token,
+          'email': email,
+          if (deviceToken != null)
+            'device_token': deviceToken, // only add if not null
+        }
+      else ...{
+        'token': token,
+        'email': email,
+        if (deviceToken != null) 'device_token': deviceToken,
+      },
+      'message': message,
+    };
+  }
+
+  @override
+  String toString() {
+    return 'Login(token: $token, email: $email, deviceToken: $deviceToken, message: $message)';
+  }
+}

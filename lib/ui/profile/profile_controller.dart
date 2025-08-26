@@ -3,9 +3,11 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:dartz/dartz.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:get/get.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'package:virualapi/constants/config.dart';
@@ -16,15 +18,18 @@ import 'package:virualapi/models/user.dart';
 import 'package:virualapi/repos/misc_repo.dart';
 import 'package:virualapi/repos/user_repo.dart';
 import 'package:virualapi/services/app_preferences.dart';
+import 'package:virualapi/services/firebase_service.dart';
 import 'package:virualapi/ui/support/contact_us_coroller.dart';
 import 'package:virualapi/utils/snackbar_util.dart';
+
+enum ProfileView { profile, recentList, recentDetail }
 
 class ProfileController extends GetxController {
   final UserRepository _userRepository = Get.find();
   final UserDataSource userDataSource = UserDataSourceImpl();
-
+  final FirebaseService _firebaseService = FirebaseService();
   final ImagePicker _picker = ImagePicker();
-
+  final Dio dio = Dio();
   Rx<File?> userImageFile = Rx<File?>(null);
   RxString profileImagePath = ''.obs;
   RxBool isBusy = false.obs;
@@ -39,9 +44,28 @@ class ProfileController extends GetxController {
 
   late User? user;
 
+  var currentView = ProfileView.profile.obs;
+
+  void goToRecentList() {
+    currentView.value = ProfileView.recentList;
+  }
+
+  void goToRecentDetail() {
+    currentView.value = ProfileView.recentDetail;
+  }
+
+  void goToProfile() {
+    currentView.value = ProfileView.profile;
+  }
+
+  void resetToProfile() {
+    currentView.value = ProfileView.profile;
+  }
+
   @override
   void onInit() {
     super.onInit();
+
     loadUserFromPrefs();
     print("ProfileController created: $hashCode");
 
@@ -106,7 +130,7 @@ class ProfileController extends GetxController {
         profileImagePath.value = userData.data.image?.isNotEmpty == true
             ? "${AppConfig.imageBaseUrl}/${userData.data.image}"
             : '';
-        AppPreferences.setUserData(userData);
+        AppPreferences.setUserData(userData.toJson());
       },
     );
   }
@@ -175,7 +199,7 @@ class ProfileController extends GetxController {
           message: 'Profile updated successfully',
         );
 
-        await AppPreferences.setUserData(updatedUser);
+        await AppPreferences.setUserData(updatedUser.toJson());
         _updateUserFields(updatedUser);
 
         SnackbarUtil.info(message: updatedUser.message ?? "Profile updated");
@@ -189,15 +213,106 @@ class ProfileController extends GetxController {
     }
   }
 
-  Future<void> logoutUser() async {
-    isBusy.value = true;
-    await AppPreferences.clearUserData();
-    Get.deleteAll();
-    if (Get.isRegistered<ProfileController>()) {
-      Get.delete<ProfileController>();
-    }
+  // Future<void> logoutUser() async {
+  //   isBusy.value = true;
+  //   await AppPreferences.clearUserData();
+  //   Get.deleteAll();
+  //   if (Get.isRegistered<ProfileController>()) {
+  //     Get.delete<ProfileController>();
+  //   }
 
-    isBusy.value = false;
-    Get.offAllNamed('/login');
+  //   isBusy.value = false;
+  //   Get.offAllNamed('/login');
+  // }
+
+//   Future<void> logoutUser({String? provider}) async {
+//     isBusy.value = true;
+
+//     try {
+//       // Sign out social provider if any
+//       if (provider == 'google.com') {
+//         await _firebaseService.signOut();
+//         print("Signed out from Google");
+//       }
+//       // For Apple, just sign out Firebase (no explicit Apple sign out)
+
+//       // Sign out Firebase auth
+//       // await _auth.signOut();
+//       print("Signed out from Firebase");
+
+//       // Clear local stored data
+//       await AppPreferences.clearUserData();
+
+//       // Clear controllers
+//       Get.deleteAll();
+//       if (Get.isRegistered<ProfileController>()) {
+//         Get.delete<ProfileController>();
+//       }
+
+//       // Navigate to login screen
+//       Get.offAllNamed('/login');
+//     } catch (e) {
+//       print("Error during logout: $e");
+//       // Optionally show snackbar or error message here
+//     } finally {
+//       isBusy.value = false;
+//     }
+//   }
+// }
+
+  Future<void> logoutUser({String? provider}) async {
+    isBusy.value = true;
+
+    try {
+      // 🔹 Fetch tokens inside (no need to pass them in)
+      final token = await AppPreferences.getAuthToken();
+      final fcmToken = await AppPreferences.getFCMToken();
+      print("logout,$fcmToken");
+      print("logout:$token");
+      // 1. Call logout API
+      final dio = Dio(BaseOptions(
+        baseUrl:
+            'https://server.testlinkwebsitespace.com/virtual-pi-backend/public/api',
+      ));
+
+      await dio.post(
+        '/logout?fcm_token=$fcmToken',
+        options: Options(
+          headers: {
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $token',
+          },
+        ),
+      );
+      // print("Logout API called successfully", $options);
+
+      // 2. Social provider handling
+      if (provider == 'google.com') {
+        await _firebaseService.signOut();
+        print("Signed out from Google");
+      } else if (provider == 'apple.com') {
+        print("Apple user, skipping explicit provider logout");
+      }
+
+      // 3. Firebase logout
+      // await _auth.signOut();
+      print("Signed out from Firebase");
+
+      // 4. Clear local data
+      await AppPreferences.clearUserData();
+
+      // 5. Clear controllers
+      Get.deleteAll();
+      if (Get.isRegistered<ProfileController>()) {
+        Get.delete<ProfileController>();
+      }
+
+      // 6. Navigate to login
+      Get.offAllNamed('/login');
+    } catch (e) {
+      print("Error during logout: $e");
+    } finally {
+      isBusy.value = false;
+    }
   }
 }

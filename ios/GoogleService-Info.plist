@@ -3,9 +3,11 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>360069957260-2dkemr5ui9up3slha931f5o6i2gm614s.apps.googleusercontent.com</string>
+	<string>360069957260-4769snd78p9n9mkhrag0enjk6d4aobqv.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.360069957260-2dkemr5ui9up3slha931f5o6i2gm614s</string>
+	<string>com.googleusercontent.apps.360069957260-4769snd78p9n9mkhrag0enjk6d4aobqv</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>360069957260-a7u94uov7tl6clsq6okilreu5kihhgds.apps.googleusercontent.com</string>
 	<key>API_KEY</key>
 	<string>AIzaSyDwYx27paRTAkrR_t6Y8614QucTWcKmAOQ</string>
 	<key>GCM_SENDER_ID</key>
@@ -13,7 +15,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.example.virualapi</string>
+	<string>com.harrissiderakis.virtualapi</string>
 	<key>PROJECT_ID</key>
 	<string>my-virtual-pi-dd104</string>
 	<key>STORAGE_BUCKET</key>
@@ -29,6 +31,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:360069957260:ios:7a0afdc2be7408cef3dda9</string>
+	<string>1:360069957260:ios:7cf9ee7e3ac646c6f3dda9</string>
 </dict>
 </plist>

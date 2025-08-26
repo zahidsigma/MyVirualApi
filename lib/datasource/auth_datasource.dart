@@ -10,7 +10,8 @@ import '../core/error/failure.dart';
 
 abstract class AuthDataSource {
   Future<Map<String, dynamic>> createUser({required Map<String, dynamic> data});
-  Future<Login> login({required String email, required String password});
+  Future<Login> login(
+      {required String email, required String password, String? deviceToken});
   // Future<Login> verifyOTP({required String otp, required String email});
   Future<bool> verifyOTP({required String otp, required String email});
 
@@ -38,24 +39,96 @@ class AuthDataSourceImpl extends AuthDataSource {
   }
 
   @override
+  // Future<Login> login({
+  //   required String email,
+  //   required String password,
+  // }) async {
+  //   try {
+  //     var res = await dio.post(
+  //       ApiUrlUtils.getApiUrl(UrlEndPointEnum.login),
+  //       data: {"email": email, "password": password},
+  //     );
+
+  //     // If the response is a String (maybe an error message)
+  //     if (res.data is String) {
+  //       print("Received String: ${res.data}");
+  //       // Handle the string case or return a custom error message
+  //       throw Error(errorMessage: res.data);
+  //     }
+
+  //     // If the response is a Map<String, dynamic>, proceed with parsing
+  //     if (res.data is Map<String, dynamic>) {
+  //       return Login.fromJson(res.data);
+  //     } else {
+  //       throw Error(errorMessage: 'Unexpected response format');
+  //     }
+  //   } catch (e) {
+  //     throw Error.getError(e);
+  //   }
+  // }
+  // Future<Login> login({
+  //   required String email,
+  //   required String password,
+  //   String? deviceToken, // optional FCM token parameter
+  // }) async {
+  //   try {
+  //     // Build the request data map
+  //     final Map<String, dynamic> requestData = {
+  //       "email": email,
+  //       "password": password,
+  //     };
+
+  //     // Add fcmToken only if it's not null
+  //     if (deviceToken != null) {
+  //       requestData['fcm_token'] = deviceToken;
+  //     }
+
+  //     var res = await dio.post(
+  //       ApiUrlUtils.getApiUrl(UrlEndPointEnum.login),
+  //       data: requestData,
+  //     );
+
+  //     if (res.data is String) {
+  //       print("Received String: ${res.data}");
+  //       throw Error(errorMessage: res.data);
+  //     }
+
+  //     if (res.data is Map<String, dynamic>) {
+  //       return Login.fromJson(res.data);
+  //     } else {
+  //       throw Error(errorMessage: 'Unexpected response format');
+  //     }
+  //   } catch (e) {
+  //     throw Error.getError(e);
+  //   }
+  // }
   Future<Login> login({
     required String email,
     required String password,
+    String? deviceToken,
   }) async {
     try {
+      final Map<String, dynamic> requestData = {
+        "email": email,
+        "password": password,
+        if (deviceToken != null)
+          'device_token': deviceToken, // Conditionally add device_token
+      };
+
+      print("Response: $requestData");
+
       var res = await dio.post(
         ApiUrlUtils.getApiUrl(UrlEndPointEnum.login),
-        data: {"email": email, "password": password},
+        data: requestData,
       );
 
-      // If the response is a String (maybe an error message)
+      print("Response: $res");
+
       if (res.data is String) {
         print("Received String: ${res.data}");
-        // Handle the string case or return a custom error message
         throw Error(errorMessage: res.data);
       }
 
-      // If the response is a Map<String, dynamic>, proceed with parsing
       if (res.data is Map<String, dynamic>) {
         return Login.fromJson(res.data);
       } else {

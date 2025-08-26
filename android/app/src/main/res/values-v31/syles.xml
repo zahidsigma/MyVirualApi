@@ -1,0 +1,19 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- Android 12+ Splash Screen -->
+    <style name="LaunchTheme" parent="Theme.SplashScreen">
+        <!-- Background color -->
+        <item name="windowSplashScreenBackground">@android:color/white</item>
+
+        <!-- Center icon/logo -->
+        <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher_foreground</item>
+
+        <!-- Icon background transparency - REMOVED COLOR -->
+        <item name="windowSplashScreenIconBackgroundColor">@android:color/transparent</item>
+        <item name="android:windowSplashScreenIconBackgroundColor">@android:color/transparent</item>
+
+        <!-- After splash, go to main theme -->
+        <item name="postSplashScreenTheme">@style/AppTheme</item>
+    </style>
+
+</resources>

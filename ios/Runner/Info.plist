@@ -7,7 +7,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Virualapi</string>
+	<string>VirtualPi</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -22,21 +22,48 @@
 	<string>$(FLUTTER_BUILD_NAME)</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.googleusercontent.apps.360069957260-4769snd78p9n9mkhrag0enjk6d4aobqv</string>
+			</array>
+		</dict>
+	</array>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
+	<key>FirebaseAppDelegateProxyEnabled</key>
+	<true/>
+	<key>FirebaseMessagingAutoInitEnabled</key>
+	<true/>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSBonjourServices</key>
+	<array>
+		<string>_dartobservatory._tcp</string>
+		<string>_flutterHost._tcp</string>
+	</array>
 	<key>NSCameraUsageDescription</key>
 	<string>We need access to your camera to scan cards or take photos.</string>
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>This app needs access to the local network for debugging and communication.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>We need access to save photos to your library.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>We need access to your photo library to select photos.</string>
+	<key>NSPushNotificationsUsageDescription</key>
+	<string>This app uses notifications to send you important updates.</string>
+	<key>NSUserTrackingUsageDescription</key>
+	<string>This identifier will be used to deliver personalized ads to you.</string>
+	<key>SignInWithApple</key>
+	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
-	<key>FirebaseAppDelegateProxyEnabled</key>
-   <false/>
-
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>remote-notification</string>
+	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>

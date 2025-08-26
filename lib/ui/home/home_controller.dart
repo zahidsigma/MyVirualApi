@@ -88,7 +88,7 @@ class HomeController extends GetxController {
         print("Fetched User Data: ${userData.toJson()}"); // Log user data
         user.value = userData;
         userName.value = userData.data.name ?? 'User';
-        AppPreferences.setUserData(userData);
+        AppPreferences.setUserData(userData.toJson());
         Get.put<User>(userData); // Optional if needed elsewhere
       },
     );

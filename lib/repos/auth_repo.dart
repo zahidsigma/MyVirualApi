@@ -141,6 +141,22 @@ class AuthRepository {
     return 'An unknown error occurred.';
   }
 
+  // Future<Either<Failure, Map<String, dynamic>>> createUser({
+  //   required Map<String, dynamic> data,
+  // }) async {
+  //   return _handleRequest(() async {
+  //     final response = await _authDataSource.createUser(data: data);
+
+  //     if (response['success'] == false) {
+  //       final errorMessage = _extractErrorMessage(response['message']);
+  //       print(errorMessage);
+  //       throw Error(errorMessage: errorMessage);
+  //     }
+
+  //     return response; // ✅ Return full response, not just data
+  //   });
+  // }
+
   Future<Either<Failure, Map<String, dynamic>>> createUser({
     required Map<String, dynamic> data,
   }) async {
@@ -153,19 +169,37 @@ class AuthRepository {
         throw Error(errorMessage: errorMessage);
       }
 
-      return response; // ✅ Return full response, not just data
+      return response; // Return full response when success
     });
   }
 
   /// Login user and store login data
+  // Future<Either<Failure, Login>> login({
+  //   required String email,
+  //   required String password,
+  // }) async {
+  //   return _handleRequest(() async {
+  //     var res = await _authDataSource.login(email: email, password: password);
+  //     // Store user model in preferences after successful login
+  //     AppPreferences.setLoginData(res);
+  //     return res;
+  //   });
+  // }
+
   Future<Either<Failure, Login>> login({
     required String email,
     required String password,
+    String? deviceToken, // add optional fcmToken parameter
   }) async {
     return _handleRequest(() async {
-      var res = await _authDataSource.login(email: email, password: password);
+      // Pass the fcmToken to your data source login method
+      var res = await _authDataSource.login(
+        email: email,
+        password: password,
+        deviceToken: deviceToken,
+      );
       // Store user model in preferences after successful login
-      AppPreferences.setLoginData(res);
+      await AppPreferences.setLoginData(res);
       return res;
     });
   }

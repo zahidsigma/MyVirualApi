@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 
@@ -146,6 +147,8 @@ import 'package:flutter_stripe/flutter_stripe.dart';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 // Contains StripeSecret
 
 class PaymentIntentData {
@@ -184,12 +187,27 @@ class StripeService {
 
       // Step 3: Present Payment Sheet
       await Stripe.instance.presentPaymentSheet();
+
       print('✅ Payment completed successfully.');
+      ScaffoldMessenger.of(Get.context!).showSnackBar(
+        SnackBar(
+          backgroundColor: Colors.green,
+          content: Text('Payment completed successfully.'),
+          duration: Duration(seconds: 3),
+        ),
+      );
 
       // Return the PaymentIntent ID for logging or backend use
       return paymentIntentData.id;
     } catch (e) {
       print('❌ Payment error: $e');
+      ScaffoldMessenger.of(Get.context!).showSnackBar(
+        SnackBar(
+          backgroundColor: Colors.red,
+          content: Text('Payment failed: ${e.toString()}'),
+          duration: Duration(seconds: 3),
+        ),
+      );
       return null;
     }
   }

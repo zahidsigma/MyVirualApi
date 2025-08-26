@@ -245,7 +245,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:virualapi/constants/constant.dart';
 import 'package:virualapi/ui/Addon/Addon_screen.dart';
+import 'package:virualapi/ui/home/home_top_header.dart';
 import 'package:virualapi/utils/metrics.dart';
+import 'package:virualapi/widgets/custom_Header.dart';
 
 class ResultScreen extends StatefulWidget {
   @override
@@ -311,15 +313,21 @@ class _ResultScreenState extends State<ResultScreen> {
     List<dynamic> paginatedPersons = getPaginatedPersons();
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Search Results"),
-        backgroundColor: COLOR_PRIMARY,
-      ),
       body: Column(
         children: [
+          // HomeTopHeader(),
+          CustomHeader(
+            title: "Search Result",
+            onBackPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+          SizedBox(
+            height: 10,
+          ),
           // 📌 Age Range Slider
           Padding(
-            padding: EdgeInsets.all(16.0),
+            padding: EdgeInsets.only(left: 10, right: 10, top: 12),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -351,135 +359,156 @@ class _ResultScreenState extends State<ResultScreen> {
 
           // 📌 Display Results
           Expanded(
-            child: ListView.builder(
-              itemCount: paginatedPersons.length,
-              itemBuilder: (context, index) {
-                var person = paginatedPersons[index];
-                String tahoeId = person['tahoeId']?.toString() ?? '';
+            child: MediaQuery.removePadding(
+              removeTop: true,
+              context: context,
+              child: ListView.builder(
+                itemCount: paginatedPersons.length,
+                itemBuilder: (context, index) {
+                  var person = paginatedPersons[index];
+                  String tahoeId = person['tahoeId']?.toString() ?? '';
 
-                var emailList =
-                    person['emailAddresses'] as List<dynamic>? ?? [];
-                var phoneList = person['phoneNumbers'] as List<dynamic>? ?? [];
-                var addressList = person['addresses'] as List<dynamic>? ?? [];
-                String firstName = person['name']['firstName'] ?? 'Unknown';
-                String lastName = person['name']['lastName'] ?? 'Unknown';
-                String key = "$firstName-$lastName";
-                String age = person['age'].toString() ?? 'N/A';
-                String gender = person['gender'] ?? 'N/A';
-                String dob = person['dob'].toString() ?? 'N/A';
-                String email = emailList.isNotEmpty
-                    ? emailList.first['emailAddress']
-                    : "No email available";
-                String phone = phoneList.isNotEmpty
-                    ? phoneList.first['phoneNumber'] ?? "No phone available"
-                    : "No phone available";
-                String address = addressList.isNotEmpty
-                    ? "${addressList.first['city'] ?? ''}, "
-                        "${addressList.first['state'] ?? ''}, "
-                        "${addressList.first['zip'] ?? ''}"
-                    : "No address available";
+                  var emailList =
+                      person['emailAddresses'] as List<dynamic>? ?? [];
+                  var phoneList =
+                      person['phoneNumbers'] as List<dynamic>? ?? [];
+                  var addressList =
+                      (person['addresses'] as List<dynamic>? ?? [])
+                          .map((e) => e as Map<String, dynamic>)
+                          .toList();
 
-                return Container(
-                  margin: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                  padding: EdgeInsets.symmetric(vertical: 10),
-                  decoration: BoxDecoration(
-                      border: Border.all(color: COLOR_PRIMARY, width: 0.7),
-                      borderRadius: BorderRadius.circular(10)),
-                  child: ListTile(
-                    title: Text(
-                      "$firstName $lastName",
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: DARK_BG_COLOR,
+                  String firstName = person['name']['firstName'] ?? 'Unknown';
+                  String lastName = person['name']['lastName'] ?? 'Unknown';
+                  String key = "$firstName-$lastName";
+                  String age = person['age'].toString() ?? 'N/A';
+                  String gender = person['gender'] ?? 'N/A';
+                  String dob = person['dob'].toString() ?? 'N/A';
+                  String email = emailList.isNotEmpty
+                      ? emailList.first['emailAddress']
+                      : "No email available";
+                  String phone = phoneList.isNotEmpty
+                      ? phoneList.first['phoneNumber'] ?? "No phone available"
+                      : "No phone available";
+
+                  String address = addressList.isNotEmpty
+                      ? (addressList.first['fullAddress']?.toString() ??
+                          "No address available")
+                      : "No address available";
+
+                  print(address);
+
+                  // String address = addressList.isNotEmpty
+                  //     ? "${addressList.first['city'] ?? ''}, "
+                  //         "${addressList.first['state'] ?? ''}, "
+                  //         "${addressList.first['zip'] ?? ''}"
+                  //     : "No address available";
+
+                  // print(phone);
+                  // print(fullAddress);
+                  return Container(
+                    margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                    padding: EdgeInsets.symmetric(vertical: 12),
+                    decoration: BoxDecoration(
+                        border: Border.all(color: COLOR_PRIMARY, width: 0.7),
+                        borderRadius: BorderRadius.circular(10)),
+                    child: ListTile(
+                      title: Text(
+                        "$firstName $lastName",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: DARK_BG_COLOR,
+                        ),
                       ),
-                    ),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text("Age: $age",
-                            style: TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w500,
-                              color: DARK_BG_COLOR,
-                            )),
-                        // Text("Phone: $phone", style: TextStyle(fontSize: 14)),
-                        // Text("Email: $email", style: TextStyle(fontSize: 14)),
-                        Text("Address: $address",
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: DARK_BG_COLOR,
-                            )),
-                      ],
-                    ),
-                    trailing: isLoadingMap[key] == true
-                        ? CircularProgressIndicator()
-                        : Container(
-                            // height: 80,
-                            width: 100,
-                            margin: EdgeInsets.all(1),
-                            decoration: BoxDecoration(
-                              // color: COLOR_PRIMARY.withAlpha(30),
-                              // color: Colors.white,
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text("Age: $age",
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w500,
+                                color: DARK_BG_COLOR,
+                              )),
+                          // Text("Phone: $phone", style: TextStyle(fontSize: 14)),
+                          // Text("Email: $email", style: TextStyle(fontSize: 14)),
+                          Text("Address: $address",
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: DARK_BG_COLOR,
+                              )),
+                        ],
+                      ),
+                      trailing: isLoadingMap[key] == true
+                          ? CircularProgressIndicator()
+                          : Container(
+                              // height: 80,
+                              width: 100,
+                              margin: EdgeInsets.all(1),
+                              decoration: BoxDecoration(
+                                // color: COLOR_PRIMARY.withAlpha(30),
+                                // color: Colors.white,
 
-                              border:
-                                  Border.all(color: Colors.white70, width: 0.5),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: TextButton.icon(
-                              icon: Icon(
-                                Icons.description,
-                                color: COLOR_GREEEN_TEXT,
+                                border: Border.all(
+                                    color: Colors.white70, width: 0.5),
+                                borderRadius: BorderRadius.circular(10),
                               ),
-                              onPressed: () {
-                                Map<String, int> validIndicators =
-                                    Map.fromEntries(
-                                  (person['indicators'] as Map<String, dynamic>)
-                                      .entries
-                                      .where((entry) =>
-                                          entry.value is int && entry.value > 0)
-                                      .map((entry) => MapEntry(
-                                          entry.key, entry.value as int)),
-                                );
+                              child: TextButton.icon(
+                                icon: Icon(
+                                  Icons.description,
+                                  color: COLOR_GREEEN_TEXT,
+                                ),
+                                onPressed: () {
+                                  Map<String, int> validIndicators =
+                                      Map.fromEntries(
+                                    (person['indicators']
+                                            as Map<String, dynamic>)
+                                        .entries
+                                        .where((entry) =>
+                                            entry.value is int &&
+                                            entry.value > 0)
+                                        .map((entry) => MapEntry(
+                                            entry.key, entry.value as int)),
+                                  );
 
-                                // final userinfo = {
-                                //   'firstname': firstName,
-                                //   'lastname': lastName,
-                                //   'age': age,
-                                //   'gender': gender,
-                                //   'dob': dob,
-                                //   'email': email,
-                                //   'address': address,
-                                // };
+                                  // final userinfo = {
+                                  //   'firstname': firstName,
+                                  //   'lastname': lastName,
+                                  //   'age': age,
+                                  //   'gender': gender,
+                                  //   'dob': dob,
+                                  //   'email': email,
+                                  //   'address': address,
+                                  // };
 
-                                // Get.to(AddonScreen(
-                                //   indicators: validIndicators,
-                                //   tahoeId: tahoeId,
-                                //   userseleect: userinfo,
-                                // ));
-
-                                Get.to(AddonScreen(
-                                    indicators: validIndicators,
-                                    tahoeId: tahoeId,
-                                    firstname: firstName,
-                                    lastname: lastName,
-                                    age: age,
-                                    gender: gender,
-                                    dob: dob,
-                                    email: email,
-                                    address: address));
-                              },
-                              label: Text(
-                                'Full Report',
-                                style: TextStyle(
-                                  color: DARK_BG_COLOR,
+                                  // Get.to(AddonScreen(
+                                  //   indicators: validIndicators,
+                                  //   tahoeId: tahoeId,
+                                  //   userseleect: userinfo,
+                                  // ));
+                                  print('ResulScreen: $email');
+                                  Get.to(AddonScreen(
+                                      indicators: validIndicators,
+                                      tahoeId: tahoeId,
+                                      firstname: firstName,
+                                      lastname: lastName,
+                                      age: age,
+                                      gender: gender,
+                                      dob: dob,
+                                      email: email,
+                                      address: address));
+                                },
+                                label: Text(
+                                  'Full Report',
+                                  style: TextStyle(
+                                    color: DARK_BG_COLOR,
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                  ),
-                );
-              },
+                    ),
+                  );
+                },
+              ),
             ),
           ),
 
